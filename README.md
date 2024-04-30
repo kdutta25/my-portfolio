@@ -2,11 +2,11 @@
 This is the repository to host Kaustubh Dutta's Website
 
 <h2 align="center">
-  Portfolio Website - v2.0<br/>
+  Portfolio Website<br/>
   <a href="https://kaustubhdutta.com/" target="_blank">Kaustubh Dutta</a>
 </h2>
 <div align="center">
-  <img alt="Demo" src="./Images/readme-img1.png" />
+  <img alt="Demo" src="./Images/readme-img.png" />
 </div>
 
 <br/>
