@@ -1,0 +1,29 @@
+{
+  "files": {
+    "main.css": "/my-portfolio/static/css/main.b96cf1b6.css",
+    "main.js": "/my-portfolio/static/js/main.375c164a.js",
+    "static/js/415.4d6acbeb.chunk.js": "/my-portfolio/static/js/415.4d6acbeb.chunk.js",
+    "static/js/787.1ed0c42c.chunk.js": "/my-portfolio/static/js/787.1ed0c42c.chunk.js",
+    "static/media/WirelessSpybot.png": "/my-portfolio/static/media/WirelessSpybot.4f954082ca894738f7e2.png",
+    "static/media/IEEEPaper2.png": "/my-portfolio/static/media/IEEEPaper2.c006622ba3808cb08bf8.png",
+    "static/media/IEEEPaper1.png": "/my-portfolio/static/media/IEEEPaper1.f0a06ba37aa91e16b773.png",
+    "static/media/Kaustubh_Dutta_Resume.pdf": "/my-portfolio/static/media/Kaustubh_Dutta_Resume.c8743ac0921ccdea6b97.pdf",
+    "static/media/IJERTPaper.png": "/my-portfolio/static/media/IJERTPaper.30f290e75afc4c2e8208.png",
+    "static/media/home-main.svg": "/my-portfolio/static/media/home-main.541f8179af8209ce03ccf2178fe62dbf.svg",
+    "static/media/about.png": "/my-portfolio/static/media/about.aee0f771fbfc1e7b8fa8.png",
+    "static/media/Hyperledger.png": "/my-portfolio/static/media/Hyperledger.f2212a63e5c1da7d07d8.png",
+    "static/media/home-bg.jpg": "/my-portfolio/static/media/home-bg.dc52d5d40a40b13154b0.jpg",
+    "static/media/ComputedTomography.png": "/my-portfolio/static/media/ComputedTomography.76c4742f74e433329d98.png",
+    "static/media/avatar.svg": "/my-portfolio/static/media/avatar.5852f40fbb38aa284829fa3fb7722225.svg",
+    "static/media/pre.svg": "/my-portfolio/static/media/pre.d4812f51c8c80976eaab.svg",
+    "index.html": "/my-portfolio/index.html",
+    "main.b96cf1b6.css.map": "/my-portfolio/static/css/main.b96cf1b6.css.map",
+    "main.375c164a.js.map": "/my-portfolio/static/js/main.375c164a.js.map",
+    "415.4d6acbeb.chunk.js.map": "/my-portfolio/static/js/415.4d6acbeb.chunk.js.map",
+    "787.1ed0c42c.chunk.js.map": "/my-portfolio/static/js/787.1ed0c42c.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.b96cf1b6.css",
+    "static/js/main.375c164a.js"
+  ]
+}
