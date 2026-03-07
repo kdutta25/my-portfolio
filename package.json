@@ -1,7 +1,7 @@
 {
   "homepage": "https://www.kaustubhdutta.com/",
   "name": "portfolio",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "private": true,
   "dependencies": {
     "@react-pdf/renderer": "^2.2.0",
@@ -52,4 +52,11 @@
   "devDependencies": {
     "gh-pages": "^6.1.1"
   }
+  {
+  "homepage": "https://www.kaustubhdutta.com",
+  "scripts": {
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build"
+  }
+}
 }
