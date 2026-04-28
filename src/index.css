@@ -1,8 +1,10 @@
-@import url("https://fonts.googleapis.com/css2?family=Raleway:wght@500&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Raleway:wght@500&family=Noto+Sans+Bengali:wght@400;500&family=Noto+Sans+Devanagari:wght@400;500&display=swap");
+
 body {
   margin: 0;
-  font-family: "Raleway", serif !important;
+  font-family: "Raleway", "Noto Sans Devanagari", "Noto Sans Bengali", serif !important;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-image: linear-gradient(to left, rgb(27 20 41), rgb(20 15 35));
+  background-image: var(--body-bg);
+  transition: background 0.25s ease, color 0.25s ease;
 }

@@ -551,18 +551,40 @@ button:focus {
 }
 
 .tech-icons {
-  font-size: 4.5em !important;
   margin: 15px !important;
-  padding: 10px !important;
+  padding: 12px 8px 14px !important;
   opacity: 0.93 !important;
   border: 1.7px solid rgba(200, 137, 230, 0.637) !important;
-  vertical-align: middle !important;
   text-align: center !important;
   border-radius: 5px !important;
-  display: table !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
   box-shadow: 4px 5px 4px 3px rgba(89, 4, 168, 0.137) !important;
   overflow: hidden !important;
   transition: all 0.4s ease 0s !important;
+  min-height: 8.5rem;
+  box-sizing: border-box !important;
+}
+
+.tech-icon-graphic {
+  font-size: 4.5em !important;
+  line-height: 1 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.tech-icon-caption {
+  display: block;
+  margin-top: 0.65rem !important;
+  font-size: 0.72rem !important;
+  font-weight: 500 !important;
+  line-height: 1.25 !important;
+  color: var(--text-muted, rgba(255, 255, 255, 0.92)) !important;
+  max-width: 100%;
+  padding: 0 2px;
 }
 
 @media (max-width: 767px) {
@@ -614,6 +636,20 @@ button:focus {
   padding-top: 50px;
   padding-bottom: 50px;
   justify-content: center;
+}
+
+.resume-pdf-pagination {
+  user-select: none;
+}
+
+.resume-pdf-pagination .btn-outline-light:disabled {
+  opacity: 0.35;
+}
+
+.resume-pdf-page-label {
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 0.95rem;
+  letter-spacing: 0.02em;
 }
 
 .resume-left {
@@ -740,4 +776,11 @@ button:focus {
 }
 .fork-btn-inner::after {
   display: none !important;
+}
+
+/* Home2 intro (replacing legacy "introduce myself" block) */
+.home2-intro .home2-motto {
+  font-style: italic;
+  color: rgba(250, 245, 255, 0.95);
+  margin-bottom: 0;
 }
