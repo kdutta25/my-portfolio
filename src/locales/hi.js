@@ -44,8 +44,6 @@ const hi = {
     titleLead: "उद्योग",
     titleAccent: "अनुभव",
     titleFull: "उद्योग अनुभव",
-    subtitle:
-      "मेरे रिज़्यूमे / LinkedIn निर्यात से पेशेवर भूमिकाएँ और तकनीकी क्षेत्र।",
   },
   about: {
     whoLine1: "जानें कौन",
@@ -54,6 +52,24 @@ const hi = {
     skillsTitleLine2: "कौशल",
     toolsLine1: "उपकरण",
     toolsLine2: "जो मैं उपयोग करता हूँ",
+    skillLabels: {
+      javascript: "JavaScript",
+      cpp: "C++",
+      typescript: "TypeScript",
+      nodejs: "Node.js",
+      react: "React",
+      htmlCss: "HTML व CSS",
+      mongodb: "MongoDB",
+      git: "Git",
+      mysql: "MySQL",
+      python: "Python",
+      java: "Java",
+    },
+    toolLabels: {
+      postman: "Postman",
+      jenkins: "Jenkins",
+      jira: "Jira",
+    },
   },
   aboutCard: {
     p1: "नमस्ते, मैं कौस्तुभ दत्ता, ओटावा, कनाडा 🇨🇦",

@@ -16,9 +16,6 @@ function IndustryExperience() {
           {t("industryExperience.titleLead")}{" "}
           <strong className="purple">{t("industryExperience.titleAccent")}</strong>
         </h1>
-        <p className="industry-experience-lead text-center theme-body">
-          {t("industryExperience.subtitle")}
-        </p>
 
         <Row className="justify-content-center">
           <Col lg={10}>

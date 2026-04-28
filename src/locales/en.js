@@ -43,8 +43,6 @@ const en = {
     titleLead: "Industry",
     titleAccent: "Experience",
     titleFull: "Industry Experience",
-    subtitle:
-      "Professional roles and technical focus areas from my résumé / LinkedIn export.",
   },
   about: {
     whoLine1: "Know Who",
@@ -53,6 +51,24 @@ const en = {
     skillsTitleLine2: "Skillset",
     toolsLine1: "Tools",
     toolsLine2: "I use",
+    skillLabels: {
+      javascript: "JavaScript",
+      cpp: "C++",
+      typescript: "TypeScript",
+      nodejs: "Node.js",
+      react: "React",
+      htmlCss: "HTML & CSS",
+      mongodb: "MongoDB",
+      git: "Git",
+      mysql: "MySQL",
+      python: "Python",
+      java: "Java",
+    },
+    toolLabels: {
+      postman: "Postman",
+      jenkins: "Jenkins",
+      jira: "Jira",
+    },
   },
   aboutCard: {
     p1: "Hi Everyone, I am Kaustubh Dutta from Ottawa, Canada 🇨🇦",

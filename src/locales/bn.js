@@ -44,8 +44,6 @@ const bn = {
     titleLead: "শিল্প",
     titleAccent: "অভিজ্ঞতা",
     titleFull: "শিল্প অভিজ্ঞতা",
-    subtitle:
-      "আমার রিজিউমে / LinkedIn এক্সপোর্ট থেকে পেশাদার ভূমিকা ও প্রযুক্তিগত দিক।",
   },
   about: {
     whoLine1: "আমি কে",
@@ -54,6 +52,24 @@ const bn = {
     skillsTitleLine2: "দক্ষতা",
     toolsLine1: "আমি যে",
     toolsLine2: "টুল ব্যবহার করি",
+    skillLabels: {
+      javascript: "JavaScript",
+      cpp: "C++",
+      typescript: "TypeScript",
+      nodejs: "Node.js",
+      react: "React",
+      htmlCss: "HTML ও CSS",
+      mongodb: "MongoDB",
+      git: "Git",
+      mysql: "MySQL",
+      python: "Python",
+      java: "Java",
+    },
+    toolLabels: {
+      postman: "Postman",
+      jenkins: "Jenkins",
+      jira: "Jira",
+    },
   },
   aboutCard: {
     p1: "হ্যালো, আমি কৌস্তুভ দত্ত, অটাওয়া, কানাডা 🇨🇦",

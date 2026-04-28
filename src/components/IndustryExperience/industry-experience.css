@@ -4,16 +4,6 @@
   padding-bottom: 60px !important;
 }
 
-.industry-experience-lead {
-  max-width: 36rem;
-  margin-left: auto;
-  margin-right: auto;
-  margin-bottom: 2.5rem !important;
-  color: rgba(220, 210, 240, 0.9) !important;
-  font-size: 1.05rem;
-  line-height: 1.6;
-}
-
 .industry-timeline {
   list-style: none;
   padding: 0;

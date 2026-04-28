@@ -44,24 +44,25 @@ function ResumeNew() {
     <div>
       <Container fluid className="resume-section">
         <Particle />
-        <Row style={{ justifyContent: "center", position: "relative" }}>
-          <Button
-            variant="primary"
-            href={pdf}
-            target="_blank"
-            rel="noreferrer"
-            style={{ maxWidth: "250px" }}
+        <Row className="resume">
+          <Document
+            file={pdf}
+            onLoadSuccess={onDocumentLoadSuccess}
+            className="d-flex justify-content-center flex-column align-items-center"
           >
-            <AiOutlineDownload />
-            &nbsp;{t("resume.download")}
-          </Button>
+            <Page
+              key={pageNumber}
+              pageNumber={pageNumber}
+              scale={scale}
+            />
+          </Document>
         </Row>
 
-        {numPages != null && numPages > 0 && (
-          <Row
-            className="justify-content-center align-items-center"
-            style={{ paddingTop: 24, paddingBottom: 8 }}
-          >
+        <Row
+          className="justify-content-center flex-column align-items-center gap-3"
+          style={{ paddingTop: 8, paddingBottom: 40 }}
+        >
+          {numPages != null && numPages > 0 && (
             <div className="resume-pdf-pagination d-flex flex-wrap align-items-center justify-content-center gap-2">
               <ButtonGroup>
                 <Button
@@ -89,24 +90,7 @@ function ResumeNew() {
                 {t("resume.pageOf", { current: pageNumber, total: numPages })}
               </span>
             </div>
-          </Row>
-        )}
-
-        <Row className="resume">
-          <Document
-            file={pdf}
-            onLoadSuccess={onDocumentLoadSuccess}
-            className="d-flex justify-content-center flex-column align-items-center"
-          >
-            <Page
-              key={pageNumber}
-              pageNumber={pageNumber}
-              scale={scale}
-            />
-          </Document>
-        </Row>
-
-        <Row style={{ justifyContent: "center", position: "relative" }}>
+          )}
           <Button
             variant="primary"
             href={pdf}
