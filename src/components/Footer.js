@@ -1,5 +1,6 @@
 import React from "react";
 import { Container, Row, Col } from "react-bootstrap";
+import { useTranslation } from "react-i18next";
 import {
   AiFillGithub,
   AiOutlineTwitter,
@@ -8,24 +9,24 @@ import {
 import { FaLinkedinIn } from "react-icons/fa";
 
 function Footer() {
-  let date = new Date();
-  let year = date.getFullYear();
+  const { t } = useTranslation();
+  const year = new Date().getFullYear();
   return (
     <Container fluid className="footer">
       <Row>
         <Col md="4" className="footer-copywright">
-          <h3>Designed and Developed by Kaustubh Dutta</h3>
+          <h3>{t("footer.line1")}</h3>
         </Col>
         <Col md="4" className="footer-copywright">
-          <h3>Copyright © {year} KD</h3>
+          <h3>{t("footer.line2", { year })}</h3>
         </Col>
         <Col md="4" className="footer-body">
           <ul className="footer-icons">
             <li className="social-icons">
               <a
                 href="https://github.com/kdutta25"
-                style={{ color: "white" }}
-                target="_blank" 
+                className="footer-social-link"
+                target="_blank"
                 rel="noopener noreferrer"
               >
                 <AiFillGithub />
@@ -34,8 +35,8 @@ function Footer() {
             <li className="social-icons">
               <a
                 href="https://twitter.com/KaustubhDutta"
-                style={{ color: "white" }}
-                target="_blank" 
+                className="footer-social-link"
+                target="_blank"
                 rel="noopener noreferrer"
               >
                 <AiOutlineTwitter />
@@ -44,8 +45,8 @@ function Footer() {
             <li className="social-icons">
               <a
                 href="https://www.linkedin.com/in/kaustubh-dutta/"
-                style={{ color: "white" }}
-                target="_blank" 
+                className="footer-social-link"
+                target="_blank"
                 rel="noopener noreferrer"
               >
                 <FaLinkedinIn />
@@ -54,8 +55,8 @@ function Footer() {
             <li className="social-icons">
               <a
                 href="https://www.instagram.com/kausklicks/"
-                style={{ color: "white" }}
-                target="_blank" 
+                className="footer-social-link"
+                target="_blank"
                 rel="noopener noreferrer"
               >
                 <AiFillInstagram />

@@ -1,5 +1,6 @@
 import React from "react";
 import { Container, Row, Col } from "react-bootstrap";
+import { useTranslation } from "react-i18next";
 import Particle from "../Particle";
 import Github from "./Github";
 import Techstack from "./Techstack";
@@ -8,6 +9,7 @@ import laptopImg from "../../Assets/about.png";
 import Toolstack from "./Toolstack";
 
 function About() {
+  const { t } = useTranslation();
   return (
     <Container fluid className="about-section">
       <Particle />
@@ -22,7 +24,8 @@ function About() {
             }}
           >
             <h1 style={{ fontSize: "2.1em", paddingBottom: "20px" }}>
-              Know Who <strong className="purple">I'M</strong>
+              {t("about.whoLine1")}{" "}
+              <strong className="purple">{t("about.whoLine2")}</strong>
             </h1>
             <Aboutcard />
           </Col>
@@ -31,17 +34,20 @@ function About() {
             style={{ paddingTop: "120px", paddingBottom: "50px" }}
             className="about-img"
           >
-            <img src={laptopImg} alt="about" className="img-fluid" />
+            <img src={laptopImg} alt={t("about.whoLine1")} className="img-fluid" />
           </Col>
         </Row>
+
         <h1 className="project-heading">
-          Professional <strong className="purple">Skillset </strong>
+          {t("about.skillsTitleLine1")}{" "}
+          <strong className="purple">{t("about.skillsTitleLine2")} </strong>
         </h1>
 
         <Techstack />
 
         <h1 className="project-heading">
-          <strong className="purple">Tools</strong> I use
+          <strong className="purple">{t("about.toolsLine1")}</strong>{" "}
+          {t("about.toolsLine2")}
         </h1>
         <Toolstack />
 

@@ -1,0 +1,188 @@
+/* Theme tokens: default matches existing dark portfolio. Themes: dark | enhanced-dark. */
+:root,
+html[data-theme="dark"] {
+  --body-bg: linear-gradient(to left, rgb(27, 20, 41), rgb(20, 15, 35));
+  --text-primary: #f5f5f5;
+  --text-muted: rgba(255, 255, 255, 0.85);
+  --imp-text-color: #c770f0;
+  --navbar-text: rgb(250, 250, 250);
+  --footer-bg: rgb(10, 4, 22);
+  --footer-text: #ffffff;
+  --card-bg: rgba(15, 10, 30, 0.6);
+  --card-border: rgba(199, 112, 240, 0.25);
+  --section-fallback: linear-gradient(
+    to bottom left,
+    rgba(17, 16, 16, 0.582),
+    rgba(12, 8, 24, 0.904)
+  );
+  --sticky-nav-bg: #1b1a2ea9;
+  --icon-social: #700c86;
+  --blockquote-footer: #a588c0;
+}
+
+html[lang="hi"] body,
+html[lang="bn"] body {
+  line-height: 1.65;
+}
+
+/* Theme-aware footer icon links (replacing inline white) */
+.footer .footer-social-link {
+  color: var(--footer-text) !important;
+}
+
+.project-section .theme-body {
+  color: var(--text-primary) !important;
+}
+
+/* ——— Enhanced dark: deeper base, stronger violet / magenta accents ——— */
+html[data-theme="enhanced-dark"] {
+  --body-bg: linear-gradient(
+    145deg,
+    rgb(6, 3, 14) 0%,
+    rgb(18, 8, 32) 40%,
+    rgb(12, 5, 24) 100%
+  );
+  --text-primary: #f8f4ff;
+  --text-muted: rgba(240, 230, 255, 0.9);
+  --imp-text-color: #e0a3ff;
+  --navbar-text: rgb(255, 250, 255);
+  --footer-bg: rgb(4, 2, 12);
+  --footer-text: #faf5ff;
+  --card-bg: rgba(25, 12, 45, 0.65);
+  --card-border: rgba(224, 163, 255, 0.35);
+  --section-fallback: linear-gradient(
+    to bottom left,
+    rgba(28, 10, 48, 0.92),
+    rgba(8, 4, 20, 0.96)
+  );
+  --sticky-nav-bg: rgba(12, 6, 28, 0.92);
+  --icon-social: #d946ef;
+  --blockquote-footer: #c4a8e8;
+}
+
+html[data-theme="enhanced-dark"] body {
+  color: var(--text-primary);
+}
+
+html[data-theme="enhanced-dark"] .navbar {
+  background: rgba(8, 4, 20, 0.88) !important;
+  box-shadow: 0 2px 24px rgba(190, 80, 244, 0.18) !important;
+}
+
+html[data-theme="enhanced-dark"] .sticky {
+  background-color: var(--sticky-nav-bg) !important;
+  box-shadow: 0 8px 32px rgba(139, 63, 199, 0.28) !important;
+  backdrop-filter: blur(18px) !important;
+}
+
+html[data-theme="enhanced-dark"] .purple {
+  color: #f0abfc !important;
+  text-shadow: 0 0 24px rgba(217, 70, 239, 0.35);
+}
+
+html[data-theme="enhanced-dark"] .main-name {
+  color: #e879f9 !important;
+}
+
+html[data-theme="enhanced-dark"] .Typewriter__wrapper {
+  color: #e879f9 !important;
+}
+
+html[data-theme="enhanced-dark"] .Typewriter__cursor {
+  color: #f0abfc !important;
+}
+
+html[data-theme="enhanced-dark"] .project-card-view {
+  box-shadow: 0 6px 20px rgba(168, 85, 247, 0.22) !important;
+  border: 1px solid rgba(192, 132, 245, 0.25) !important;
+}
+
+html[data-theme="enhanced-dark"] .footer {
+  background-color: var(--footer-bg) !important;
+  box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.35);
+}
+
+html[data-theme="enhanced-dark"] .quote-card-view {
+  background: linear-gradient(
+    145deg,
+    rgba(35, 18, 55, 0.55) 0%,
+    rgba(12, 6, 28, 0.75) 100%
+  ) !important;
+  border: 1px solid rgba(199, 112, 240, 0.35) !important;
+  border-radius: 12px !important;
+  box-shadow: 0 8px 32px rgba(88, 28, 135, 0.25) !important;
+}
+
+html[data-theme="enhanced-dark"] ::-webkit-scrollbar-track {
+  background: #1a0d2e;
+}
+
+html[data-theme="enhanced-dark"] ::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #c084fc, #a855f7);
+  box-shadow: 0 0 8px rgba(192, 132, 252, 0.6);
+}
+
+html[data-theme="enhanced-dark"] .project-section {
+  background-image: var(--section-fallback) !important;
+}
+
+/* Navbar selects — match home/about purple glass (aligned across themes) */
+.portfolio-nav-select {
+  min-width: 7.25rem;
+  padding: 0.4rem 2.1rem 0.4rem 0.75rem;
+  font-family: inherit;
+  font-size: 0.9rem;
+  line-height: 1.3;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+  background: linear-gradient(
+    135deg,
+    rgba(17, 16, 16, 0.82) 0%,
+    rgba(12, 8, 24, 0.94) 100%
+  );
+  color: #f5f5f5;
+  border: 1px solid rgba(199, 112, 240, 0.42);
+  box-shadow: 0 2px 14px rgba(190, 80, 244, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+.portfolio-nav-select:hover {
+  border-color: rgba(201, 91, 245, 0.75);
+  box-shadow: 0 4px 20px rgba(190, 80, 244, 0.2);
+}
+
+.portfolio-nav-select:focus {
+  border-color: #c95bf5;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(201, 91, 245, 0.35);
+}
+
+/* Dark — same family as default home/about */
+html[data-theme="dark"] .portfolio-nav-select {
+  background: linear-gradient(
+    135deg,
+    rgba(17, 16, 16, 0.78) 0%,
+    rgba(12, 8, 24, 0.9) 100%
+  );
+  color: #f5f5f5;
+  border-color: rgba(199, 112, 240, 0.4);
+}
+
+/* Enhanced dark — deeper glass + stronger glow (matches quote-card energy) */
+html[data-theme="enhanced-dark"] .portfolio-nav-select {
+  background: linear-gradient(
+    135deg,
+    rgba(8, 4, 18, 0.92) 0%,
+    rgba(22, 10, 40, 0.96) 100%
+  );
+  color: #faf5ff;
+  border-color: rgba(224, 163, 255, 0.5);
+  box-shadow: 0 2px 18px rgba(168, 85, 247, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+html[data-theme="enhanced-dark"] .portfolio-nav-select:hover {
+  border-color: rgba(244, 114, 255, 0.65);
+  box-shadow: 0 4px 24px rgba(192, 132, 252, 0.3);
+}

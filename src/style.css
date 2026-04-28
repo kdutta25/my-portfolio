@@ -616,6 +616,20 @@ button:focus {
   justify-content: center;
 }
 
+.resume-pdf-pagination {
+  user-select: none;
+}
+
+.resume-pdf-pagination .btn-outline-light:disabled {
+  opacity: 0.35;
+}
+
+.resume-pdf-page-label {
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 0.95rem;
+  letter-spacing: 0.02em;
+}
+
 .resume-left {
   padding-right: 80px !important;
 }
@@ -740,4 +754,11 @@ button:focus {
 }
 .fork-btn-inner::after {
   display: none !important;
+}
+
+/* Home2 intro (replacing legacy "introduce myself" block) */
+.home2-intro .home2-motto {
+  font-style: italic;
+  color: rgba(250, 245, 255, 0.95);
+  margin-bottom: 0;
 }
