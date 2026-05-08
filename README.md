@@ -43,7 +43,7 @@ The UI is one **long-scroll landing page** (`src/App.tsx`). There is no client-s
 | `#about` | `AboutSection` | Bio / positioning narrative (`aria-labelledby="about-heading"`). |
 | `#experience` | `ExperienceSection` | Timeline-style work history (`ExperienceGrouped` + locale-driven copy). |
 | `#skills` | `SkillsSection` | **Professional skillset** grid (languages, frameworks, tools including image-based entries). Nested **Models & assistants** region lists AI tooling cards (Composer, GPT Codex, Claude Opus) with artwork under `public/images/ai-models/`. |
-| `#projects` | `ProjectsSection` | Featured projects / cards. |
+| `#projects` | `ProjectsSection` | Featured projects as **`ProjectCard`** tiles (see below). |
 | `#education` | `EducationSection` | Degrees and institutions. |
 | `#volunteering` | `VolunteeringSection` | Volunteer roles. |
 | `#publications` | `PublicationsSection` | Papers / publications list. |
@@ -58,13 +58,25 @@ The UI is one **long-scroll landing page** (`src/App.tsx`). There is no client-s
 - **`LoadingScreen`** — Full-screen loader until ready (skipped in test env via `isTestEnv()`).
 - **`PortfolioChatbot`** — Fixed panel: section chips, regex/heuristic replies, optional scroll-to-hash; resume corpus matching for FAQ-style answers.
 
+### Project cards (`ProjectCard`)
+
+Project copy and metadata come from **`projects.items`** in `src/locales/en.json` and `fr.json` (`ProjectItem` in `src/types/content.ts`).
+
+| Feature | Details |
+|---------|---------|
+| **Cover image** | Optional **`coverImage`** path under `public/` (16×10 header). Placeholder SVGs live in **`public/images/projects/`** — e.g. `hyperledger-blockchain.svg`, `ct-reconstruction.svg`, `wireless-spybot.svg`, `dawn-dusk-lamp.svg`. If omitted, the card uses a hue-based gradient. |
+| **Links** | Optional **`linkLabel` / `url`** and **`secondaryLinkLabel` / `secondaryUrl`** (PDF, PPTX, etc.). Hrefs are built with **`resolvePublicAsset`** so deployments respect Vite **`BASE_URL`**. |
+| **Hyperledger** | Literature review PDF (`Kaustubh-Dutta-Literature-Review.pdf`), blockchain presentation PPTX (`Kaustubh-Dutta-Hyperledger-Blockchain-Presentation.pptx`), and the Hyperledger cover SVG — served as static files from **`public/`**. |
+
+Other shared assets include **`public/Kaustubh-Dutta-Resume.pdf`** (header résumé link, chat corpus refresh script), skill/company logos, and **`public/images/ai-models/`** artwork for the skills section.
+
 ---
 
 ## UI architecture
 
 - **Composition root:** `App` wraps **HelmetProvider** → **I18nextProvider** → **AppThemeProvider** → `GlobalStyle` + page shell.
 - **Theme:** `AppThemeProvider` toggles **light/dark** `AppTheme` tokens (`src/theme/theme.ts`) — colors, typography stacks (`Syne` / `DM Sans` / `JetBrains Mono`), radii, shadows — persisted in `localStorage` and synced to `document.documentElement` / Bootstrap `data-bs-theme`.
-- **Section pattern:** Most sections use a styled `<section>` with `scroll-margin-top` for sticky header offset, **`SectionHeading`** (eyebrow + title + bar), optional **`GlowCard`** wrapper, **`AnimeReveal`** for staggered entrance, and **react-bootstrap** `Container` / `Row` / `Col` for responsive grids.
+- **Section pattern:** Most sections use a styled `<section>` with `scroll-margin-top` for sticky header offset, **`SectionHeading`** (eyebrow + title + bar), optional **`GlowCard`** wrapper, **`AnimeReveal`** for staggered entrance, and **react-bootstrap** `Container` / `Row` / `Col` for responsive grids. **`ProjectsSection`** maps locale **`projects.items`** to **`ProjectCard`** (cover image or gradient, tags, external asset links).
 - **Content:** Copy lives in JSON locales; structured résumé/chat context in `src/data/*.json`; static assets under `public/` (images, PDF).
 - **Accessibility:** Landmark regions, labelled headings, skip link, reduced-motion respected where wired (e.g. hero / nav animations).
 
@@ -147,6 +159,7 @@ flowchart LR
 flowchart TB
   subgraph presentation["Presentation layer"]
     SEC[Section components]
+    PC[ProjectCard]
     LAY[Layout: Header / Footer / SkipLink]
     UI[GlowCard / SectionHeading / AnimeReveal / UiverseButton]
   end
@@ -167,6 +180,7 @@ flowchart TB
   presentation --> content
   CHAT --> DATA
   SEC --> L10n
+  PC --> L10n
 ```
 
 ---
@@ -221,7 +235,10 @@ Configuration: `vite.config.ts` → `test` block (`include: src/**/*.test.{ts,ts
 
 1. **Install:** `npm install`
 2. **Develop:** `npm start` — open **http://localhost:4044**
-3. **Edit content:** Primary copy is under `src/locales/en.json` and `fr.json`; section-specific presentation under `src/components/sections/` and `src/components/projects/` / `experience/`.
+3. **Edit content:** Primary copy is under `src/locales/en.json` and `fr.json`; section-specific presentation under `src/components/sections/`, `src/components/projects/` (`ProjectCard.tsx`), and `src/components/experience/`.
+4. **Static files:** Add PDFs, thumbnails, and other binaries under **`public/`** and reference them from locale JSON or components with paths relative to the site root (see **Project cards** above).
+
+Continuous delivery for releases is configured under **`.github/workflows/`** (e.g. `release.yml`).
 
 ### Show your support
 
