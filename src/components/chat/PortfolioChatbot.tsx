@@ -3,6 +3,7 @@ import styled from "styled-components";
 import type { TFunction } from "i18next";
 import { useTranslation } from "react-i18next";
 import { findKnowledgeAnswer } from "../../chat/matchKnowledge";
+import { README_ON_GITHUB_URL } from "../../constants/externalLinks";
 
 type Msg = { role: "user" | "bot"; text: string };
 
@@ -15,6 +16,7 @@ const NAV_KEYS = [
   "volunteering",
   "publications",
   "github",
+  "readme",
   "support",
 ] as const;
 
@@ -296,8 +298,6 @@ export function PortfolioChatbot() {
   };
 
   const goNav = (key: (typeof NAV_KEYS)[number]) => {
-    const hash = `#${key}`;
-    scrollToHash(hash);
     setMessages((prev) => [
       ...prev,
       {
@@ -306,18 +306,27 @@ export function PortfolioChatbot() {
       },
       {
         role: "bot",
-        text: t("chatbot.navigatedTo", { section: t(`nav.${key}`) }),
+        text:
+          key === "readme"
+            ? t("chatbot.openedReadmeTab")
+            : t("chatbot.navigatedTo", { section: t(`nav.${key}`) }),
       },
     ]);
+    if (key === "readme") {
+      window.open(README_ON_GITHUB_URL, "_blank", "noopener,noreferrer");
+      return;
+    }
+    scrollToHash(`#${key}`);
   };
 
   return (
-    <Wrap aria-label={t("chatbot.ariaLabel")}>
+    <Wrap data-component-id="PortfolioChatbot" aria-label={t("chatbot.ariaLabel")}>
       {open ? (
-        <Panel role="dialog" aria-labelledby={titleId}>
-          <PanelHead>
-            <PanelTitle id={titleId}>{t("chatbot.title")}</PanelTitle>
+        <Panel data-component-id="Panel" role="dialog" aria-labelledby={titleId}>
+          <PanelHead data-component-id="PanelHead">
+            <PanelTitle data-component-id="PanelTitle" id={titleId}>{t("chatbot.title")}</PanelTitle>
             <CloseBtn
+              data-component-id="CloseBtn"
               type="button"
               onClick={() => setOpen(false)}
               aria-label={t("chatbot.close")}
@@ -325,35 +334,37 @@ export function PortfolioChatbot() {
               ×
             </CloseBtn>
           </PanelHead>
-          <ChipRow>
+          <ChipRow data-component-id="ChipRow">
             {NAV_KEYS.map((key) => (
-              <Chip key={key} type="button" onClick={() => goNav(key)}>
+              <Chip data-component-id="Chip" key={key} type="button" onClick={() => goNav(key)}>
                 {t(`nav.${key}`)}
               </Chip>
             ))}
           </ChipRow>
-          <MsgArea ref={areaRef}>
+          <MsgArea data-component-id="MsgArea" ref={areaRef}>
             {messages.map((m, i) => (
-              <Bubble key={`${i}-${m.role}`} $role={m.role}>
+              <Bubble data-component-id="Bubble" key={`${i}-${m.role}`} $role={m.role}>
                 {m.text}
               </Bubble>
             ))}
           </MsgArea>
-          <Form onSubmit={onSubmit}>
+          <Form data-component-id="Form" onSubmit={onSubmit}>
             <Input
+              data-component-id="Input"
               value={input}
               onChange={(e) => setInput(e.target.value)}
               placeholder={t("chatbot.placeholder")}
               aria-label={t("chatbot.placeholder")}
               autoComplete="off"
             />
-            <SendBtn type="submit" disabled={!input.trim()}>
+            <SendBtn data-component-id="SendBtn" type="submit" disabled={!input.trim()}>
               {t("chatbot.send")}
             </SendBtn>
           </Form>
         </Panel>
       ) : null}
       <ToggleBtn
+        data-component-id="ToggleBtn"
         type="button"
         onClick={() => setOpen((o) => !o)}
         aria-expanded={open}

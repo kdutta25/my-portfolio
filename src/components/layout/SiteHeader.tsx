@@ -9,8 +9,7 @@ import { MOTION } from "../../animations/constants";
 import { usePrefersReducedMotion } from "../../hooks/usePrefersReducedMotion";
 import { LanguageToggle } from "./LanguageToggle";
 import { ThemeToggle } from "./ThemeToggle";
-
-const RESUME_HREF = `${import.meta.env.BASE_URL}Kaustubh-Dutta-Resume.pdf`;
+import { README_ON_GITHUB_URL, RESUME_PDF_URL } from "../../constants/externalLinks";
 
 const NAV_LINKS: readonly {
   key: string;
@@ -25,8 +24,9 @@ const NAV_LINKS: readonly {
   { key: "volunteering", href: "#volunteering" },
   { key: "publications", href: "#publications" },
   { key: "github", href: "#github" },
+  { key: "readme", href: README_ON_GITHUB_URL, external: true },
   { key: "support", href: "#support" },
-  { key: "resume", href: RESUME_HREF, external: true },
+  { key: "resume", href: RESUME_PDF_URL, external: true },
 ];
 
 const StyledNavbar = styled(Navbar)`
@@ -123,9 +123,9 @@ function AnimatedNavLink({
       onFocus={enter}
       onBlur={leave}
     >
-      <LinkWrap>
+      <LinkWrap data-component-id="LinkWrap">
         {children}
-        <Underline ref={underlineRef} aria-hidden />
+        <Underline data-component-id="Underline" ref={underlineRef} aria-hidden />
       </LinkWrap>
     </Nav.Link>
   );
@@ -141,10 +141,10 @@ export function SiteHeader() {
   const { t } = useTranslation();
 
   return (
-    <Banner role="banner">
-      <StyledNavbar expand="lg" collapseOnSelect>
+    <Banner data-component-id="SiteHeader" role="banner">
+      <StyledNavbar data-component-id="StyledNavbar" expand="lg" collapseOnSelect>
         <Container fluid className="px-3 px-lg-4">
-          <Brand href="#top">{t("nav.brand")}</Brand>
+          <Brand data-component-id="Brand" href="#top">{t("nav.brand")}</Brand>
           <Navbar.Toggle aria-controls="primary-nav" />
           <Navbar.Collapse id="primary-nav">
             <Nav className="mx-auto my-2 my-lg-0 gap-lg-1">
@@ -158,7 +158,7 @@ export function SiteHeader() {
                 </AnimatedNavLink>
               ))}
             </Nav>
-            <NavInner>
+            <NavInner data-component-id="NavInner">
               <LanguageToggle />
               <ThemeToggle />
             </NavInner>

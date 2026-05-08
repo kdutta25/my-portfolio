@@ -12,6 +12,7 @@
     "projects": "Projects",
     "skills": "Skills",
     "github": "GitHub",
+    "readme": "README",
     "volunteering": "Volunteering",
     "publications": "Publications",
     "support": "Support",
@@ -111,6 +112,7 @@
   "githubActivity": {
     "heading": "GITHUB\nACTIVITY",
     "subtitle": "Contribution rhythm over the last year.",
+    "profileLink": "{{user}} on GitHub",
     "username": "kdutta25"
   },
   "experience": {
@@ -384,7 +386,8 @@
     "snippetSupport": "You can leave a thank-you via Buy Me a Coffee under Support.",
     "snippetGitHub": "Contribution activity is shown in the GitHub section.",
     "userAskSection": "Open {{section}}",
-    "navigatedTo": "Scrolling to {{section}}."
+    "navigatedTo": "Scrolling to {{section}}.",
+    "openedReadmeTab": "Opened this site’s README on GitHub in a new tab."
   },
   "footer": {
     "line1": "Designed and developed by Kaus",

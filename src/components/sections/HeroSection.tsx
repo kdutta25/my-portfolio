@@ -294,8 +294,8 @@ export function HeroSection() {
   }, [reduced]);
 
   return (
-    <HeroRoot ref={rootRef} id="top" aria-labelledby="hero-title">
-      <GridBg aria-hidden />
+    <HeroRoot data-component-id="HeroSection" ref={rootRef} id="top" aria-labelledby="hero-title">
+      <GridBg data-component-id="GridBg" aria-hidden />
       <Container fluid className="position-relative px-3 px-lg-4" style={{ zIndex: 1 }}>
         <Row className="align-items-center gy-5">
           <Col
@@ -304,8 +304,9 @@ export function HeroSection() {
             className="d-flex flex-column align-items-center align-items-lg-start text-center text-lg-start"
           >
             <div data-hero-block>
-              <PhotoFrame>
+              <PhotoFrame data-component-id="PhotoFrame">
                 <Photo
+                  data-component-id="Photo"
                   src={`${import.meta.env.BASE_URL}images/kaustubh-dutta.png`}
                   alt={t("hero.photoAlt")}
                   width={560}
@@ -314,25 +315,25 @@ export function HeroSection() {
                   decoding="async"
                 />
               </PhotoFrame>
-              <Badge>{t("hero.badge")}</Badge>
+              <Badge data-component-id="Badge">{t("hero.badge")}</Badge>
             </div>
           </Col>
           <Col xs={12} lg={7}>
             <div data-hero-block>
-              <IntroEyebrow>{t("hero.introEyebrow")}</IntroEyebrow>
-              <DisplayHeadline id="hero-title" aria-label={`${brand} — ${oneLineHeadline}`}>
+              <IntroEyebrow data-component-id="IntroEyebrow">{t("hero.introEyebrow")}</IntroEyebrow>
+              <DisplayHeadline data-component-id="DisplayHeadline" id="hero-title" aria-label={`${brand} — ${oneLineHeadline}`}>
                 {headline}
               </DisplayHeadline>
             </div>
-            <Tagline data-hero-block>{t("hero.tagline")}</Tagline>
-            <RoleLine data-hero-block>{t("hero.roleLine")}</RoleLine>
-            <Meta data-hero-block>{t("hero.location")}</Meta>
+            <Tagline data-component-id="Tagline" data-hero-block>{t("hero.tagline")}</Tagline>
+            <RoleLine data-component-id="RoleLine" data-hero-block>{t("hero.roleLine")}</RoleLine>
+            <Meta data-component-id="Meta" data-hero-block>{t("hero.location")}</Meta>
 
-            <StatsRow data-hero-block>
+            <StatsRow data-component-id="StatsRow" data-hero-block>
               {stats.map((s) => (
-                <Stat key={`${s.value}-${s.line1}`}>
-                  <StatValue>{s.value}</StatValue>
-                  <StatLabel>
+                <Stat data-component-id="Stat" key={`${s.value}-${s.line1}`}>
+                  <StatValue data-component-id="StatValue">{s.value}</StatValue>
+                  <StatLabel data-component-id="StatLabel">
                     {s.line1}
                     {"\n"}
                     {s.line2}
@@ -341,9 +342,9 @@ export function HeroSection() {
               ))}
             </StatsRow>
 
-            <TechStrip data-hero-block>{t("hero.techStrip")}</TechStrip>
+            <TechStrip data-component-id="TechStrip" data-hero-block>{t("hero.techStrip")}</TechStrip>
 
-            <Actions data-hero-block>
+            <Actions data-component-id="Actions" data-hero-block>
               <UiverseButton
                 onClick={() =>
                   document.querySelector("#projects")?.scrollIntoView({
@@ -354,6 +355,7 @@ export function HeroSection() {
                 {t("hero.ctaPrimary")}
               </UiverseButton>
               <GhostButton
+                data-component-id="GhostButton"
                 type="button"
                 onClick={() =>
                   window.open(`mailto:${t("footer.email")}`, "_self")
@@ -363,8 +365,9 @@ export function HeroSection() {
               </GhostButton>
             </Actions>
 
-            <SocialRow data-hero-block aria-label="Social profiles">
+            <SocialRow data-component-id="SocialRow" data-hero-block aria-label="Social profiles">
               <SocialLink
+                data-component-id="SocialLink"
                 href={t("footer.github")}
                 target="_blank"
                 rel="noopener noreferrer"
@@ -372,13 +375,14 @@ export function HeroSection() {
                 <FaGithub size={20} aria-hidden />
               </SocialLink>
               <SocialLink
+                data-component-id="SocialLink"
                 href={t("footer.linkedin")}
                 target="_blank"
                 rel="noopener noreferrer"
               >
                 <FaLinkedin size={20} aria-hidden />
               </SocialLink>
-              <SocialLink href={`mailto:${t("footer.email")}`}>
+              <SocialLink data-component-id="SocialLink" href={`mailto:${t("footer.email")}`}>
                 <HiOutlineMail size={22} aria-hidden />
               </SocialLink>
             </SocialRow>
@@ -388,6 +392,7 @@ export function HeroSection() {
 
       <ScrollCue
         ref={scrollCueRef}
+        data-component-id="ScrollCue"
         type="button"
         aria-label="Scroll to content"
         onClick={() =>

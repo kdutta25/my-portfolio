@@ -52,7 +52,7 @@ The UI is one **long-scroll landing page** (`src/App.tsx`). There is no client-s
 
 **Global chrome (not section anchors):**
 
-- **`SiteHeader`** — Sticky nav; hash links above + theme / language toggles; résumé PDF opens externally.
+- **`SiteHeader`** — Sticky nav; in-page hash links + theme / language toggles; **README** opens this repo on GitHub and **résumé** opens the PDF — both in a new tab, like external docs.
 - **`SiteFooter`** — Attribution, copyright, social links, “Built with React, TypeScript and Vite”.
 - **`SkipLink`** — Skip to `#main-content`.
 - **`LoadingScreen`** — Full-screen loader until ready (skipped in test env via `isTestEnv()`).
@@ -201,7 +201,7 @@ flowchart TB
 | Layout | `SiteHeader.test.tsx`, `SiteFooter.test.tsx`, `SkipLink.test.tsx` | Nav landmark, footer “built with” line, skip control |
 | Theme / i18n | `ThemeToggle.test.tsx`, `LanguageToggle.test.tsx` | Mode toggle, language switch label |
 | UI primitives | `GlowCard.test.tsx`, `SectionHeading.test.tsx`, `AnimeReveal.test.tsx`, `UiverseButton.test.tsx` | Render / interaction contracts |
-| Sections | `HeroSection`, `AboutSection`, `ExperienceSection`, `SkillsSection`, `ProjectsSection`, `EducationSection`, `VolunteeringSection`, `PublicationsSection` | Key visible copy or regions |
+| Sections | `HeroSection`, `AboutSection`, `ExperienceSection`, `SkillsSection`, `ProjectsSection`, `EducationSection`, `VolunteeringSection`, `PublicationsSection`, `GitHubSection` | Key visible copy or regions |
 
 Configuration: `vite.config.ts` → `test` block (`include: src/**/*.test.{ts,tsx}`).
 

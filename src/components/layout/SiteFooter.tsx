@@ -103,19 +103,20 @@ export function SiteFooter() {
   const year = new Date().getFullYear();
 
   return (
-    <FooterBar role="contentinfo">
-      <Inner>
-        <ThreeCol>
+    <FooterBar data-component-id="SiteFooter" role="contentinfo">
+      <Inner data-component-id="Inner">
+        <ThreeCol data-component-id="ThreeCol">
           <div>
-            <FooterHeading>{t("footer.line1")}</FooterHeading>
+            <FooterHeading data-component-id="FooterHeading">{t("footer.line1")}</FooterHeading>
           </div>
           <div>
-            <FooterHeading>{t("footer.line2", { year })}</FooterHeading>
+            <FooterHeading data-component-id="FooterHeading">{t("footer.line2", { year })}</FooterHeading>
           </div>
           <div>
-            <SocialList>
-              <SocialItem>
+            <SocialList data-component-id="SocialList">
+              <SocialItem data-component-id="SocialItem">
                 <SocialAnchor
+                  data-component-id="SocialAnchor"
                   href={t("footer.github")}
                   target="_blank"
                   rel="noopener noreferrer"
@@ -124,8 +125,9 @@ export function SiteFooter() {
                   <AiFillGithub aria-hidden />
                 </SocialAnchor>
               </SocialItem>
-              <SocialItem>
+              <SocialItem data-component-id="SocialItem">
                 <SocialAnchor
+                  data-component-id="SocialAnchor"
                   href={t("footer.twitter")}
                   target="_blank"
                   rel="noopener noreferrer"
@@ -134,8 +136,9 @@ export function SiteFooter() {
                   <AiOutlineTwitter aria-hidden />
                 </SocialAnchor>
               </SocialItem>
-              <SocialItem>
+              <SocialItem data-component-id="SocialItem">
                 <SocialAnchor
+                  data-component-id="SocialAnchor"
                   href={t("footer.linkedin")}
                   target="_blank"
                   rel="noopener noreferrer"
@@ -144,8 +147,9 @@ export function SiteFooter() {
                   <FaLinkedinIn aria-hidden />
                 </SocialAnchor>
               </SocialItem>
-              <SocialItem>
+              <SocialItem data-component-id="SocialItem">
                 <SocialAnchor
+                  data-component-id="SocialAnchor"
                   href={t("footer.instagram")}
                   target="_blank"
                   rel="noopener noreferrer"
@@ -154,8 +158,9 @@ export function SiteFooter() {
                   <AiFillInstagram aria-hidden />
                 </SocialAnchor>
               </SocialItem>
-              <SocialItem>
+              <SocialItem data-component-id="SocialItem">
                 <SocialAnchor
+                  data-component-id="SocialAnchor"
                   href={t("footer.youtube")}
                   target="_blank"
                   rel="noopener noreferrer"
@@ -167,8 +172,8 @@ export function SiteFooter() {
             </SocialList>
           </div>
         </ThreeCol>
-        <BottomRow>
-          <Meta>{t("footer.built")}</Meta>
+        <BottomRow data-component-id="BottomRow">
+          <Meta data-component-id="Meta">{t("footer.built")}</Meta>
         </BottomRow>
       </Inner>
     </FooterBar>

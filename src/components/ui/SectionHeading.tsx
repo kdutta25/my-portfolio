@@ -58,12 +58,19 @@ export function SectionHeading({
   title,
   level = 2,
 }: SectionHeadingProps) {
-  const Title = level === 3 ? Title3 : Title2;
   return (
-    <HeadingWrap>
-      <Eyebrow>{eyebrow}</Eyebrow>
-      <Title id={headingId}>{title}</Title>
-      <Bar aria-hidden />
+    <HeadingWrap data-component-id="SectionHeading">
+      <Eyebrow data-component-id="Eyebrow">{eyebrow}</Eyebrow>
+      {level === 3 ? (
+        <Title3 id={headingId} data-component-id="Title3">
+          {title}
+        </Title3>
+      ) : (
+        <Title2 id={headingId} data-component-id="Title2">
+          {title}
+        </Title2>
+      )}
+      <Bar data-component-id="Bar" aria-hidden />
     </HeadingWrap>
   );
 }

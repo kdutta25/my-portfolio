@@ -84,5 +84,9 @@ export function AnimeReveal({
     return () => io.disconnect();
   }, [stagger, threshold]);
 
-  return <Wrap ref={ref}>{children}</Wrap>;
+  return (
+    <Wrap data-component-id="AnimeReveal" ref={ref}>
+      {children}
+    </Wrap>
+  );
 }

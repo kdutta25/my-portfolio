@@ -12,6 +12,7 @@
     "projects": "Projets",
     "skills": "Compétences",
     "github": "GitHub",
+    "readme": "README",
     "volunteering": "Bénévolat",
     "publications": "Publications",
     "support": "Soutien",
@@ -111,6 +112,7 @@
   "githubActivity": {
     "heading": "ACTIVITÉ\nGITHUB",
     "subtitle": "Rythme de contribution sur la dernière année.",
+    "profileLink": "{{user}} sur GitHub",
     "username": "kdutta25"
   },
   "experience": {
@@ -384,7 +386,8 @@
     "snippetSupport": "Un merci possible via Buy Me a Coffee sous Soutien.",
     "snippetGitHub": "L’activité GitHub est sous la section GitHub.",
     "userAskSection": "Ouvrir {{section}}",
-    "navigatedTo": "Défilement vers {{section}}."
+    "navigatedTo": "Défilement vers {{section}}.",
+    "openedReadmeTab": "README du dépôt ouvert sur GitHub dans un nouvel onglet."
   },
   "footer": {
     "line1": "Conçu et développé par Kaus",

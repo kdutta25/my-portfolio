@@ -17,6 +17,7 @@ import {
   SiTypescript,
   SiPostman,
   SiJenkins,
+  SiJfrog,
   SiJira,
   SiWebpack,
   SiVite,
@@ -72,13 +73,6 @@ const IconGraphic = styled.span`
   color: ${({ theme }) => theme.colors.text};
 `;
 
-const BrandImg = styled.img`
-  width: auto;
-  max-width: min(120px, 28vw);
-  height: clamp(2.75rem, 8vw, 3.5rem);
-  object-fit: contain;
-`;
-
 const IconCaption = styled.span`
   display: block;
   margin-top: 0.55rem;
@@ -132,44 +126,31 @@ const ModelCaption = styled.span`
 
 type SkillKind = "skill" | "tool";
 
-type CombinedItem =
-  | {
-      mode: "icon";
-      Icon: IconType;
-      labelKey: string;
-      kind: SkillKind;
-    }
-  | {
-      mode: "img";
-      src: string;
-      labelKey: string;
-      kind: SkillKind;
-    };
+type CombinedItem = {
+  Icon: IconType;
+  labelKey: string;
+  kind: SkillKind;
+};
 
 const COMBINED_ITEMS: CombinedItem[] = [
-  { mode: "icon", Icon: DiJavascript1, labelKey: "javascript", kind: "skill" },
-  { mode: "icon", Icon: CgCPlusPlus, labelKey: "cpp", kind: "skill" },
-  { mode: "icon", Icon: SiTypescript, labelKey: "typescript", kind: "skill" },
-  { mode: "icon", Icon: DiNodejs, labelKey: "nodejs", kind: "skill" },
-  { mode: "icon", Icon: DiReact, labelKey: "react", kind: "skill" },
-  { mode: "icon", Icon: CgDisplayFlex, labelKey: "htmlCss", kind: "skill" },
-  { mode: "icon", Icon: DiMongodb, labelKey: "mongodb", kind: "skill" },
-  { mode: "icon", Icon: DiGit, labelKey: "git", kind: "skill" },
-  { mode: "icon", Icon: SiMysql, labelKey: "mysql", kind: "skill" },
-  { mode: "icon", Icon: DiPython, labelKey: "python", kind: "skill" },
-  { mode: "icon", Icon: DiJava, labelKey: "java", kind: "skill" },
-  { mode: "icon", Icon: SiPostman, labelKey: "postman", kind: "tool" },
-  { mode: "icon", Icon: SiJenkins, labelKey: "jenkins", kind: "tool" },
-  { mode: "icon", Icon: SiJira, labelKey: "jira", kind: "tool" },
-  { mode: "icon", Icon: SiWebpack, labelKey: "webpack", kind: "tool" },
-  { mode: "icon", Icon: SiVite, labelKey: "vite", kind: "tool" },
-  { mode: "icon", Icon: SiPodman, labelKey: "podman", kind: "tool" },
-  {
-    mode: "img",
-    src: "images/skills/jfrog.svg",
-    labelKey: "jfrog",
-    kind: "tool",
-  },
+  { Icon: DiJavascript1, labelKey: "javascript", kind: "skill" },
+  { Icon: CgCPlusPlus, labelKey: "cpp", kind: "skill" },
+  { Icon: SiTypescript, labelKey: "typescript", kind: "skill" },
+  { Icon: DiNodejs, labelKey: "nodejs", kind: "skill" },
+  { Icon: DiReact, labelKey: "react", kind: "skill" },
+  { Icon: CgDisplayFlex, labelKey: "htmlCss", kind: "skill" },
+  { Icon: DiMongodb, labelKey: "mongodb", kind: "skill" },
+  { Icon: DiGit, labelKey: "git", kind: "skill" },
+  { Icon: SiMysql, labelKey: "mysql", kind: "skill" },
+  { Icon: DiPython, labelKey: "python", kind: "skill" },
+  { Icon: DiJava, labelKey: "java", kind: "skill" },
+  { Icon: SiPostman, labelKey: "postman", kind: "tool" },
+  { Icon: SiJenkins, labelKey: "jenkins", kind: "tool" },
+  { Icon: SiJfrog, labelKey: "jfrog", kind: "tool" },
+  { Icon: SiJira, labelKey: "jira", kind: "tool" },
+  { Icon: SiWebpack, labelKey: "webpack", kind: "tool" },
+  { Icon: SiVite, labelKey: "vite", kind: "tool" },
+  { Icon: SiPodman, labelKey: "podman", kind: "tool" },
 ];
 
 export function SkillsSection() {
@@ -179,10 +160,10 @@ export function SkillsSection() {
   }) as AiModelItem[];
 
   return (
-    <Section id="skills" aria-labelledby="skills-heading">
+    <Section data-component-id="SkillsSection" id="skills" aria-labelledby="skills-heading">
       <AnimeReveal stagger={52}>
-        <GlowCard>
-          <IntroBlock data-animate>
+        <GlowCard data-component-id="GlowCard">
+          <IntroBlock data-component-id="IntroBlock" data-animate>
             <SectionHeading
               headingId="skills-heading"
               eyebrow={t("skills.sectionEyebrow")}
@@ -196,49 +177,27 @@ export function SkillsSection() {
                   item.kind === "skill"
                     ? t(`skills.skillLabels.${item.labelKey}`)
                     : t(`skills.toolLabels.${item.labelKey}`);
-                if (item.mode === "icon") {
-                  const Icon = item.Icon;
-                  return (
-                    <Col
-                      key={`${item.kind}-${item.mode}-${item.labelKey}`}
-                      xs={4}
-                      md={2}
-                      className="d-flex justify-content-center mb-2 px-1"
-                    >
-                      <IconCard data-animate>
-                        <IconGraphic aria-hidden>
-                          <Icon />
-                        </IconGraphic>
-                        <IconCaption>{label}</IconCaption>
-                      </IconCard>
-                    </Col>
-                  );
-                }
+                const Icon = item.Icon;
                 return (
                   <Col
-                    key={`${item.kind}-${item.mode}-${item.labelKey}`}
+                    key={`${item.kind}-${item.labelKey}`}
                     xs={4}
                     md={2}
                     className="d-flex justify-content-center mb-2 px-1"
                   >
-                    <IconCard data-animate>
-                      <IconGraphic as="span" aria-hidden>
-                        <BrandImg
-                          src={resolvePublicAsset(item.src)}
-                          alt=""
-                          loading="lazy"
-                          decoding="async"
-                        />
+                    <IconCard data-component-id="IconCard" data-animate>
+                      <IconGraphic data-component-id="IconGraphic" aria-hidden>
+                        <Icon />
                       </IconGraphic>
-                      <IconCaption>{label}</IconCaption>
+                      <IconCaption data-component-id="IconCaption">{label}</IconCaption>
                     </IconCard>
                   </Col>
                 );
               })}
             </Row>
           </Container>
-          <ModelsRegion role="region" aria-labelledby="ai-models-heading">
-            <IntroBlock>
+          <ModelsRegion data-component-id="ModelsRegion" role="region" aria-labelledby="ai-models-heading">
+            <IntroBlock data-component-id="IntroBlock">
               <SectionHeading
                 headingId="ai-models-heading"
                 eyebrow={t("aiModels.sectionEyebrow")}
@@ -256,14 +215,15 @@ export function SkillsSection() {
                     lg={4}
                     className="d-flex justify-content-center mb-3 px-2"
                   >
-                    <ModelCard data-animate>
+                    <ModelCard data-component-id="ModelCard" data-animate>
                       <ModelImg
+                        data-component-id="ModelImg"
                         src={resolvePublicAsset(item.image)}
                         alt=""
                         loading="lazy"
                         decoding="async"
                       />
-                      <ModelCaption>{item.label}</ModelCaption>
+                      <ModelCaption data-component-id="ModelCaption">{item.label}</ModelCaption>
                     </ModelCard>
                   </Col>
                 ))}

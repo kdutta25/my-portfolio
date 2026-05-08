@@ -25,6 +25,7 @@ export function ThemeToggle() {
   const label = t("nav.toggleTheme");
   return (
     <Toggle
+      data-component-id="ThemeToggle"
       type="button"
       onClick={toggleTheme}
       aria-label={label}

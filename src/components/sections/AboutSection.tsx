@@ -93,29 +93,30 @@ export function AboutSection() {
   }) as string[];
 
   return (
-    <Section id="about" aria-labelledby="about-heading">
+    <Section data-component-id="AboutSection" id="about" aria-labelledby="about-heading">
       <AnimeReveal>
-        <GlowCard data-animate>
+        <GlowCard data-component-id="GlowCard" data-animate>
           <SectionHeading
             headingId="about-heading"
             eyebrow={t("nav.about")}
             title={t("about.heading")}
           />
-          <Body>{t("about.intro")}</Body>
-          <Label>{t("about.interestsLabel")}</Label>
-          <Muted>{t("about.interests")}</Muted>
-          <Label>{t("about.mottoLabel")}</Label>
-          <Muted>{t("about.motto")}</Muted>
-          <ActivitiesLead>{t("about.activitiesIntro")}</ActivitiesLead>
-          <ActivityList>
+          <Body data-component-id="Body">{t("about.intro")}</Body>
+          <Label data-component-id="Label">{t("about.interestsLabel")}</Label>
+          <Muted data-component-id="Muted">{t("about.interests")}</Muted>
+          <Label data-component-id="Label">{t("about.mottoLabel")}</Label>
+          <Muted data-component-id="Muted">{t("about.motto")}</Muted>
+          <ActivitiesLead data-component-id="ActivitiesLead">{t("about.activitiesIntro")}</ActivitiesLead>
+          <ActivityList data-component-id="ActivityList">
             {activities.map((item) => (
               <li key={item}>{item}</li>
             ))}
           </ActivityList>
 
-          <ConnectLabel>{t("about.connectLabel")}</ConnectLabel>
-          <SocialRow aria-label={t("about.connectAria")}>
+          <ConnectLabel data-component-id="ConnectLabel">{t("about.connectLabel")}</ConnectLabel>
+          <SocialRow data-component-id="SocialRow" aria-label={t("about.connectAria")}>
             <SocialLink
+              data-component-id="SocialLink"
               href={t("about.youtubeUrl")}
               target="_blank"
               rel="noopener noreferrer"
@@ -124,6 +125,7 @@ export function AboutSection() {
               <FaYoutube size={22} aria-hidden />
             </SocialLink>
             <SocialLink
+              data-component-id="SocialLink"
               href={t("about.instagramUrl")}
               target="_blank"
               rel="noopener noreferrer"
@@ -132,6 +134,7 @@ export function AboutSection() {
               <FaInstagram size={22} aria-hidden />
             </SocialLink>
             <SocialLink
+              data-component-id="SocialLink"
               href={t("about.linkedinUrl")}
               target="_blank"
               rel="noopener noreferrer"

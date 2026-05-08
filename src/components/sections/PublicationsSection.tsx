@@ -94,27 +94,27 @@ export function PublicationsSection() {
   }) as PublicationItem[];
 
   return (
-    <Section id="publications" aria-labelledby="publications-heading">
+    <Section data-component-id="PublicationsSection" id="publications" aria-labelledby="publications-heading">
       <AnimeReveal stagger={54}>
-        <GlowCard>
-          <IntroBlock data-animate>
+        <GlowCard data-component-id="GlowCard">
+          <IntroBlock data-component-id="IntroBlock" data-animate>
             <SectionHeading
               headingId="publications-heading"
               eyebrow={t("nav.publications")}
               title={t("publications.heading")}
             />
           </IntroBlock>
-          <Stack>
+          <Stack data-component-id="Stack">
             {items.map((item) => (
-              <Item key={item.title} data-animate>
-                <TitleRow>
-                  <Title>{item.title}</Title>
+              <Item data-component-id="Item" key={item.title} data-animate>
+                <TitleRow data-component-id="TitleRow">
+                  <Title data-component-id="Title">{item.title}</Title>
                   <Link href={item.url} target="_blank" rel="noopener noreferrer">
                     {t("publications.viewLink")}
                   </Link>
                 </TitleRow>
-                <MetaLine>
-                  <MetaLabel>{t("publications.referenceLabel")}</MetaLabel>
+                <MetaLine data-component-id="MetaLine">
+                  <MetaLabel data-component-id="MetaLabel">{t("publications.referenceLabel")}</MetaLabel>
                   {item.meta}
                 </MetaLine>
               </Item>

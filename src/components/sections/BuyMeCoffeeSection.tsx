@@ -57,18 +57,18 @@ export function BuyMeCoffeeSection() {
   const url = t("support.url");
 
   return (
-    <Section id="support" aria-labelledby="support-heading">
+    <Section data-component-id="BuyMeCoffeeSection" id="support" aria-labelledby="support-heading">
       <AnimeReveal stagger={56}>
-        <GlowCard>
+        <GlowCard data-component-id="GlowCard">
           <div data-animate>
             <SectionHeading
               headingId="support-heading"
               eyebrow={t("support.eyebrow")}
               title={t("support.heading")}
             />
-            <Lead>{t("support.lead")}</Lead>
-            <CtaRow>
-              <CoffeeLink href={url} target="_blank" rel="noopener noreferrer">
+            <Lead data-component-id="Lead">{t("support.lead")}</Lead>
+            <CtaRow data-component-id="CtaRow">
+              <CoffeeLink data-component-id="CoffeeLink" href={url} target="_blank" rel="noopener noreferrer">
                 <SiBuymeacoffee size={22} aria-hidden />
                 {t("support.cta")}
               </CoffeeLink>

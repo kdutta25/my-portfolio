@@ -155,10 +155,11 @@ export function ProjectCard({ item }: ProjectCardProps) {
       : "";
 
   return (
-    <Card>
+    <Card data-component-id="ProjectCard">
       {item.coverImage ? (
-        <ThumbImageWrap>
+        <ThumbImageWrap data-component-id="ThumbImageWrap">
           <ThumbImg
+            data-component-id="ThumbImg"
             src={resolvePublicAsset(item.coverImage)}
             alt=""
             loading="lazy"
@@ -166,28 +167,29 @@ export function ProjectCard({ item }: ProjectCardProps) {
           />
         </ThumbImageWrap>
       ) : (
-        <Thumb aria-hidden $hue={hue} />
+        <Thumb data-component-id="Thumb" aria-hidden $hue={hue} />
       )}
-      <Body>
-        <Title>{item.title}</Title>
-        <Period>{item.period}</Period>
-        <Desc>{item.description}</Desc>
+      <Body data-component-id="Body">
+        <Title data-component-id="Title">{item.title}</Title>
+        <Period data-component-id="Period">{item.period}</Period>
+        <Desc data-component-id="Desc">{item.description}</Desc>
         {tags.length > 0 ? (
-          <Pills>
+          <Pills data-component-id="Pills">
             {tags.map((tag) => (
-              <Pill key={tag}>{tag}</Pill>
+              <Pill data-component-id="Pill" key={tag}>{tag}</Pill>
             ))}
           </Pills>
         ) : null}
         {href || hrefSecondary ? (
-          <BtnRow>
+          <BtnRow data-component-id="BtnRow">
             {href ? (
-              <Btn href={href} target="_blank" rel="noopener noreferrer">
+              <Btn data-component-id="Btn" href={href} target="_blank" rel="noopener noreferrer">
                 {item.linkLabel}
               </Btn>
             ) : null}
             {hrefSecondary ? (
               <Btn
+                data-component-id="Btn"
                 href={hrefSecondary}
                 target="_blank"
                 rel="noopener noreferrer"

@@ -31,19 +31,19 @@ export function ProjectsSection() {
   const items = t("projects.items", { returnObjects: true }) as ProjectItem[];
 
   return (
-    <Section id="projects" aria-labelledby="projects-heading">
+    <Section data-component-id="ProjectsSection" id="projects" aria-labelledby="projects-heading">
       <AnimeReveal stagger={56}>
-        <GlowCard>
-          <IntroBlock data-animate>
+        <GlowCard data-component-id="GlowCard">
+          <IntroBlock data-component-id="IntroBlock" data-animate>
             <SectionHeading
               headingId="projects-heading"
               eyebrow={t("nav.projects")}
               title={t("projects.heading")}
             />
           </IntroBlock>
-          <Stack>
+          <Stack data-component-id="Stack">
             {items.map((item) => (
-              <Item key={item.title} data-animate>
+              <Item data-component-id="Item" key={item.title} data-animate>
                 <ProjectCard item={item} />
               </Item>
             ))}

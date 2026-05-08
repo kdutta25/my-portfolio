@@ -24,6 +24,7 @@ export function LanguageToggle() {
   const label = t("nav.toggleLanguage");
   return (
     <Toggle
+      data-component-id="LanguageToggle"
       type="button"
       onClick={() => void i18n.changeLanguage(next)}
       aria-label={label}

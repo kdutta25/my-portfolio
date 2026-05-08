@@ -37,7 +37,7 @@ export interface UiverseButtonProps
 
 export function UiverseButton({ children, ...rest }: UiverseButtonProps) {
   return (
-    <Btn type="button" {...rest}>
+    <Btn type="button" {...rest} data-component-id="UiverseButton">
       {children}
     </Btn>
   );

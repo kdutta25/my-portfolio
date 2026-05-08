@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { FaGithub } from "react-icons/fa";
 import { GitHubCalendar } from "react-github-calendar";
 import { useTranslation } from "react-i18next";
 import { useTheme } from "styled-components";
@@ -31,6 +32,27 @@ const Sub = styled.p`
   color: ${({ theme }) => theme.colors.muted};
 `;
 
+const ProfileLink = styled.a`
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-top: 0.75rem;
+  font-size: 0.88rem;
+  font-weight: 650;
+  color: ${({ theme }) => theme.colors.accent};
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+
+  &:focus-visible {
+    outline: 2px solid ${({ theme }) => theme.colors.focusRing};
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+`;
+
 export function GitHubSection() {
   const { t } = useTranslation();
   const theme = useTheme();
@@ -39,18 +61,27 @@ export function GitHubSection() {
   const isDark = theme.mode === "dark";
 
   return (
-    <Section id="github" aria-labelledby="github-heading">
+    <Section data-component-id="GitHubSection" id="github" aria-labelledby="github-heading">
       <AnimeReveal stagger={64}>
-        <GlowCard>
-          <IntroBlock data-animate>
+        <GlowCard data-component-id="GlowCard">
+          <IntroBlock data-component-id="IntroBlock" data-animate>
             <SectionHeading
               headingId="github-heading"
               eyebrow={t("nav.github")}
               title={t("githubActivity.heading")}
             />
-            <Sub>{t("githubActivity.subtitle")}</Sub>
+            <Sub data-component-id="Sub">{t("githubActivity.subtitle")}</Sub>
+            <ProfileLink
+              data-component-id="ProfileLink"
+              href={t("footer.github")}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <FaGithub size={18} aria-hidden />
+              {t("githubActivity.profileLink", { user: username })}
+            </ProfileLink>
           </IntroBlock>
-          <CalWrap data-animate>
+          <CalWrap data-component-id="CalWrap" data-animate>
             <GitHubCalendar
               username={username}
               colorScheme={isDark ? "dark" : "light"}

@@ -25,5 +25,5 @@ export interface SkipLinkProps {
 }
 
 export function SkipLink({ href, label }: SkipLinkProps) {
-  return <Anchor href={href}>{label}</Anchor>;
+  return <Anchor data-component-id="SkipLink" href={href}>{label}</Anchor>;
 }

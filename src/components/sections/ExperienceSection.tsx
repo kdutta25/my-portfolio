@@ -26,17 +26,17 @@ export function ExperienceSection() {
   }) as ExperienceCompany[];
 
   return (
-    <Section id="experience" aria-labelledby="experience-heading">
+    <Section data-component-id="ExperienceSection" id="experience" aria-labelledby="experience-heading">
       <AnimeReveal stagger={52}>
-        <GlowCard>
-          <IntroBlock data-animate>
+        <GlowCard data-component-id="GlowCard">
+          <IntroBlock data-component-id="IntroBlock" data-animate>
             <SectionHeading
               headingId="experience-heading"
               eyebrow={t("nav.experience")}
               title={t("experience.heading")}
             />
           </IntroBlock>
-          <BodyWrap data-animate>
+          <BodyWrap data-component-id="BodyWrap" data-animate>
             <ExperienceGrouped companies={companies} />
           </BodyWrap>
         </GlowCard>

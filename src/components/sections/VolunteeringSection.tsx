@@ -4,7 +4,7 @@ import { GlowCard } from "../ui/GlowCard";
 import { AnimeReveal } from "../ui/AnimeReveal";
 import { SectionHeading } from "../ui/SectionHeading";
 import type { VolunteerItem } from "../../types/content";
-import { resolvePublicAsset } from "../../utils/resolvePublicAsset";
+import { VolunteerLogo } from "../volunteering/VolunteerLogo";
 
 const Section = styled.section`
   scroll-margin-top: 96px;
@@ -39,7 +39,8 @@ const LogoWrap = styled.div`
   padding: 0.35rem 0.5rem;
   max-width: min(280px, 88vw);
 
-  img {
+  img,
+  svg {
     display: block;
     max-height: 44px;
     width: auto;
@@ -78,32 +79,27 @@ export function VolunteeringSection() {
   }) as VolunteerItem[];
 
   return (
-    <Section id="volunteering" aria-labelledby="volunteering-heading">
+    <Section data-component-id="VolunteeringSection" id="volunteering" aria-labelledby="volunteering-heading">
       <AnimeReveal stagger={58}>
-        <GlowCard>
-          <IntroBlock data-animate>
+        <GlowCard data-component-id="GlowCard">
+          <IntroBlock data-component-id="IntroBlock" data-animate>
             <SectionHeading
               headingId="volunteering-heading"
               eyebrow={t("nav.volunteering")}
               title={t("volunteering.heading")}
             />
           </IntroBlock>
-          <Stack>
+          <Stack data-component-id="Stack">
             {items.map((item) => (
-              <Item key={item.org} data-animate>
-                <ItemInner>
-                  <LogoWrap>
-                    <img
-                      src={resolvePublicAsset(item.logo)}
-                      alt=""
-                      loading="lazy"
-                      decoding="async"
-                    />
+              <Item data-component-id="Item" key={item.org} data-animate>
+                <ItemInner data-component-id="ItemInner">
+                  <LogoWrap data-component-id="LogoWrap">
+                    <VolunteerLogo logo={item.logo} />
                   </LogoWrap>
-                  <TextCol>
-                    <Org>{item.org}</Org>
-                    <Role>{item.role}</Role>
-                    {item.description ? <Desc>{item.description}</Desc> : null}
+                  <TextCol data-component-id="TextCol">
+                    <Org data-component-id="Org">{item.org}</Org>
+                    <Role data-component-id="Role">{item.role}</Role>
+                    {item.description ? <Desc data-component-id="Desc">{item.description}</Desc> : null}
                   </TextCol>
                 </ItemInner>
               </Item>

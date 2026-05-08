@@ -87,10 +87,10 @@ export default function App() {
           {!isTestEnv() && !contentReady ? (
             <LoadingScreen onReady={onLoadingDone} />
           ) : null}
-          <Shell id="top" ref={shellRef}>
+          <Shell data-component-id="Shell" id="top" ref={shellRef}>
             <SkipLink href="#main-content" label={t("nav.skip")} />
             <SiteHeader />
-            <Main id="main-content" tabIndex={-1}>
+            <Main data-component-id="Main" id="main-content" tabIndex={-1}>
               <HeroSection />
               <AboutSection />
               <ExperienceSection />

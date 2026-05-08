@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import type { ExperienceCompany } from "../../types/content";
 import { resolvePublicAsset } from "../../utils/resolvePublicAsset";
 
 const Wrapper = styled.div`
@@ -124,16 +125,17 @@ export interface ExperienceGroupedProps {
 
 export function ExperienceGrouped({ companies }: ExperienceGroupedProps) {
   return (
-    <Wrapper>
+    <Wrapper data-component-id="ExperienceGrouped">
       {companies.map((co) => {
         const logoSrc = resolvePublicAsset(co.logo);
         return (
-        <CompanyBlock
-          key={co.id}
-          aria-labelledby={`company-${co.id}-title`}
-        >
-          <CompanyHeader>
-            <LogoWrap>
+          <CompanyBlock
+            key={co.id}
+            data-component-id="CompanyBlock"
+            aria-labelledby={`company-${co.id}-title`}
+          >
+          <CompanyHeader data-component-id="CompanyHeader">
+            <LogoWrap data-component-id="LogoWrap">
               <img
                 src={logoSrc}
                 alt={co.name}
@@ -142,30 +144,31 @@ export function ExperienceGrouped({ companies }: ExperienceGroupedProps) {
                 decoding="async"
               />
             </LogoWrap>
-            <CompanyTitle id={`company-${co.id}-title`}>{co.name}</CompanyTitle>
+            <CompanyTitle data-component-id="CompanyTitle" id={`company-${co.id}-title`}>{co.name}</CompanyTitle>
           </CompanyHeader>
 
-          <RolesList>
+          <RolesList data-component-id="RolesList">
             {co.roles.map((role, idx) => (
               <RoleArticle
                 key={`${co.id}-${role.period}-${idx}`}
+                data-component-id="RoleArticle"
                 aria-labelledby={`role-${co.id}-${idx}`}
               >
-                <RoleTop>
-                  <JobTitle id={`role-${co.id}-${idx}`}>{role.title}</JobTitle>
-                  <Period>{role.period}</Period>
+                <RoleTop data-component-id="RoleTop">
+                  <JobTitle data-component-id="JobTitle" id={`role-${co.id}-${idx}`}>{role.title}</JobTitle>
+                  <Period data-component-id="Period">{role.period}</Period>
                 </RoleTop>
-                <Location>{role.location}</Location>
-                <BulletList>
+                <Location data-component-id="Location">{role.location}</Location>
+                <BulletList data-component-id="BulletList">
                   {role.bullets.map((b, bi) => (
-                    <Bullet key={bi}>{b}</Bullet>
+                    <Bullet data-component-id="Bullet" key={bi}>{b}</Bullet>
                   ))}
                 </BulletList>
-                <Tech>{role.stack}</Tech>
+                <Tech data-component-id="Tech">{role.stack}</Tech>
               </RoleArticle>
             ))}
           </RolesList>
-        </CompanyBlock>
+          </CompanyBlock>
         );
       })}
     </Wrapper>

@@ -173,15 +173,15 @@ export function LoadingScreen({ onReady }: LoadingScreenProps) {
   }, [onReady, reduced, staggerMs]);
 
   return (
-    <Overlay ref={overlayRef} aria-busy="true" aria-live="polite">
-      <Inner>
-        <Title ref={titleRef}>Portfolio</Title>
-        <Track aria-hidden>
-          <Fill ref={fillRef} />
+    <Overlay data-component-id="LoadingScreen" ref={overlayRef} aria-busy="true" aria-live="polite">
+      <Inner data-component-id="Inner">
+        <Title data-component-id="Title" ref={titleRef}>Portfolio</Title>
+        <Track data-component-id="Track" aria-hidden>
+          <Fill data-component-id="Fill" ref={fillRef} />
         </Track>
-        <NameLine>
+        <NameLine data-component-id="NameLine">
           {chars.map((ch, i) => (
-            <Letter key={`${ch}-${i}`} className="load-letter">
+            <Letter data-component-id="Letter" key={`${ch}-${i}`} className="load-letter">
               {ch === " " ? "\u00A0" : ch}
             </Letter>
           ))}
