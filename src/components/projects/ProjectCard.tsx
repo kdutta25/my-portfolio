@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import type { ProjectItem } from "../../types/content";
+import { resolvePublicAsset } from "../../utils/resolvePublicAsset";
 
 const Card = styled.article`
   position: relative;
@@ -34,6 +35,24 @@ const Thumb = styled.div<{ $hue: number }>`
       ${({ theme }) => theme.colors.bg} 100%
     );
   }
+`;
+
+const ThumbImageWrap = styled.div`
+  position: relative;
+  aspect-ratio: 16 / 10;
+  width: 100%;
+  overflow: hidden;
+  background: ${({ theme }) => theme.colors.bgElevated};
+  border-bottom: 1px solid ${({ theme }) => theme.colors.border};
+`;
+
+const ThumbImg = styled.img`
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
 `;
 
 const Body = styled.div`
@@ -83,9 +102,15 @@ const Pill = styled.span`
   letter-spacing: 0.04em;
 `;
 
+const BtnRow = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 1rem;
+`;
+
 const Btn = styled.a`
   display: inline-flex;
-  margin-top: 1rem;
   padding: 0.5rem 0.95rem;
   border-radius: ${({ theme }) => theme.radii.md};
   font-size: 0.78rem;
@@ -122,10 +147,27 @@ export interface ProjectCardProps {
 export function ProjectCard({ item }: ProjectCardProps) {
   const tags = item.tags ?? [];
   const hue = hueFromString(item.title);
+  const href =
+    item.url && item.linkLabel ? resolvePublicAsset(item.url) : "";
+  const hrefSecondary =
+    item.secondaryUrl && item.secondaryLinkLabel
+      ? resolvePublicAsset(item.secondaryUrl)
+      : "";
 
   return (
     <Card>
-      <Thumb aria-hidden $hue={hue} />
+      {item.coverImage ? (
+        <ThumbImageWrap>
+          <ThumbImg
+            src={resolvePublicAsset(item.coverImage)}
+            alt=""
+            loading="lazy"
+            decoding="async"
+          />
+        </ThumbImageWrap>
+      ) : (
+        <Thumb aria-hidden $hue={hue} />
+      )}
       <Body>
         <Title>{item.title}</Title>
         <Period>{item.period}</Period>
@@ -137,10 +179,23 @@ export function ProjectCard({ item }: ProjectCardProps) {
             ))}
           </Pills>
         ) : null}
-        {item.url && item.linkLabel ? (
-          <Btn href={item.url} target="_blank" rel="noopener noreferrer">
-            {item.linkLabel}
-          </Btn>
+        {href || hrefSecondary ? (
+          <BtnRow>
+            {href ? (
+              <Btn href={href} target="_blank" rel="noopener noreferrer">
+                {item.linkLabel}
+              </Btn>
+            ) : null}
+            {hrefSecondary ? (
+              <Btn
+                href={hrefSecondary}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {item.secondaryLinkLabel}
+              </Btn>
+            ) : null}
+          </BtnRow>
         ) : null}
       </Body>
     </Card>

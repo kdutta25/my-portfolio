@@ -27,6 +27,11 @@ export interface ProjectItem {
   description: string;
   linkLabel: string;
   url: string;
+  /** Optional second asset (e.g. slides) for the same project card */
+  secondaryLinkLabel?: string;
+  secondaryUrl?: string;
+  /** Optional hero image under `public/` (shown when no slide embed) */
+  coverImage?: string;
   tags?: string[];
 }
 

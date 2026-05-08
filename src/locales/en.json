@@ -277,9 +277,12 @@
         "title": "Hyperledger vehicle ownership & depreciation",
         "period": "Jun 2019 — Apr 2020",
         "description": "Smart contract network to track vehicle ownership and attach a depreciation index to VIN for automotive security and privacy. Designed as a potential uOttawa course deliverable.",
-        "linkLabel": "Demo",
-        "url": "http://hyperledger-uottawa.kaustubhdutta.com:8080/login",
-        "tags": ["Hyperledger", "Blockchain", "Demo"]
+        "linkLabel": "Literature review",
+        "url": "Kaustubh-Dutta-Literature-Review.pdf",
+        "secondaryLinkLabel": "Presentation",
+        "secondaryUrl": "Kaustubh-Dutta-Hyperledger-Blockchain-Presentation.pptx",
+        "coverImage": "images/projects/hyperledger-blockchain.svg",
+        "tags": ["Hyperledger", "Blockchain"]
       },
       {
         "title": "Image reconstruction & computed tomography",
@@ -287,6 +290,7 @@
         "description": "Radon transforms in MATLAB with multi-angle projections and wavelet denoising for improved reconstruction quality.",
         "linkLabel": "",
         "url": "",
+        "coverImage": "images/projects/ct-reconstruction.svg",
         "tags": ["MATLAB", "Signal processing"]
       },
       {
@@ -295,6 +299,7 @@
         "description": "ATmega16-based wireless rover with live video feedback for surveillance-style maneuvering.",
         "linkLabel": "",
         "url": "",
+        "coverImage": "images/projects/wireless-spybot.svg",
         "tags": ["Embedded", "ATmega"]
       },
       {
@@ -303,6 +308,7 @@
         "description": "Ambient light sensing to save power by switching illumination only when needed.",
         "linkLabel": "",
         "url": "",
+        "coverImage": "images/projects/dawn-dusk-lamp.svg",
         "tags": ["Hardware", "Sensors"]
       }
     ]
@@ -370,7 +376,7 @@
     "navigatedHint": "Scrolled that section into view.",
     "snippetExperience": "Experience spans Nokia (full stack & Design Lead), Capgemini, Jio, and Siemens — details are in Experience.",
     "snippetSkills": "Languages and frameworks — plus Postman, Jenkins, and Jira — are listed under Skills.",
-    "snippetProjects": "Featured builds include Hyperledger demos, CT reconstruction, and embedded projects.",
+    "snippetProjects": "Featured builds include a Hyperledger network project, CT reconstruction, and embedded work.",
     "snippetEducation": "Master’s (Data Science) at uOttawa, bachelor’s at KIIT, high school at St. Xavier’s Kolkata.",
     "snippetVolunteering": "Volunteering includes Webmaster work at uOttawa, OSPE, and Canadian Blood Services — see Volunteering.",
     "snippetPublications": "IEEE and other publications are linked under Publications.",

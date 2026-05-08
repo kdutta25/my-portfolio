@@ -277,9 +277,12 @@
         "title": "Cadre Hyperledger — propriété et dépréciation des véhicules",
         "period": "juin 2019 — avr. 2020",
         "description": "Réseau de contrats intelligents pour suivre la propriété et indexer la dépréciation liée au NIV pour la sécurité automobile.",
-        "linkLabel": "Démo",
-        "url": "http://hyperledger-uottawa.kaustubhdutta.com:8080/login",
-        "tags": ["Hyperledger", "Blockchain", "Démo"]
+        "linkLabel": "Revue de littérature",
+        "url": "Kaustubh-Dutta-Literature-Review.pdf",
+        "secondaryLinkLabel": "Présentation",
+        "secondaryUrl": "Kaustubh-Dutta-Hyperledger-Blockchain-Presentation.pptx",
+        "coverImage": "images/projects/hyperledger-blockchain.svg",
+        "tags": ["Hyperledger", "Blockchain"]
       },
       {
         "title": "Reconstruction d’images et tomographie",
@@ -287,6 +290,7 @@
         "description": "Transformées de Radon dans MATLAB avec projections multi-angles et débruitage ondelettes.",
         "linkLabel": "",
         "url": "",
+        "coverImage": "images/projects/ct-reconstruction.svg",
         "tags": ["MATLAB", "Traitement du signal"]
       },
       {
@@ -295,6 +299,7 @@
         "description": "Robot sans fil à ATmega16 avec retour vidéo pour la manoeuvre.",
         "linkLabel": "",
         "url": "",
+        "coverImage": "images/projects/wireless-spybot.svg",
         "tags": ["Embarqué", "ATmega"]
       },
       {
@@ -303,6 +308,7 @@
         "description": "Capteur de luminosité pour économiser l’énergie.",
         "linkLabel": "",
         "url": "",
+        "coverImage": "images/projects/dawn-dusk-lamp.svg",
         "tags": ["Matériel", "Capteurs"]
       }
     ]
@@ -370,7 +376,7 @@
     "navigatedHint": "Section affichée dans la page.",
     "snippetExperience": "Parcours : Nokia (full stack et Design Lead), Capgemini, Jio et Siemens — détails sous Expérience.",
     "snippetSkills": "Langages et cadres — plus Postman, Jenkins et Jira — sous Compétences.",
-    "snippetProjects": "Projets mis en avant : démo Hyperledger, reconstruction CT, embarqué.",
+    "snippetProjects": "Projets mis en avant : réseau Hyperledger, reconstruction CT, embarqué.",
     "snippetEducation": "Maîtrise (science des données) à uOttawa, licence au KIIT, secondaire à St. Xavier’s Kolkata.",
     "snippetVolunteering": "Bénévolat : webmaster à uOttawa, OSPE et Société canadienne du sang — voir Bénévolat.",
     "snippetPublications": "Publications IEEE et autres — liens sous Publications.",

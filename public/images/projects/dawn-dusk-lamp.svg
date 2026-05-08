@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 600" fill="none" aria-hidden="true">
+  <defs>
+    <linearGradient id="lamp-bg" x1="0" y1="0" x2="960" y2="600">
+      <stop offset="0%" stop-color="#fef8f0"/>
+      <stop offset="50%" stop-color="#f5efe6"/>
+      <stop offset="100%" stop-color="#ebe4d9"/>
+    </linearGradient>
+    <linearGradient id="lamp-glow" x1="480" y1="120" x2="480" y2="420">
+      <stop offset="0%" stop-color="#fbbf24" stop-opacity="0.35"/>
+      <stop offset="100%" stop-color="#fbbf24" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+  <rect width="960" height="600" fill="url(#lamp-bg)"/>
+  <circle cx="220" cy="180" r="48" fill="#fbbf24" fill-opacity="0.35" stroke="#d97706" stroke-opacity="0.5" stroke-width="2"/>
+  <circle cx="740" cy="200" r="36" fill="#94a3b8" fill-opacity="0.35" stroke="#64748b" stroke-opacity="0.45" stroke-width="2"/>
+  <ellipse cx="480" cy="380" rx="160" ry="40" fill="url(#lamp-glow)"/>
+  <path d="M460 180 V340" stroke="#121212" stroke-opacity="0.35" stroke-width="10" stroke-linecap="round"/>
+  <path d="M340 340 H620" stroke="#121212" stroke-opacity="0.25" stroke-width="8" stroke-linecap="round"/>
+  <path d="M380 220 Q480 160 580 220 L560 300 Q480 260 400 300 Z" fill="#fffefb" stroke="#121212" stroke-opacity="0.2" stroke-width="2"/>
+  <ellipse cx="480" cy="380" rx="28" ry="12" fill="#121212" fill-opacity="0.15"/>
+  <path d="M160 420 Q480 360 800 420" stroke="#c2410c" stroke-opacity="0.15" stroke-width="2" fill="none"/>
+</svg>
