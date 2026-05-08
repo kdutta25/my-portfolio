@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 56" role="img" aria-label="Composer 2">
+  <defs>
+    <linearGradient id="cpBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#5b6cfb"/>
+      <stop offset="100%" stop-color="#8b5cf6"/>
+    </linearGradient>
+  </defs>
+  <rect width="200" height="56" rx="10" fill="url(#cpBg)"/>
+  <text x="100" y="36" fill="#fff" font-family="system-ui,sans-serif" font-size="18" font-weight="800" text-anchor="middle">Composer 2</text>
+</svg>

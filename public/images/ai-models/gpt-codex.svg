@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 56" role="img" aria-label="GPT 5.3 Codex">
+  <rect width="220" height="56" rx="10" fill="#0d0d0d"/>
+  <rect x="3" y="3" width="214" height="50" rx="8" fill="none" stroke="#10a37f" stroke-width="2"/>
+  <text x="110" y="36" fill="#10a37f" font-family="system-ui,sans-serif" font-size="15" font-weight="700" text-anchor="middle">GPT 5.3 Codex</text>
+</svg>
