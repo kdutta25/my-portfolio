@@ -8,7 +8,7 @@ Repository for **Kaustubh Dutta**’s portfolio site: projects, experience, publ
 </h2>
 
 <div align="center">
-  <img alt="Demo" src="./Images/readme-img.png" />
+  <img alt="Portfolio homepage — hero with navigation, profile, headline, stats, and CTAs" src="./Images/readme-hero.png" />
 </div>
 
 <br/>
