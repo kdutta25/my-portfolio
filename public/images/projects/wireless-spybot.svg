@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 600" fill="none" aria-hidden="true">
+  <defs>
+    <linearGradient id="rb-bg" x1="0" y1="0" x2="960" y2="600">
+      <stop offset="0%" stop-color="#f4f1eb"/>
+      <stop offset="100%" stop-color="#e8e2d8"/>
+    </linearGradient>
+  </defs>
+  <rect width="960" height="600" fill="url(#rb-bg)"/>
+  <ellipse cx="480" cy="420" rx="220" ry="28" fill="#121212" fill-opacity="0.06"/>
+  <rect x="320" y="260" width="320" height="140" rx="18" fill="#fffefb" stroke="#121212" stroke-opacity="0.15" stroke-width="2"/>
+  <circle cx="380" cy="400" r="42" fill="#2a2a2a" stroke="#121212" stroke-opacity="0.2"/>
+  <circle cx="580" cy="400" r="42" fill="#2a2a2a" stroke="#121212" stroke-opacity="0.2"/>
+  <rect x="430" y="200" width="100" height="70" rx="10" fill="#121212" fill-opacity="0.08"/>
+  <circle cx="480" cy="235" r="22" fill="#c2410c" fill-opacity="0.35" stroke="#c2410c" stroke-opacity="0.6" stroke-width="2"/>
+  <path d="M480 178 V140" stroke="#121212" stroke-opacity="0.35" stroke-width="3" stroke-linecap="round"/>
+  <circle cx="480" cy="125" r="8" fill="#c2410c" fill-opacity="0.8"/>
+  <path d="M340 180 Q480 120 620 180" stroke="#c2410c" stroke-opacity="0.25" stroke-width="2" fill="none" stroke-dasharray="6 10"/>
+  <path d="M350 200 Q480 150 610 200" stroke="#121212" stroke-opacity="0.12" stroke-width="2" fill="none" stroke-dasharray="6 10"/>
+</svg>

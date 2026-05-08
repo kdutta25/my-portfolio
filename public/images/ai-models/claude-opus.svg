@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 56" role="img" aria-label="Claude Opus 4.7">
+  <defs>
+    <linearGradient id="clBg" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#d97757"/>
+      <stop offset="100%" stop-color="#ea580c"/>
+    </linearGradient>
+  </defs>
+  <rect width="240" height="56" rx="10" fill="url(#clBg)"/>
+  <text x="120" y="36" fill="#fff" font-family="system-ui,sans-serif" font-size="15" font-weight="700" text-anchor="middle">Claude Opus 4.7</text>
+</svg>
