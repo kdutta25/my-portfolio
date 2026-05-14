@@ -298,13 +298,26 @@ sequenceDiagram
 
 | Variable | Required | Description |
 |----------|----------|-------------|
-| `VITE_CONTENT_API_BASE_URL` | Recommended | API **origin** only, e.g. `http://localhost:3001` (no trailing path). All requests use `{origin}/v1/...`. |
+| `VITE_CONTENT_API_BASE_URL` | Recommended | API base: **origin**, or **origin + path prefix** before `/v1` (e.g. `https://api.example.com` or `https://www.example.com/api` when nginx proxies `/api` to the API). **Not** the bare portfolio static origin unless `/v1` is proxied there. |
 | `VITE_SITE_CONTENT_URL` | Optional fallback | Any URL on that origin (for example a legacy `…/v1/site-content` URL). If `VITE_CONTENT_API_BASE_URL` is unset, **only the origin** is parsed from this value. |
 
-- **Local dev:** `.env.development` sets `VITE_CONTENT_API_BASE_URL=http://localhost:3001`. Run **my-portfolio-api** on **3001**, then `npm start` here (Vite **4044**).
+- **Local dev:** `.env.development` sets `VITE_CONTENT_API_BASE_URL=http://localhost:3001`. Run **my-portfolio-api** on **3001**, then `npm start` here (Vite **4044**). **Shell wins over `.env*`:**
+  if you `export VITE_CONTENT_API_BASE_URL=https://www.kaustubhdutta.com` (or legacy `VITE_SITE_CONTENT_URL` to that site), Vite will bake that in and fragment GETs will 404. Unset those in your terminal, or rely on the dev fallback (bare `www` / apex `kaustubhdutta.com` with no path → **`http://localhost:3001`** + a console warning). Override the fallback with **`VITE_DEV_DEFAULT_CONTENT_API_BASE`**, or set **`VITE_DEV_ALLOW_BARE_PORTFOLIO_ORIGIN_API=true`** to force the static origin in dev.
 - **Production:** Set `VITE_CONTENT_API_BASE_URL` (or legacy `VITE_SITE_CONTENT_URL`) when running `npm run build`.
 
+**Important:** `VITE_CONTENT_API_BASE_URL` must be the **my-portfolio-api** deployment (any host that serves `GET /v1/fragments/...`). It must **not** be only `https://www.kaustubhdutta.com` unless you reverse-proxy `/v1` (or e.g. `/api`) from that domain to the API — the portfolio site is static files and returns **404** for `/v1/*`.
+
 Copy `.env.example` if you need a template beyond `.env.development`.
+
+### GitHub Pages (GitHub Actions)
+
+1. **Repository → Settings → Pages → Build and deployment:** set **Source** to **GitHub Actions** (not “Deploy from a branch” unless you only use `npm run deploy` locally).
+2. **Repository → Settings → Secrets and variables → Actions → New repository secret:**  
+   - **`VITE_CONTENT_API_BASE_URL`** — HTTPS origin of **my-portfolio-api** (same value you would `export` before `npm run build`). Example: `https://your-api.onrender.com` or `https://api.kaustubhdutta.com`.
+3. Push to **`main`** (or run workflow **Deploy Pages** manually). Workflow: **`.github/workflows/deploy-pages.yml`** — it runs `npm ci`, `npm run build` with that secret, then publishes **`dist/`** to Pages.
+4. **Optional — Project Pages** (`https://USER.github.io/REPO/`): add a repository **variable** **`VITE_BASE_PATH`** set to your repo path with slashes, e.g. **`/my-portfolio/`**. Custom domain at site root can omit it (defaults to **`/`**).
+
+Ensure **my-portfolio-api** allows your Pages origin in **`SITE_CONTENT_CORS_ORIGINS`** (defaults already include `https://www.kaustubhdutta.com`).
 
 ## Getting started
 
@@ -314,7 +327,7 @@ Copy `.env.example` if you need a template beyond `.env.development`.
 4. **Edit content:** Change locale JSON and corpora in the API repo under `data/` (see that README); adjust section layout under `src/components/sections/`, `src/components/projects/` (`ProjectCard.tsx`), and `src/components/experience/`.
 5. **Static files:** Add PDFs, thumbnails, and other binaries under **`public/`** in this repo and reference them from API-driven copy or components with paths relative to the site root (see **Project cards** above).
 
-Continuous delivery for releases is configured under **`.github/workflows/`** (e.g. `release.yml`).
+Continuous delivery: **`.github/workflows/release.yml`** (semantic-release) and **`.github/workflows/deploy-pages.yml`** (GitHub Pages).
 
 ### Show your support
 

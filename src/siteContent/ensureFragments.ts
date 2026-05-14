@@ -14,7 +14,19 @@ async function fetchFragment(lng: "en" | "fr", key: string): Promise<unknown> {
     `${base}/v1/fragments/${lng}/${encodeURIComponent(key)}`,
   );
   if (!res.ok) {
-    throw new Error(`Fragment ${lng}/${key} failed: ${res.status}`);
+    let detail = "";
+    try {
+      const errBody: unknown = await res.json();
+      if (errBody && typeof errBody === "object" && "error" in errBody) {
+        detail = ` — ${String((errBody as { error?: unknown }).error)}`;
+        if ("hint" in errBody && typeof (errBody as { hint?: unknown }).hint === "string") {
+          detail += ` (${(errBody as { hint: string }).hint})`;
+        }
+      }
+    } catch {
+      /* non-JSON error body */
+    }
+    throw new Error(`Fragment ${lng}/${key} failed: ${res.status}${detail}`);
   }
   const body = (await res.json()) as FragmentResponse;
   return body.data;
