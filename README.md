@@ -293,7 +293,7 @@ sequenceDiagram
   Main->>Main: void ensureKnowledgeLoaded (not awaited)
   Main->>React: createRoot render when bootstrap resolves
   React-->>User: Sections with copy from i18n cache
-  Note over Main,API: Knowledge GETs may finish after first paint; chat uses them when ready.
+  Note over Main,API: Knowledge GETs may finish after first paint. The chat uses corpora once they arrive.
 ```
 
 | Variable | Required | Description |
