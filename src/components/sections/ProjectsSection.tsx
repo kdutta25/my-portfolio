@@ -1,5 +1,7 @@
 import styled from "styled-components";
 import { useTranslation } from "react-i18next";
+import { useContentFragment } from "../../hooks/useContentFragment";
+import { SectionSkeleton } from "../loading/SectionSkeleton";
 import { GlowCard } from "../ui/GlowCard";
 import { AnimeReveal } from "../ui/AnimeReveal";
 import { SectionHeading } from "../ui/SectionHeading";
@@ -26,28 +28,43 @@ const Item = styled.li``;
 
 const IntroBlock = styled.div``;
 
-export function ProjectsSection() {
+function ProjectsSectionBody() {
   const { t } = useTranslation();
   const items = t("projects.items", { returnObjects: true }) as ProjectItem[];
 
   return (
-    <Section data-component-id="ProjectsSection" id="projects" aria-labelledby="projects-heading">
+    <>
+      <IntroBlock data-component-id="IntroBlock" data-animate>
+        <SectionHeading
+          headingId="projects-heading"
+          eyebrow={t("nav.projects")}
+          title={t("projects.heading")}
+        />
+      </IntroBlock>
+      <Stack data-component-id="Stack">
+        {items.map((item) => (
+          <Item data-component-id="Item" key={item.title} data-animate>
+            <ProjectCard item={item} />
+          </Item>
+        ))}
+      </Stack>
+    </>
+  );
+}
+
+export function ProjectsSection() {
+  const { rootRef, ready } = useContentFragment("projects", { loadOn: "intersect" });
+
+  return (
+    <Section
+      ref={rootRef}
+      data-component-id="ProjectsSection"
+      id="projects"
+      aria-labelledby="projects-heading"
+    >
       <AnimeReveal stagger={56}>
         <GlowCard data-component-id="GlowCard">
-          <IntroBlock data-component-id="IntroBlock" data-animate>
-            <SectionHeading
-              headingId="projects-heading"
-              eyebrow={t("nav.projects")}
-              title={t("projects.heading")}
-            />
-          </IntroBlock>
-          <Stack data-component-id="Stack">
-            {items.map((item) => (
-              <Item data-component-id="Item" key={item.title} data-animate>
-                <ProjectCard item={item} />
-              </Item>
-            ))}
-          </Stack>
+          {ready ? <ProjectsSectionBody /> : <SectionSkeleton />}
         </GlowCard>
       </AnimeReveal>
     </Section>

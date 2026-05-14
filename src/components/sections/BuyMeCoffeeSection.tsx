@@ -1,6 +1,8 @@
 import styled from "styled-components";
 import { SiBuymeacoffee } from "react-icons/si";
 import { useTranslation } from "react-i18next";
+import { useContentFragment } from "../../hooks/useContentFragment";
+import { SectionSkeleton } from "../loading/SectionSkeleton";
 import { GlowCard } from "../ui/GlowCard";
 import { AnimeReveal } from "../ui/AnimeReveal";
 import { SectionHeading } from "../ui/SectionHeading";
@@ -52,28 +54,41 @@ const CoffeeLink = styled.a`
   }
 `;
 
-export function BuyMeCoffeeSection() {
+function BuyMeCoffeeSectionBody() {
   const { t } = useTranslation();
   const url = t("support.url");
 
   return (
-    <Section data-component-id="BuyMeCoffeeSection" id="support" aria-labelledby="support-heading">
+    <div data-animate>
+      <SectionHeading
+        headingId="support-heading"
+        eyebrow={t("support.eyebrow")}
+        title={t("support.heading")}
+      />
+      <Lead data-component-id="Lead">{t("support.lead")}</Lead>
+      <CtaRow data-component-id="CtaRow">
+        <CoffeeLink data-component-id="CoffeeLink" href={url} target="_blank" rel="noopener noreferrer">
+          <SiBuymeacoffee size={22} aria-hidden />
+          {t("support.cta")}
+        </CoffeeLink>
+      </CtaRow>
+    </div>
+  );
+}
+
+export function BuyMeCoffeeSection() {
+  const { rootRef, ready } = useContentFragment("support", { loadOn: "intersect" });
+
+  return (
+    <Section
+      ref={rootRef}
+      data-component-id="BuyMeCoffeeSection"
+      id="support"
+      aria-labelledby="support-heading"
+    >
       <AnimeReveal stagger={56}>
         <GlowCard data-component-id="GlowCard">
-          <div data-animate>
-            <SectionHeading
-              headingId="support-heading"
-              eyebrow={t("support.eyebrow")}
-              title={t("support.heading")}
-            />
-            <Lead data-component-id="Lead">{t("support.lead")}</Lead>
-            <CtaRow data-component-id="CtaRow">
-              <CoffeeLink data-component-id="CoffeeLink" href={url} target="_blank" rel="noopener noreferrer">
-                <SiBuymeacoffee size={22} aria-hidden />
-                {t("support.cta")}
-              </CoffeeLink>
-            </CtaRow>
-          </div>
+          {ready ? <BuyMeCoffeeSectionBody /> : <SectionSkeleton />}
         </GlowCard>
       </AnimeReveal>
     </Section>

@@ -164,7 +164,7 @@ export function SiteFooter() {
                   href={t("footer.youtube")}
                   target="_blank"
                   rel="noopener noreferrer"
-                  aria-label={t("about.youtubeAria")}
+                  aria-label={t("footer.youtubeAria")}
                 >
                   <FaYoutube aria-hidden />
                 </SocialAnchor>

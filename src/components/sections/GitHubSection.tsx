@@ -3,6 +3,8 @@ import { FaGithub } from "react-icons/fa";
 import { GitHubCalendar } from "react-github-calendar";
 import { useTranslation } from "react-i18next";
 import { useTheme } from "styled-components";
+import { useContentFragment } from "../../hooks/useContentFragment";
+import { SectionSkeleton } from "../loading/SectionSkeleton";
 import { GlowCard } from "../ui/GlowCard";
 import { AnimeReveal } from "../ui/AnimeReveal";
 import { SectionHeading } from "../ui/SectionHeading";
@@ -53,7 +55,7 @@ const ProfileLink = styled.a`
   }
 `;
 
-export function GitHubSection() {
+function GitHubSectionBody() {
   const { t } = useTranslation();
   const theme = useTheme();
   const username = t("githubActivity.username");
@@ -61,35 +63,50 @@ export function GitHubSection() {
   const isDark = theme.mode === "dark";
 
   return (
-    <Section data-component-id="GitHubSection" id="github" aria-labelledby="github-heading">
+    <>
+      <IntroBlock data-component-id="IntroBlock" data-animate>
+        <SectionHeading
+          headingId="github-heading"
+          eyebrow={t("nav.github")}
+          title={t("githubActivity.heading")}
+        />
+        <Sub data-component-id="Sub">{t("githubActivity.subtitle")}</Sub>
+        <ProfileLink
+          data-component-id="ProfileLink"
+          href={t("footer.github")}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <FaGithub size={18} aria-hidden />
+          {t("githubActivity.profileLink", { user: username })}
+        </ProfileLink>
+      </IntroBlock>
+      <CalWrap data-component-id="CalWrap" data-animate>
+        <GitHubCalendar
+          username={username}
+          colorScheme={isDark ? "dark" : "light"}
+          fontSize={12}
+          blockSize={11}
+          blockMargin={3}
+        />
+      </CalWrap>
+    </>
+  );
+}
+
+export function GitHubSection() {
+  const { rootRef, ready } = useContentFragment("githubActivity", { loadOn: "intersect" });
+
+  return (
+    <Section
+      ref={rootRef}
+      data-component-id="GitHubSection"
+      id="github"
+      aria-labelledby="github-heading"
+    >
       <AnimeReveal stagger={64}>
         <GlowCard data-component-id="GlowCard">
-          <IntroBlock data-component-id="IntroBlock" data-animate>
-            <SectionHeading
-              headingId="github-heading"
-              eyebrow={t("nav.github")}
-              title={t("githubActivity.heading")}
-            />
-            <Sub data-component-id="Sub">{t("githubActivity.subtitle")}</Sub>
-            <ProfileLink
-              data-component-id="ProfileLink"
-              href={t("footer.github")}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <FaGithub size={18} aria-hidden />
-              {t("githubActivity.profileLink", { user: username })}
-            </ProfileLink>
-          </IntroBlock>
-          <CalWrap data-component-id="CalWrap" data-animate>
-            <GitHubCalendar
-              username={username}
-              colorScheme={isDark ? "dark" : "light"}
-              fontSize={12}
-              blockSize={11}
-              blockMargin={3}
-            />
-          </CalWrap>
+          {ready ? <GitHubSectionBody /> : <SectionSkeleton />}
         </GlowCard>
       </AnimeReveal>
     </Section>

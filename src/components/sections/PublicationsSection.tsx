@@ -1,5 +1,7 @@
 import styled from "styled-components";
 import { useTranslation } from "react-i18next";
+import { useContentFragment } from "../../hooks/useContentFragment";
+import { SectionSkeleton } from "../loading/SectionSkeleton";
 import { GlowCard } from "../ui/GlowCard";
 import { AnimeReveal } from "../ui/AnimeReveal";
 import { SectionHeading } from "../ui/SectionHeading";
@@ -87,39 +89,54 @@ const Link = styled.a`
   }
 `;
 
-export function PublicationsSection() {
+function PublicationsSectionBody() {
   const { t } = useTranslation();
   const items = t("publications.items", {
     returnObjects: true,
   }) as PublicationItem[];
 
   return (
-    <Section data-component-id="PublicationsSection" id="publications" aria-labelledby="publications-heading">
+    <>
+      <IntroBlock data-component-id="IntroBlock" data-animate>
+        <SectionHeading
+          headingId="publications-heading"
+          eyebrow={t("nav.publications")}
+          title={t("publications.heading")}
+        />
+      </IntroBlock>
+      <Stack data-component-id="Stack">
+        {items.map((item) => (
+          <Item data-component-id="Item" key={item.title} data-animate>
+            <TitleRow data-component-id="TitleRow">
+              <Title data-component-id="Title">{item.title}</Title>
+              <Link href={item.url} target="_blank" rel="noopener noreferrer">
+                {t("publications.viewLink")}
+              </Link>
+            </TitleRow>
+            <MetaLine data-component-id="MetaLine">
+              <MetaLabel data-component-id="MetaLabel">{t("publications.referenceLabel")}</MetaLabel>
+              {item.meta}
+            </MetaLine>
+          </Item>
+        ))}
+      </Stack>
+    </>
+  );
+}
+
+export function PublicationsSection() {
+  const { rootRef, ready } = useContentFragment("publications", { loadOn: "intersect" });
+
+  return (
+    <Section
+      ref={rootRef}
+      data-component-id="PublicationsSection"
+      id="publications"
+      aria-labelledby="publications-heading"
+    >
       <AnimeReveal stagger={54}>
         <GlowCard data-component-id="GlowCard">
-          <IntroBlock data-component-id="IntroBlock" data-animate>
-            <SectionHeading
-              headingId="publications-heading"
-              eyebrow={t("nav.publications")}
-              title={t("publications.heading")}
-            />
-          </IntroBlock>
-          <Stack data-component-id="Stack">
-            {items.map((item) => (
-              <Item data-component-id="Item" key={item.title} data-animate>
-                <TitleRow data-component-id="TitleRow">
-                  <Title data-component-id="Title">{item.title}</Title>
-                  <Link href={item.url} target="_blank" rel="noopener noreferrer">
-                    {t("publications.viewLink")}
-                  </Link>
-                </TitleRow>
-                <MetaLine data-component-id="MetaLine">
-                  <MetaLabel data-component-id="MetaLabel">{t("publications.referenceLabel")}</MetaLabel>
-                  {item.meta}
-                </MetaLine>
-              </Item>
-            ))}
-          </Stack>
+          {ready ? <PublicationsSectionBody /> : <SectionSkeleton />}
         </GlowCard>
       </AnimeReveal>
     </Section>

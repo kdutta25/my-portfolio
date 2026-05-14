@@ -8,7 +8,6 @@
     "start": "vite",
     "dev": "vite",
     "build": "vite build",
-    "knowledge:refresh": "python3 scripts/refresh-resume-corpus.py",
     "typecheck": "tsc --noEmit",
     "preview": "vite preview",
     "test": "vitest",

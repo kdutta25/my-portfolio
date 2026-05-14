@@ -25,6 +25,8 @@ import {
 } from "react-icons/si";
 import type { IconType } from "react-icons/lib";
 import { useTranslation } from "react-i18next";
+import { useContentFragment } from "../../hooks/useContentFragment";
+import { SectionSkeleton } from "../loading/SectionSkeleton";
 import { GlowCard } from "../ui/GlowCard";
 import { AnimeReveal } from "../ui/AnimeReveal";
 import { SectionHeading } from "../ui/SectionHeading";
@@ -153,83 +155,102 @@ const COMBINED_ITEMS: CombinedItem[] = [
   { Icon: SiPodman, labelKey: "podman", kind: "tool" },
 ];
 
-export function SkillsSection() {
+const SKILLS_AND_MODEL_FRAGMENTS = ["skills", "aiModels"] as const;
+
+function SkillsSectionBody() {
   const { t } = useTranslation();
   const aiItems = t("aiModels.items", {
     returnObjects: true,
   }) as AiModelItem[];
 
   return (
-    <Section data-component-id="SkillsSection" id="skills" aria-labelledby="skills-heading">
+    <>
+      <IntroBlock data-component-id="IntroBlock" data-animate>
+        <SectionHeading
+          headingId="skills-heading"
+          eyebrow={t("skills.sectionEyebrow")}
+          title={t("skills.sectionHeading")}
+        />
+      </IntroBlock>
+      <Container fluid className="px-0">
+        <Row className="justify-content-center">
+          {COMBINED_ITEMS.map((item) => {
+            const label =
+              item.kind === "skill"
+                ? t(`skills.skillLabels.${item.labelKey}`)
+                : t(`skills.toolLabels.${item.labelKey}`);
+            const Icon = item.Icon;
+            return (
+              <Col
+                key={`${item.kind}-${item.labelKey}`}
+                xs={4}
+                md={2}
+                className="d-flex justify-content-center mb-2 px-1"
+              >
+                <IconCard data-component-id="IconCard" data-animate>
+                  <IconGraphic data-component-id="IconGraphic" aria-hidden>
+                    <Icon />
+                  </IconGraphic>
+                  <IconCaption data-component-id="IconCaption">{label}</IconCaption>
+                </IconCard>
+              </Col>
+            );
+          })}
+        </Row>
+      </Container>
+      <ModelsRegion data-component-id="ModelsRegion" role="region" aria-labelledby="ai-models-heading">
+        <IntroBlock data-component-id="IntroBlock">
+          <SectionHeading
+            headingId="ai-models-heading"
+            eyebrow={t("aiModels.sectionEyebrow")}
+            title={t("aiModels.sectionHeading")}
+            level={3}
+          />
+        </IntroBlock>
+        <Container fluid className="px-0">
+          <Row className="justify-content-center">
+            {aiItems.map((item) => (
+              <Col
+                key={item.label}
+                xs={12}
+                sm={6}
+                lg={4}
+                className="d-flex justify-content-center mb-3 px-2"
+              >
+                <ModelCard data-component-id="ModelCard" data-animate>
+                  <ModelImg
+                    data-component-id="ModelImg"
+                    src={resolvePublicAsset(item.image)}
+                    alt=""
+                    loading="lazy"
+                    decoding="async"
+                  />
+                  <ModelCaption data-component-id="ModelCaption">{item.label}</ModelCaption>
+                </ModelCard>
+              </Col>
+            ))}
+          </Row>
+        </Container>
+      </ModelsRegion>
+    </>
+  );
+}
+
+export function SkillsSection() {
+  const { rootRef, ready } = useContentFragment(SKILLS_AND_MODEL_FRAGMENTS, {
+    loadOn: "intersect",
+  });
+
+  return (
+    <Section
+      ref={rootRef}
+      data-component-id="SkillsSection"
+      id="skills"
+      aria-labelledby="skills-heading"
+    >
       <AnimeReveal stagger={52}>
         <GlowCard data-component-id="GlowCard">
-          <IntroBlock data-component-id="IntroBlock" data-animate>
-            <SectionHeading
-              headingId="skills-heading"
-              eyebrow={t("skills.sectionEyebrow")}
-              title={t("skills.sectionHeading")}
-            />
-          </IntroBlock>
-          <Container fluid className="px-0">
-            <Row className="justify-content-center">
-              {COMBINED_ITEMS.map((item) => {
-                const label =
-                  item.kind === "skill"
-                    ? t(`skills.skillLabels.${item.labelKey}`)
-                    : t(`skills.toolLabels.${item.labelKey}`);
-                const Icon = item.Icon;
-                return (
-                  <Col
-                    key={`${item.kind}-${item.labelKey}`}
-                    xs={4}
-                    md={2}
-                    className="d-flex justify-content-center mb-2 px-1"
-                  >
-                    <IconCard data-component-id="IconCard" data-animate>
-                      <IconGraphic data-component-id="IconGraphic" aria-hidden>
-                        <Icon />
-                      </IconGraphic>
-                      <IconCaption data-component-id="IconCaption">{label}</IconCaption>
-                    </IconCard>
-                  </Col>
-                );
-              })}
-            </Row>
-          </Container>
-          <ModelsRegion data-component-id="ModelsRegion" role="region" aria-labelledby="ai-models-heading">
-            <IntroBlock data-component-id="IntroBlock">
-              <SectionHeading
-                headingId="ai-models-heading"
-                eyebrow={t("aiModels.sectionEyebrow")}
-                title={t("aiModels.sectionHeading")}
-                level={3}
-              />
-            </IntroBlock>
-            <Container fluid className="px-0">
-              <Row className="justify-content-center">
-                {aiItems.map((item) => (
-                  <Col
-                    key={item.label}
-                    xs={12}
-                    sm={6}
-                    lg={4}
-                    className="d-flex justify-content-center mb-3 px-2"
-                  >
-                    <ModelCard data-component-id="ModelCard" data-animate>
-                      <ModelImg
-                        data-component-id="ModelImg"
-                        src={resolvePublicAsset(item.image)}
-                        alt=""
-                        loading="lazy"
-                        decoding="async"
-                      />
-                      <ModelCaption data-component-id="ModelCaption">{item.label}</ModelCaption>
-                    </ModelCard>
-                  </Col>
-                ))}
-              </Row>
-            </Container>
-          </ModelsRegion>
+          {ready ? <SkillsSectionBody /> : <SectionSkeleton />}
         </GlowCard>
       </AnimeReveal>
     </Section>

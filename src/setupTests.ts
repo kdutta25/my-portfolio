@@ -1,5 +1,10 @@
 import "@testing-library/jest-dom/vitest";
 import { vi } from "vitest";
+import { applySiteContent } from "./siteContent/applySiteContent";
+import type { SiteContentPayload } from "./types/siteContent";
+import siteContent from "./test/fixtures/site-content.json";
+
+await applySiteContent(siteContent as SiteContentPayload);
 
 Object.defineProperty(window, "matchMedia", {
   writable: true,
