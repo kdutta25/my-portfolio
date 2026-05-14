@@ -1,4 +1,4 @@
-import { useEffect, useRef, useMemo } from "react";
+import { useCallback, useEffect, useMemo, useRef } from "react";
 import styled from "styled-components";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
@@ -10,6 +10,8 @@ import { HiOutlineMail } from "react-icons/hi";
 import { MdOutlineKeyboardArrowDown } from "react-icons/md";
 import { MOTION } from "../../animations/constants";
 import { usePrefersReducedMotion } from "../../hooks/usePrefersReducedMotion";
+import { useContentFragment } from "../../hooks/useContentFragment";
+import { SectionSkeleton } from "../loading/SectionSkeleton";
 import { UiverseButton } from "../ui/UiverseButton";
 
 type HeroStat = { value: string; line1: string; line2: string };
@@ -244,10 +246,10 @@ const ScrollCue = styled.button`
   }
 `;
 
-export function HeroSection() {
+function HeroSectionBody() {
   const { t } = useTranslation();
   const reduced = usePrefersReducedMotion();
-  const rootRef = useRef<HTMLElement | null>(null);
+  const containerRef = useRef<HTMLDivElement | null>(null);
   const scrollCueRef = useRef<HTMLButtonElement>(null);
 
   const brand = t("nav.brand");
@@ -260,7 +262,7 @@ export function HeroSection() {
   );
 
   useEffect(() => {
-    const root = rootRef.current;
+    const root = containerRef.current;
     if (!root || reduced) return;
 
     const blocks = root.querySelectorAll("[data-hero-block]");
@@ -294,9 +296,13 @@ export function HeroSection() {
   }, [reduced]);
 
   return (
-    <HeroRoot data-component-id="HeroSection" ref={rootRef} id="top" aria-labelledby="hero-title">
-      <GridBg data-component-id="GridBg" aria-hidden />
-      <Container fluid className="position-relative px-3 px-lg-4" style={{ zIndex: 1 }}>
+    <>
+      <Container
+        fluid
+        className="position-relative px-3 px-lg-4"
+        style={{ zIndex: 1 }}
+        ref={containerRef}
+      >
         <Row className="align-items-center gy-5">
           <Col
             xs={12}
@@ -403,6 +409,33 @@ export function HeroSection() {
       >
         <MdOutlineKeyboardArrowDown size={26} aria-hidden />
       </ScrollCue>
+    </>
+  );
+}
+
+export function HeroSection() {
+  const { rootRef: fragRef, ready } = useContentFragment("hero", { loadOn: "mount" });
+  const setHeroRootRef = useCallback(
+    (node: HTMLElement | null) => {
+      fragRef.current = node;
+    },
+    [fragRef],
+  );
+
+  return (
+    <HeroRoot data-component-id="HeroSection" ref={setHeroRootRef} id="top" aria-labelledby="hero-title">
+      <GridBg data-component-id="GridBg" aria-hidden />
+      {ready ? (
+        <HeroSectionBody />
+      ) : (
+        <Container fluid className="position-relative px-3 px-lg-4" style={{ zIndex: 1 }}>
+          <Row className="justify-content-center py-5">
+            <Col xs={12} md={8}>
+              <SectionSkeleton />
+            </Col>
+          </Row>
+        </Container>
+      )}
     </HeroRoot>
   );
 }

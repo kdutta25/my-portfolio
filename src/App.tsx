@@ -50,7 +50,10 @@ export default function App() {
     if (!el) return;
 
     if (!contentReady) {
-      if (!isTestEnv()) el.style.opacity = "0";
+      /* Keep shell visible (opacity 1) while the loader shows: a solid LoadingScreen
+       * covers the viewport, and hiding the shell with opacity 0 can prevent
+       * IntersectionObserver from firing for below-the-fold sections. */
+      if (!isTestEnv()) el.style.opacity = "1";
       return;
     }
 

@@ -27,9 +27,9 @@ Repository for **Kaustubh Dutta**’s portfolio site: projects, experience, publ
 - **Runtime:** React 18, TypeScript, **Vite 5**
 - **Styling:** styled-components 6, Bootstrap 5 + react-bootstrap (layout grid / utilities)
 - **Motion:** anime.js (entrance animation, micro-interactions)
-- **i18n:** i18next + react-i18next (`src/locales/en.json`, `fr.json`)
+- **i18n:** i18next + react-i18next — translation JSON is loaded at startup from **my-portfolio-api** (`GET /v1/site-content`), configured with `VITE_SITE_CONTENT_URL`
 - **SEO:** react-helmet-async (`SeoHead`)
-- **Extras:** react-icons, react-github-calendar, floating **Portfolio** chat panel with lightweight FAQ matching (`src/chat/matchKnowledge.ts` + JSON corpora)
+- **Extras:** react-icons, react-github-calendar, floating **Portfolio** chat panel with lightweight FAQ matching (`src/chat/matchKnowledge.ts` + résumé / LinkedIn text from the content API)
 
 ---
 
@@ -60,7 +60,7 @@ The UI is one **long-scroll landing page** (`src/App.tsx`). There is no client-s
 
 ### Project cards (`ProjectCard`)
 
-Project copy and metadata come from **`projects.items`** in `src/locales/en.json` and `fr.json` (`ProjectItem` in `src/types/content.ts`).
+Project copy and metadata come from **`projects.items`** in the English and French locale objects served by the content API (`ProjectItem` in `src/types/content.ts`).
 
 | Feature | Details |
 |---------|---------|
@@ -77,7 +77,7 @@ Other shared assets include **`public/Kaustubh-Dutta-Resume.pdf`** (header résu
 - **Composition root:** `App` wraps **HelmetProvider** → **I18nextProvider** → **AppThemeProvider** → `GlobalStyle` + page shell.
 - **Theme:** `AppThemeProvider` toggles **light/dark** `AppTheme` tokens (`src/theme/theme.ts`) — colors, typography stacks (`Syne` / `DM Sans` / `JetBrains Mono`), radii, shadows — persisted in `localStorage` and synced to `document.documentElement` / Bootstrap `data-bs-theme`.
 - **Section pattern:** Most sections use a styled `<section>` with `scroll-margin-top` for sticky header offset, **`SectionHeading`** (eyebrow + title + bar), optional **`GlowCard`** wrapper, **`AnimeReveal`** for staggered entrance, and **react-bootstrap** `Container` / `Row` / `Col` for responsive grids. **`ProjectsSection`** maps locale **`projects.items`** to **`ProjectCard`** (cover image or gradient, tags, external asset links).
-- **Content:** Copy lives in JSON locales; structured résumé/chat context in `src/data/*.json`; static assets under `public/` (images, PDF).
+- **Content:** Site copy and chat corpora are fetched once at load from **`VITE_SITE_CONTENT_URL`**; static assets stay under `public/` (images, PDF).
 - **Accessibility:** Landmark regions, labelled headings, skip link, reduced-motion respected where wired (e.g. hero / nav animations).
 
 ```mermaid
@@ -170,9 +170,9 @@ flowchart TB
   end
 
   subgraph content["Content & behavior"]
-    L10n[i18n JSON en / fr]
+    L10n[i18n en / fr from API]
     CHAT[PortfolioChatbot + matchKnowledge]
-    DATA[resume-corpus.json / linkedin-snapshot.json]
+    DATA[Content API bundle]
     MOTION[anime.js + MOTION constants]
   end
 
@@ -209,7 +209,7 @@ Configuration: `vite.config.ts` → `test` block (`include: src/**/*.test.{ts,ts
 
 | Suite | Location | Scope |
 |-------|----------|--------|
-| E2E | `cypress/e2e/portfolio.cy.ts` | Loads home, checks header/main/footer, headings, `#publications`, language toggle → French nav label |
+| E2E | `cypress/e2e/portfolio.cy.ts` | Stubs `GET …/v1/site-content`, loads home, checks header/main/footer, headings, `#publications`, language toggle → French nav label |
 | Component | `cypress/component/all.cy.tsx` | Mounts App and individual sections/components with shared provider helper (`support/mountUi.tsx`) |
 
 **Commands:** `npm run cypress:open`, `npm run cypress:run`, `npm run cypress:component`
@@ -226,17 +226,36 @@ Configuration: `vite.config.ts` → `test` block (`include: src/**/*.test.{ts,ts
 | `npm run typecheck` | `tsc --noEmit` |
 | `npm test` | Vitest watch |
 | `npm run test:run` | Vitest single run (CI-friendly) |
-| `npm run knowledge:refresh` | Regenerate resume chat corpus (`scripts/refresh-resume-corpus.py`) |
 | `npm run deploy` | `gh-pages` deploy from `dist/` (after `predeploy` build) |
 
 ---
 
+## Content API and environment
+
+The app does not ship locale JSON or résumé text in this repo. **my-portfolio-api** serves copy in small pieces:
+
+- **Boot (no scroll):** `GET /v1/fragments/{en|fr}/{key}` for `site`, `nav`, `footer`, and `chatbot` so the shell, SEO, and assistant chrome render.
+- **On scroll:** Each section triggers the same fragment endpoint for its keys (e.g. `about`, `experience`; `skills` + `aiModels` together). When **experience** loads, the app also requests **`GET /v1/knowledge/resume`** and **`GET /v1/knowledge/linkedin`** for the chat corpus.
+- **Hero** loads its fragment on mount (above the fold) via `GET` as soon as the page loads.
+
+| Variable | Required | Description |
+|----------|----------|-------------|
+| `VITE_CONTENT_API_BASE_URL` | Recommended | API origin only, e.g. `http://localhost:3001` (no path). |
+| `VITE_SITE_CONTENT_URL` | Optional fallback | Any URL on that origin (e.g. old `…/v1/site-content`); only **origin** is used if `VITE_CONTENT_API_BASE_URL` is unset. |
+
+- **Local dev:** `.env.development` sets `VITE_CONTENT_API_BASE_URL=http://localhost:3001`. Run **my-portfolio-api** on **3001**, then `npm start` here (Vite **4044**).
+- **Production:** Set `VITE_CONTENT_API_BASE_URL` (or legacy `VITE_SITE_CONTENT_URL`) when running `npm run build`.
+- **Tests:** Vitest applies `src/test/fixtures/site-content.json` in `setupTests.ts`. Cypress E2E stubs fragment and knowledge `GET`s using `cypress/fixtures/site-content.json`.
+
+Copy `.env.example` if you need a template beyond `.env.development`.
+
 ## Getting started
 
 1. **Install:** `npm install`
-2. **Develop:** `npm start` — open **http://localhost:4044**
-3. **Edit content:** Primary copy is under `src/locales/en.json` and `fr.json`; section-specific presentation under `src/components/sections/`, `src/components/projects/` (`ProjectCard.tsx`), and `src/components/experience/`.
-4. **Static files:** Add PDFs, thumbnails, and other binaries under **`public/`** and reference them from locale JSON or components with paths relative to the site root (see **Project cards** above).
+2. **Content API:** Clone/run **[my-portfolio-api](https://github.com/kdutta25/my-portfolio-api)** (or your fork) on the origin you configure in `VITE_CONTENT_API_BASE_URL`.
+3. **Develop:** `npm start` — open **http://localhost:4044**
+4. **Edit content:** Change locale JSON and corpora in the API repo under `data/` (see that README); adjust section layout under `src/components/sections/`, `src/components/projects/` (`ProjectCard.tsx`), and `src/components/experience/`.
+5. **Static files:** Add PDFs, thumbnails, and other binaries under **`public/`** in this repo and reference them from API-driven copy or components with paths relative to the site root (see **Project cards** above).
 
 Continuous delivery for releases is configured under **`.github/workflows/`** (e.g. `release.yml`).
 

@@ -1,5 +1,7 @@
 import styled from "styled-components";
 import { useTranslation } from "react-i18next";
+import { useContentFragment } from "../../hooks/useContentFragment";
+import { SectionSkeleton } from "../loading/SectionSkeleton";
 import { GlowCard } from "../ui/GlowCard";
 import { AnimeReveal } from "../ui/AnimeReveal";
 import { SectionHeading } from "../ui/SectionHeading";
@@ -81,45 +83,60 @@ const Detail = styled.p`
   color: ${({ theme }) => theme.colors.text};
 `;
 
-export function EducationSection() {
+function EducationSectionBody() {
   const { t } = useTranslation();
   const items = t("education.items", { returnObjects: true }) as EducationItem[];
 
   return (
-    <Section data-component-id="EducationSection" id="education" aria-labelledby="education-heading">
+    <>
+      <IntroBlock data-component-id="IntroBlock" data-animate>
+        <SectionHeading
+          headingId="education-heading"
+          eyebrow={t("nav.education")}
+          title={t("education.heading")}
+        />
+      </IntroBlock>
+      <Stack data-component-id="Stack">
+        {items.map((item) => (
+          <Item data-component-id="Item" key={item.school} data-animate>
+            <ItemInner data-component-id="ItemInner">
+              {item.logo ? (
+                <LogoWrap data-component-id="LogoWrap">
+                  <img
+                    src={resolvePublicAsset(item.logo)}
+                    alt=""
+                    loading="lazy"
+                    decoding="async"
+                  />
+                </LogoWrap>
+              ) : null}
+              <TextCol data-component-id="TextCol">
+                <School data-component-id="School">{item.school}</School>
+                <Degree data-component-id="Degree">{item.degree}</Degree>
+                <Period data-component-id="Period">{item.period}</Period>
+                {item.detail ? <Detail data-component-id="Detail">{item.detail}</Detail> : null}
+              </TextCol>
+            </ItemInner>
+          </Item>
+        ))}
+      </Stack>
+    </>
+  );
+}
+
+export function EducationSection() {
+  const { rootRef, ready } = useContentFragment("education", { loadOn: "intersect" });
+
+  return (
+    <Section
+      ref={rootRef}
+      data-component-id="EducationSection"
+      id="education"
+      aria-labelledby="education-heading"
+    >
       <AnimeReveal stagger={60}>
         <GlowCard data-component-id="GlowCard">
-          <IntroBlock data-component-id="IntroBlock" data-animate>
-            <SectionHeading
-              headingId="education-heading"
-              eyebrow={t("nav.education")}
-              title={t("education.heading")}
-            />
-          </IntroBlock>
-          <Stack data-component-id="Stack">
-            {items.map((item) => (
-              <Item data-component-id="Item" key={item.school} data-animate>
-                <ItemInner data-component-id="ItemInner">
-                  {item.logo ? (
-                    <LogoWrap data-component-id="LogoWrap">
-                      <img
-                        src={resolvePublicAsset(item.logo)}
-                        alt=""
-                        loading="lazy"
-                        decoding="async"
-                      />
-                    </LogoWrap>
-                  ) : null}
-                  <TextCol data-component-id="TextCol">
-                    <School data-component-id="School">{item.school}</School>
-                    <Degree data-component-id="Degree">{item.degree}</Degree>
-                    <Period data-component-id="Period">{item.period}</Period>
-                    {item.detail ? <Detail data-component-id="Detail">{item.detail}</Detail> : null}
-                  </TextCol>
-                </ItemInner>
-              </Item>
-            ))}
-          </Stack>
+          {ready ? <EducationSectionBody /> : <SectionSkeleton />}
         </GlowCard>
       </AnimeReveal>
     </Section>

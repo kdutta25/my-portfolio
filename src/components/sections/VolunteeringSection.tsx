@@ -1,5 +1,7 @@
 import styled from "styled-components";
 import { useTranslation } from "react-i18next";
+import { useContentFragment } from "../../hooks/useContentFragment";
+import { SectionSkeleton } from "../loading/SectionSkeleton";
 import { GlowCard } from "../ui/GlowCard";
 import { AnimeReveal } from "../ui/AnimeReveal";
 import { SectionHeading } from "../ui/SectionHeading";
@@ -72,39 +74,54 @@ const Desc = styled.p`
   color: ${({ theme }) => theme.colors.text};
 `;
 
-export function VolunteeringSection() {
+function VolunteeringSectionBody() {
   const { t } = useTranslation();
   const items = t("volunteering.items", {
     returnObjects: true,
   }) as VolunteerItem[];
 
   return (
-    <Section data-component-id="VolunteeringSection" id="volunteering" aria-labelledby="volunteering-heading">
+    <>
+      <IntroBlock data-component-id="IntroBlock" data-animate>
+        <SectionHeading
+          headingId="volunteering-heading"
+          eyebrow={t("nav.volunteering")}
+          title={t("volunteering.heading")}
+        />
+      </IntroBlock>
+      <Stack data-component-id="Stack">
+        {items.map((item) => (
+          <Item data-component-id="Item" key={item.org} data-animate>
+            <ItemInner data-component-id="ItemInner">
+              <LogoWrap data-component-id="LogoWrap">
+                <VolunteerLogo logo={item.logo} />
+              </LogoWrap>
+              <TextCol data-component-id="TextCol">
+                <Org data-component-id="Org">{item.org}</Org>
+                <Role data-component-id="Role">{item.role}</Role>
+                {item.description ? <Desc data-component-id="Desc">{item.description}</Desc> : null}
+              </TextCol>
+            </ItemInner>
+          </Item>
+        ))}
+      </Stack>
+    </>
+  );
+}
+
+export function VolunteeringSection() {
+  const { rootRef, ready } = useContentFragment("volunteering", { loadOn: "intersect" });
+
+  return (
+    <Section
+      ref={rootRef}
+      data-component-id="VolunteeringSection"
+      id="volunteering"
+      aria-labelledby="volunteering-heading"
+    >
       <AnimeReveal stagger={58}>
         <GlowCard data-component-id="GlowCard">
-          <IntroBlock data-component-id="IntroBlock" data-animate>
-            <SectionHeading
-              headingId="volunteering-heading"
-              eyebrow={t("nav.volunteering")}
-              title={t("volunteering.heading")}
-            />
-          </IntroBlock>
-          <Stack data-component-id="Stack">
-            {items.map((item) => (
-              <Item data-component-id="Item" key={item.org} data-animate>
-                <ItemInner data-component-id="ItemInner">
-                  <LogoWrap data-component-id="LogoWrap">
-                    <VolunteerLogo logo={item.logo} />
-                  </LogoWrap>
-                  <TextCol data-component-id="TextCol">
-                    <Org data-component-id="Org">{item.org}</Org>
-                    <Role data-component-id="Role">{item.role}</Role>
-                    {item.description ? <Desc data-component-id="Desc">{item.description}</Desc> : null}
-                  </TextCol>
-                </ItemInner>
-              </Item>
-            ))}
-          </Stack>
+          {ready ? <VolunteeringSectionBody /> : <SectionSkeleton />}
         </GlowCard>
       </AnimeReveal>
     </Section>

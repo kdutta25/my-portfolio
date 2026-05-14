@@ -1,7 +1,8 @@
-import resumeData from "../data/resume-corpus.json";
-import linkedinData from "../data/linkedin-snapshot.json";
+import type { LinkedinSnapshot, ResumeCorpus } from "../types/siteContent";
 
 type LabeledChunk = { text: string; label: string };
+
+let chunks: LabeledChunk[] | null = null;
 
 const STOP = new Set(
   [
@@ -87,7 +88,10 @@ function chunkResume(full: string): string[] {
   return out;
 }
 
-function buildChunks(): LabeledChunk[] {
+export function buildChunksFromData(
+  resumeData: ResumeCorpus,
+  linkedinData: LinkedinSnapshot,
+): LabeledChunk[] {
   const snap = [
     `${linkedinData.headline} · ${linkedinData.location}`,
     linkedinData.summary,
@@ -100,7 +104,16 @@ function buildChunks(): LabeledChunk[] {
   ];
 }
 
-const CHUNKS = buildChunks();
+export function setKnowledgeFromSiteContent(
+  resume: ResumeCorpus,
+  linkedin: LinkedinSnapshot,
+): void {
+  chunks = buildChunksFromData(resume, linkedin);
+}
+
+function getChunks(): LabeledChunk[] | null {
+  return chunks;
+}
 
 function scoreChunk(query: string, chunk: string): number {
   const qt = tokenize(query);
@@ -124,10 +137,13 @@ function trimText(s: string, max: number): string {
 }
 
 /**
- * Best-effort answer from embedded LinkedIn snapshot + résumé text.
+ * Best-effort answer from LinkedIn snapshot + résumé text (loaded from the content API).
  * LinkedIn cannot be scraped live in the browser (CORS / auth wall).
  */
 export function findKnowledgeAnswer(query: string): string | null {
+  const CHUNKS = getChunks();
+  if (!CHUNKS?.length) return null;
+
   const trimmed = query.trim();
   if (trimmed.length < 2) return null;
 

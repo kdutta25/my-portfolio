@@ -1,6 +1,8 @@
 import styled from "styled-components";
 import { useTranslation } from "react-i18next";
 import { FaYoutube, FaInstagram, FaLinkedin } from "react-icons/fa";
+import { useContentFragment } from "../../hooks/useContentFragment";
+import { SectionSkeleton } from "../loading/SectionSkeleton";
 import { GlowCard } from "../ui/GlowCard";
 import { AnimeReveal } from "../ui/AnimeReveal";
 import { SectionHeading } from "../ui/SectionHeading";
@@ -86,63 +88,78 @@ const SocialLink = styled.a`
   }
 `;
 
-export function AboutSection() {
+function AboutSectionBody() {
   const { t } = useTranslation();
   const activities = t("about.activities", {
     returnObjects: true,
   }) as string[];
 
   return (
-    <Section data-component-id="AboutSection" id="about" aria-labelledby="about-heading">
+    <>
+      <SectionHeading
+        headingId="about-heading"
+        eyebrow={t("nav.about")}
+        title={t("about.heading")}
+      />
+      <Body data-component-id="Body">{t("about.intro")}</Body>
+      <Label data-component-id="Label">{t("about.interestsLabel")}</Label>
+      <Muted data-component-id="Muted">{t("about.interests")}</Muted>
+      <Label data-component-id="Label">{t("about.mottoLabel")}</Label>
+      <Muted data-component-id="Muted">{t("about.motto")}</Muted>
+      <ActivitiesLead data-component-id="ActivitiesLead">{t("about.activitiesIntro")}</ActivitiesLead>
+      <ActivityList data-component-id="ActivityList">
+        {activities.map((item) => (
+          <li key={item}>{item}</li>
+        ))}
+      </ActivityList>
+
+      <ConnectLabel data-component-id="ConnectLabel">{t("about.connectLabel")}</ConnectLabel>
+      <SocialRow data-component-id="SocialRow" aria-label={t("about.connectAria")}>
+        <SocialLink
+          data-component-id="SocialLink"
+          href={t("about.youtubeUrl")}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label={t("about.youtubeAria")}
+        >
+          <FaYoutube size={22} aria-hidden />
+        </SocialLink>
+        <SocialLink
+          data-component-id="SocialLink"
+          href={t("about.instagramUrl")}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label={t("about.instagramAria")}
+        >
+          <FaInstagram size={22} aria-hidden />
+        </SocialLink>
+        <SocialLink
+          data-component-id="SocialLink"
+          href={t("about.linkedinUrl")}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label={t("about.linkedinAria")}
+        >
+          <FaLinkedin size={22} aria-hidden />
+        </SocialLink>
+      </SocialRow>
+    </>
+  );
+}
+
+export function AboutSection() {
+  const { rootRef, ready } = useContentFragment("about", { loadOn: "intersect" });
+
+  return (
+    <Section
+      ref={rootRef}
+      data-component-id="AboutSection"
+      id="about"
+      aria-labelledby="about-heading"
+    >
       <AnimeReveal>
         <GlowCard data-component-id="GlowCard" data-animate>
-          <SectionHeading
-            headingId="about-heading"
-            eyebrow={t("nav.about")}
-            title={t("about.heading")}
-          />
-          <Body data-component-id="Body">{t("about.intro")}</Body>
-          <Label data-component-id="Label">{t("about.interestsLabel")}</Label>
-          <Muted data-component-id="Muted">{t("about.interests")}</Muted>
-          <Label data-component-id="Label">{t("about.mottoLabel")}</Label>
-          <Muted data-component-id="Muted">{t("about.motto")}</Muted>
-          <ActivitiesLead data-component-id="ActivitiesLead">{t("about.activitiesIntro")}</ActivitiesLead>
-          <ActivityList data-component-id="ActivityList">
-            {activities.map((item) => (
-              <li key={item}>{item}</li>
-            ))}
-          </ActivityList>
-
-          <ConnectLabel data-component-id="ConnectLabel">{t("about.connectLabel")}</ConnectLabel>
-          <SocialRow data-component-id="SocialRow" aria-label={t("about.connectAria")}>
-            <SocialLink
-              data-component-id="SocialLink"
-              href={t("about.youtubeUrl")}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label={t("about.youtubeAria")}
-            >
-              <FaYoutube size={22} aria-hidden />
-            </SocialLink>
-            <SocialLink
-              data-component-id="SocialLink"
-              href={t("about.instagramUrl")}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label={t("about.instagramAria")}
-            >
-              <FaInstagram size={22} aria-hidden />
-            </SocialLink>
-            <SocialLink
-              data-component-id="SocialLink"
-              href={t("about.linkedinUrl")}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label={t("about.linkedinAria")}
-            >
-              <FaLinkedin size={22} aria-hidden />
-            </SocialLink>
-          </SocialRow>
+          {ready ? <AboutSectionBody /> : <SectionSkeleton />}
         </GlowCard>
       </AnimeReveal>
     </Section>
