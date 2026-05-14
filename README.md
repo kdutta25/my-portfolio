@@ -303,18 +303,18 @@ sequenceDiagram
 
 - **Local dev:** `.env.development` sets `VITE_CONTENT_API_BASE_URL=http://localhost:3001`. Run **my-portfolio-api** on **3001**, then `npm start` here (Vite **4044**). **Shell wins over `.env*`:**
   if you `export VITE_CONTENT_API_BASE_URL=https://www.kaustubhdutta.com` (or legacy `VITE_SITE_CONTENT_URL` to that site), Vite will bake that in and fragment GETs will 404. Unset those in your terminal, or rely on the dev fallback (bare `www` / apex `kaustubhdutta.com` with no path → **`http://localhost:3001`** + a console warning). Override the fallback with **`VITE_DEV_DEFAULT_CONTENT_API_BASE`**, or set **`VITE_DEV_ALLOW_BARE_PORTFOLIO_ORIGIN_API=true`** to force the static origin in dev.
-- **Production:** Set `VITE_CONTENT_API_BASE_URL` (or legacy `VITE_SITE_CONTENT_URL`) when running `npm run build`.
+- **Production:** Set `VITE_CONTENT_API_BASE_URL` (or legacy `VITE_SITE_CONTENT_URL`) when running `npm run build`. If the API base is bare **`https://www.kaustubhdutta.com`** or **`https://kaustubhdutta.com`** (same host as the SPA, path empty before `/v1`), **`vite build` automatically bakes `VITE_ALLOW_SAME_ORIGIN_CONTENT_API=true`** so the runtime guard does not throw (set **`VITE_ALLOW_SAME_ORIGIN_CONTENT_API=false`** to opt out). You still need **`/v1` actually served** by **my-portfolio-api** (reverse proxy), not static Pages alone.
 
-**Important:** `VITE_CONTENT_API_BASE_URL` must be the **my-portfolio-api** deployment (any host that serves `GET /v1/fragments/...`). It must **not** be only `https://www.kaustubhdutta.com` unless you reverse-proxy `/v1` (or e.g. `/api`) from that domain to the API — the portfolio site is static files and returns **404** for `/v1/*`.
+**Important:** `VITE_CONTENT_API_BASE_URL` must ultimately reach **my-portfolio-api** (`GET /v1/fragments/...`). Plain GitHub Pages on `https://www.kaustubhdutta.com` does **not** serve `/v1`; you need a separate API host **or** a CDN/proxy in front of that domain that routes `/v1/*` to Node.
 
 Copy `.env.example` if you need a template beyond `.env.development`.
 
 ### GitHub Pages (GitHub Actions)
 
 1. **Repository → Settings → Pages → Build and deployment:** set **Source** to **GitHub Actions** (not “Deploy from a branch” unless you only use `npm run deploy` locally).
-2. **Repository → Settings → Secrets and variables → Actions → New repository secret:**  
-   - **`VITE_CONTENT_API_BASE_URL`** — HTTPS origin of **my-portfolio-api** (same value you would `export` before `npm run build`). Example: `https://your-api.onrender.com` or `https://api.kaustubhdutta.com`.
-3. Push to **`main`** (or run workflow **Deploy Pages** manually). Workflow: **`.github/workflows/deploy-pages.yml`** — it runs `npm ci`, `npm run build` with that secret, then publishes **`dist/`** to Pages.
+2. **Repository → Settings → Secrets and variables → Actions:**  
+   - **`VITE_CONTENT_API_BASE_URL`** (optional) — HTTPS base of **my-portfolio-api** before `/v1` (e.g. `https://your-api.onrender.com`). If you **omit** this secret, the workflow defaults to **`https://www.kaustubhdutta.com`** and bakes **`VITE_ALLOW_SAME_ORIGIN_CONTENT_API=true`** so the SPA can call `/v1` on the same host. That only works if something in front of your domain (not GitHub Pages alone) **reverse-proxies `/v1` and knowledge routes** to **my-portfolio-api**. Otherwise set the secret to your real API URL.
+3. Push to **`main`** (or run workflow **Deploy Pages** manually). Workflow: **`.github/workflows/deploy-pages.yml`** — it runs `npm ci`, configures the Vite env (default API base when the secret is unset), `npm run build`, then publishes **`dist/`** to Pages.
 4. **Optional — Project Pages** (`https://USER.github.io/REPO/`): add a repository **variable** **`VITE_BASE_PATH`** set to your repo path with slashes, e.g. **`/my-portfolio/`**. Custom domain at site root can omit it (defaults to **`/`**).
 
 Ensure **my-portfolio-api** allows your Pages origin in **`SITE_CONTENT_CORS_ORIGINS`** (defaults already include `https://www.kaustubhdutta.com`).

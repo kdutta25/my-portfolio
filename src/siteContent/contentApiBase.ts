@@ -53,6 +53,8 @@ function normalizeContentApiBase(raw: string): string {
  */
 function assertApiBaseIsNotBareStaticOrigin(base: string): void {
   if (typeof window === "undefined" || !import.meta.env.PROD) return;
+  /** Set at build time when API lives on the same host as the SPA (e.g. reverse-proxy `/v1` to Node). */
+  if (import.meta.env.VITE_ALLOW_SAME_ORIGIN_CONTENT_API === "true") return;
   let u: URL;
   try {
     u = new URL(base);

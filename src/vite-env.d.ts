@@ -13,6 +13,11 @@ interface ImportMetaEnv {
   readonly VITE_DEV_DEFAULT_CONTENT_API_BASE?: string;
   /** Dev only: set `"true"` to allow bare portfolio origin as API base (no localhost fallback). */
   readonly VITE_DEV_ALLOW_BARE_PORTFOLIO_ORIGIN_API?: string;
+  /**
+   * Production: set `"true"` when `VITE_CONTENT_API_BASE_URL` is the same origin as the SPA with no path
+   * (e.g. `https://www.kaustubhdutta.com`) because `/v1` is reverse-proxied to my-portfolio-api. Omit if the API is on another host.
+   */
+  readonly VITE_ALLOW_SAME_ORIGIN_CONTENT_API?: string;
 }
 
 interface ImportMeta {
