@@ -2,7 +2,7 @@ name: Deploy Pages
 
 on:
   push:
-    branches: [main]
+    branches: [master]
   workflow_dispatch:
 
 permissions:
@@ -27,54 +27,11 @@ jobs:
 
       - run: npm ci
 
-      - name: Configure content API URL for build
-        env:
-          SECRET_BASE: ${{ secrets.VITE_CONTENT_API_BASE_URL }}
-          VAR_BASE: ${{ vars.VITE_CONTENT_API_BASE_URL }}
-        run: |
-          node <<'NODE'
-          const fs = require("fs");
-          const gh = process.env.GITHUB_ENV;
-          const raw = (process.env.SECRET_BASE || process.env.VAR_BASE || "").trim();
-          const base = (raw || "https://www.kaustubhdutta.com").replace(/\/+$/, "");
-          const hosts = new Set(["www.kaustubhdutta.com", "kaustubhdutta.com"]);
-          let allowSameOrigin = false;
-          try {
-            const u = new URL(base);
-            const p = (u.pathname || "").replace(/\/+$/, "");
-            if (hosts.has(u.hostname) && (p === "" || p === "/")) allowSameOrigin = true;
-          } catch {
-            console.error("::error::VITE_CONTENT_API_BASE_URL (secret or default) must be a valid URL");
-            process.exit(1);
-          }
-          fs.appendFileSync(gh, `VITE_CONTENT_API_BASE_URL=${base}\n`);
-          if (allowSameOrigin) {
-            fs.appendFileSync(gh, "VITE_ALLOW_SAME_ORIGIN_CONTENT_API=true\n");
-          }
-          if (!raw) {
-            console.log(
-              "::notice::No VITE_CONTENT_API_BASE_URL secret or variable — defaulting to https://www.kaustubhdutta.com with same-origin API opt-in. " +
-                "You must reverse-proxy GET /v1/* (and knowledge routes) to my-portfolio-api on that host, or set the secret to a dedicated API URL instead.",
-            );
-          } else if (process.env.SECRET_BASE?.trim()) {
-            console.log("::notice::Using VITE_CONTENT_API_BASE_URL from Actions **secrets** for this build.");
-          } else {
-            console.log("::notice::Using VITE_CONTENT_API_BASE_URL from Actions **variables** for this build.");
-          }
-          NODE
-
-      - name: Verify content API base is set for Vite build
-        run: |
-          if [ -z "${VITE_CONTENT_API_BASE_URL:-}" ]; then
-            echo "::error::VITE_CONTENT_API_BASE_URL is missing after the configure step. Check .github/workflows/deploy-pages.yml."
-            exit 1
-          fi
-          echo "VITE_CONTENT_API_BASE_URL is set (value hidden)."
-
       - name: Build
-        env:
-          VITE_BASE_PATH: ${{ vars.VITE_BASE_PATH }}
         run: npm run build
+        env:
+          VITE_CONTENT_API_BASE_URL: ${{ secrets.VITE_CONTENT_API_BASE_URL }}
+          VITE_BASE_PATH: ${{ vars.VITE_BASE_PATH }}
 
       - uses: actions/configure-pages@v4
 
@@ -82,5 +39,4 @@ jobs:
         with:
           path: dist
 
-      - id: deployment
-        uses: actions/deploy-pages@v4
+      - uses: actions/deploy-pages@v4
