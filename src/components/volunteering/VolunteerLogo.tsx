@@ -1,4 +1,4 @@
-import ospeSvg from "../../assets/images/volunteering/ospe.svg?raw";
+import ospeSvg from "../../Assets/images/volunteering/ospe.svg?raw";
 import { resolvePublicAsset } from "../../utils/resolvePublicAsset";
 
 export interface VolunteerLogoProps {
