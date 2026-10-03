@@ -33,6 +33,25 @@ export function joinContentApiBaseWithViteBase(apiBase: string, viteBase: string
 }
 
 /**
+ * On the public GitHub Pages hosts, always load `/v1` from this page’s origin.
+ * A leftover Actions secret (old AWS API URL) must not take the SPA off-site.
+ */
+export function preferStaticPortfolioPageOrigin(
+  apiBase: string,
+  pageOrigin: string,
+  viteBase: string,
+): string {
+  let page: URL;
+  try {
+    page = new URL(pageOrigin);
+  } catch {
+    return apiBase;
+  }
+  if (!STATIC_PORTFOLIO_HOSTS.has(page.hostname)) return apiBase;
+  return joinContentApiBaseWithViteBase(page.origin, viteBase);
+}
+
+/**
  * In dev, shell exports or `.env.local` often override `.env.development` and point
  * at production. Same for legacy `VITE_SITE_CONTENT_URL` → origin of the static site.
  * Fall back to the local Vite origin (baked `public/v1`) unless explicitly opted out.
@@ -98,7 +117,7 @@ export function getContentApiBase(): string {
       import.meta.env.BASE_URL,
     );
     assertApiBaseIsNotBareStaticOrigin(base);
-    return base;
+    return finalizeContentApiBase(base);
   }
   const legacy = import.meta.env.VITE_SITE_CONTENT_URL;
   if (legacy && typeof legacy === "string" && legacy.trim()) {
@@ -114,10 +133,15 @@ export function getContentApiBase(): string {
         import.meta.env.BASE_URL,
       );
       assertApiBaseIsNotBareStaticOrigin(base);
-      return base;
+      return finalizeContentApiBase(base);
     }
   }
   throw new Error(
     "Set VITE_CONTENT_API_BASE_URL (recommended) or VITE_SITE_CONTENT_URL so the app can reach site content (`/v1`).",
   );
+}
+
+function finalizeContentApiBase(base: string): string {
+  if (!import.meta.env.PROD || typeof window === "undefined") return base;
+  return preferStaticPortfolioPageOrigin(base, window.location.origin, import.meta.env.BASE_URL);
 }

@@ -1,5 +1,8 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { joinContentApiBaseWithViteBase } from "./contentApiBase";
+import {
+  joinContentApiBaseWithViteBase,
+  preferStaticPortfolioPageOrigin,
+} from "./contentApiBase";
 
 describe("joinContentApiBaseWithViteBase", () => {
   it("leaves origin-only bases unchanged when Vite base is /", () => {
@@ -18,6 +21,28 @@ describe("joinContentApiBaseWithViteBase", () => {
     expect(
       joinContentApiBaseWithViteBase("https://www.kaustubhdutta.com/api", "/my-portfolio/"),
     ).toBe("https://www.kaustubhdutta.com/api");
+  });
+});
+
+describe("preferStaticPortfolioPageOrigin", () => {
+  it("forces same-origin /v1 on the public portfolio host even if env points elsewhere", () => {
+    expect(
+      preferStaticPortfolioPageOrigin(
+        "https://old-api.example.com",
+        "https://www.kaustubhdutta.com/",
+        "/",
+      ),
+    ).toBe("https://www.kaustubhdutta.com");
+  });
+
+  it("leaves the env base unchanged on other hosts", () => {
+    expect(
+      preferStaticPortfolioPageOrigin(
+        "https://old-api.example.com",
+        "https://kdutta25.github.io/",
+        "/",
+      ),
+    ).toBe("https://old-api.example.com");
   });
 });
 
