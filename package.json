@@ -6,7 +6,11 @@
   "homepage": "https://www.kaustubhdutta.com",
   "scripts": {
     "start": "vite",
+    "prestart": "node scripts/generate-static-content.mjs --optional",
     "dev": "vite",
+    "predev": "node scripts/generate-static-content.mjs --optional",
+    "generate:static-content": "node scripts/generate-static-content.mjs",
+    "prebuild": "npm run generate:static-content",
     "build": "vite build",
     "typecheck": "tsc --noEmit",
     "preview": "vite preview",

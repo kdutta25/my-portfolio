@@ -61,7 +61,7 @@ export default defineConfig(({ mode }) => {
   ) {
     define["import.meta.env.VITE_ALLOW_SAME_ORIGIN_CONTENT_API"] = JSON.stringify("true");
     console.info(
-      "[vite] Production build: bare portfolio host as API base — baking VITE_ALLOW_SAME_ORIGIN_CONTENT_API=true (set VITE_ALLOW_SAME_ORIGIN_CONTENT_API=false to opt out). /v1 must still be served by my-portfolio-api (e.g. reverse proxy).",
+      "[vite] Production build: bare portfolio host as API base — baking VITE_ALLOW_SAME_ORIGIN_CONTENT_API=true (set VITE_ALLOW_SAME_ORIGIN_CONTENT_API=false to opt out). Ensure public/v1 was generated (npm run generate:static-content).",
     );
   }
 

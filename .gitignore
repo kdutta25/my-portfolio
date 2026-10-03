@@ -12,6 +12,9 @@
 /build
 /dist
 
+# Snapshot of my-portfolio-api data for GitHub Pages (generated)
+/public/v1
+
 # misc
 .DS_Store
 .env
