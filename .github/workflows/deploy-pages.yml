@@ -45,30 +45,35 @@ jobs:
           const fs = require("fs");
           const gh = process.env.GITHUB_ENV;
           const raw = (process.env.SECRET_BASE || process.env.VAR_BASE || "").trim();
-          const base = (raw || "https://www.kaustubhdutta.com").replace(/\/+$/, "");
+          const pagesOrigin = "https://www.kaustubhdutta.com";
           const hosts = new Set(["www.kaustubhdutta.com", "kaustubhdutta.com"]);
-          let allowSameOrigin = false;
-          try {
-            const u = new URL(base);
-            const p = (u.pathname || "").replace(/\/+$/, "");
-            if (hosts.has(u.hostname) && (p === "" || p === "/")) allowSameOrigin = true;
-          } catch {
-            console.error("::error::VITE_CONTENT_API_BASE_URL (secret or default) must be a valid URL");
-            process.exit(1);
+          let base = pagesOrigin;
+          if (raw) {
+            try {
+              const u = new URL(raw.replace(/\/+$/, ""));
+              const p = (u.pathname || "").replace(/\/+$/, "");
+              if (hosts.has(u.hostname) && (p === "" || p === "/")) {
+                base = u.origin;
+              } else {
+                console.log(
+                  "::warning::Ignoring VITE_CONTENT_API_BASE_URL (not the GitHub Pages site origin). Using " +
+                    pagesOrigin +
+                    " so the SPA loads generated /v1 JSON.",
+                );
+              }
+            } catch {
+              console.error("::error::VITE_CONTENT_API_BASE_URL (secret or variable) must be a valid URL");
+              process.exit(1);
+            }
+          } else {
+            console.log(
+              "::notice::No VITE_CONTENT_API_BASE_URL secret or variable — using " +
+                pagesOrigin +
+                " with same-origin /v1.",
+            );
           }
           fs.appendFileSync(gh, `VITE_CONTENT_API_BASE_URL=${base}\n`);
-          if (allowSameOrigin) {
-            fs.appendFileSync(gh, "VITE_ALLOW_SAME_ORIGIN_CONTENT_API=true\n");
-          }
-          if (!raw) {
-            console.log(
-              "::notice::No VITE_CONTENT_API_BASE_URL secret or variable — defaulting to https://www.kaustubhdutta.com with same-origin /v1 (generated static JSON on GitHub Pages).",
-            );
-          } else if (process.env.SECRET_BASE?.trim()) {
-            console.log("::notice::Using VITE_CONTENT_API_BASE_URL from Actions **secrets** for this build.");
-          } else {
-            console.log("::notice::Using VITE_CONTENT_API_BASE_URL from Actions **variables** for this build.");
-          }
+          fs.appendFileSync(gh, "VITE_ALLOW_SAME_ORIGIN_CONTENT_API=true\n");
           NODE
 
       - name: Verify content API base is set for Vite build
