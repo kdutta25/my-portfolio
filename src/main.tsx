@@ -42,6 +42,6 @@ void bootstrapApp()
   })
   .catch((err: unknown) => {
     const message = err instanceof Error ? err.message : String(err);
-    rootEl.innerHTML = `<pre style="padding:1rem;font-family:system-ui">Failed to load site shell.\n\n${message}\n\nSet VITE_CONTENT_API_BASE_URL (e.g. http://localhost:3001) or VITE_SITE_CONTENT_URL, run my-portfolio-api, and retry.</pre>`;
+    rootEl.innerHTML = `<pre style="padding:1rem;font-family:system-ui">Failed to load site shell.\n\n${message}\n\nRun npm run generate:static-content (needs my-portfolio-api/data), set VITE_CONTENT_API_BASE_URL (e.g. http://localhost:4044), and retry.</pre>`;
     console.error(err);
   });

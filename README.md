@@ -27,7 +27,7 @@ Repository for **Kaustubh Dutta**’s portfolio site: projects, experience, publ
 - **Runtime:** React 18, TypeScript, **Vite 5**
 - **Styling:** styled-components 6, Bootstrap 5 + react-bootstrap (layout grid / utilities)
 - **Motion:** anime.js (entrance animation, micro-interactions)
-- **i18n:** i18next + react-i18next — copy is merged at runtime from **my-portfolio-api** fragment endpoints (`GET /v1/fragments/{lng}/{key}`), bootstrapped before the first paint (see **Content API and environment** below). Configure the API origin with **`VITE_CONTENT_API_BASE_URL`** (or legacy **`VITE_SITE_CONTENT_URL`**).
+- **i18n:** i18next + react-i18next — copy is merged at runtime from **`GET /v1/fragments/{lng}/{key}`** (static JSON baked from **my-portfolio-api** `data/` into `public/v1` for GitHub Pages), bootstrapped before the first paint (see **Content API and environment** below). Configure the content origin with **`VITE_CONTENT_API_BASE_URL`** (or legacy **`VITE_SITE_CONTENT_URL`**).
 - **SEO:** react-helmet-async (`SeoHead`)
 - **Extras:** react-icons, react-github-calendar, floating **Portfolio** chat panel with lightweight FAQ matching (`src/chat/matchKnowledge.ts` + résumé / LinkedIn text from the content API)
 
@@ -77,7 +77,7 @@ Other shared assets include **`public/Kaustubh-Dutta-Resume.pdf`** (header résu
 - **Composition root:** `App` wraps **HelmetProvider** → **I18nextProvider** → **AppThemeProvider** → `GlobalStyle` + page shell.
 - **Theme:** `AppThemeProvider` toggles **light/dark** `AppTheme` tokens (`src/theme/theme.ts`) — colors, typography stacks (`Syne` / `DM Sans` / `JetBrains Mono`), radii, shadows — persisted in `localStorage` and synced to `document.documentElement` / Bootstrap `data-bs-theme`.
 - **Section pattern:** Most sections use a styled `<section>` with `scroll-margin-top` for sticky header offset, **`SectionHeading`** (eyebrow + title + bar), optional **`GlowCard`** wrapper, **`AnimeReveal`** for staggered entrance, and **react-bootstrap** `Container` / `Row` / `Col` for responsive grids. **`ProjectsSection`** maps locale **`projects.items`** to **`ProjectCard`** (cover image or gradient, tags, external asset links).
-- **Content:** `main.tsx` awaits shell and section **fragment** loads from **my-portfolio-api** (see **Content API and environment**); résumé / LinkedIn knowledge for the chatbot is fetched in parallel and does not block the page. Static assets stay under `public/` (images, PDF).
+- **Content:** `main.tsx` awaits shell and section **fragment** loads from **`/v1`** (see **Content API and environment**); résumé / LinkedIn knowledge for the chatbot is fetched in parallel and does not block the page. Static assets stay under `public/` (images, PDF). The production site does **not** run Express.
 - **Accessibility:** Landmark regions, labelled headings, skip link, reduced-motion respected where wired (e.g. hero / nav animations).
 
 ```mermaid
@@ -172,7 +172,7 @@ flowchart TB
   subgraph content["Content & behavior"]
     L10n[i18n en / fr merged from fragments]
     CHAT[PortfolioChatbot + matchKnowledge]
-    API[my-portfolio-api REST]
+    API[static /v1 JSON on GitHub Pages]
     MOTION[anime.js + MOTION constants]
   end
 
@@ -192,7 +192,7 @@ flowchart TB
 
 **Command:** `npm test` or `npm run test:run`
 
-**Last structured run:** 20 test files, **22 tests**, all passing (Vitest 2, jsdom, `src/setupTests.ts`).
+**Last structured run:** 21 test files, **29 tests**, all passing (Vitest 2, jsdom, `src/setupTests.ts`).
 
 | Area | File | What it covers |
 |------|------|----------------|
@@ -221,8 +221,9 @@ Configuration: `vite.config.ts` → `test` block (`include: src/**/*.test.{ts,ts
 
 | Script | Purpose |
 |--------|---------|
-| `npm start` / `npm run dev` | Vite dev server (**default port `4044`** — see `vite.config.ts`) |
-| `npm run build` | Production build to `dist/` |
+| `npm start` / `npm run dev` | Vite dev server (**default port `4044`** — see `vite.config.ts`). `prestart` / `predev` snapshot content into `public/v1` when `../my-portfolio-api/data` exists. |
+| `npm run generate:static-content` | Write fragment + knowledge JSON under `public/v1` from **my-portfolio-api** `data/` (`CONTENT_DATA_DIR`). |
+| `npm run build` | `prebuild` generates `/v1`, then Vite production build to `dist/` |
 | `npm run preview` | Preview production build |
 | `npm run typecheck` | `tsc --noEmit` |
 | `npm test` | Vitest watch |
@@ -233,7 +234,7 @@ Configuration: `vite.config.ts` → `test` block (`include: src/**/*.test.{ts,ts
 
 ## Content API and environment
 
-This app **does not ship** `src/locales/*.json`, résumé text, or LinkedIn snapshot JSON. All of that lives in **[my-portfolio-api](https://github.com/kdutta25/my-portfolio-api)** under `data/` and is exposed over HTTP.
+This app **does not ship** `src/locales/*.json`, résumé text, or LinkedIn snapshot JSON as source files. Those live in **[my-portfolio-api](https://github.com/kdutta25/my-portfolio-api)** under `data/`. For **GitHub Pages**, `scripts/generate-static-content.mjs` snapshots that data into **`public/v1/`** (gitignored) so the SPA can `fetch` the same `/v1/fragments/...` and `/v1/knowledge/...` URLs **without a live Express process**. Local Express (`npm start` in the API repo) is optional for editing/previewing JSON over HTTP.
 
 ### What changed (REST-first loading)
 
@@ -250,7 +251,7 @@ This app **does not ship** `src/locales/*.json`, résumé text, or LinkedIn snap
 
 ```mermaid
 flowchart TB
-  subgraph api["my-portfolio-api"]
+  subgraph pages["GitHub Pages dist"]
     FG["GET /v1/fragments/{lng}/{key}"]
     KR["GET /v1/knowledge/resume"]
     KL["GET /v1/knowledge/linkedin"]
@@ -280,32 +281,29 @@ sequenceDiagram
   actor User
   participant Main as main.tsx
   participant I18n as i18n shell
-  participant API as Content API
+  participant Static as static /v1 JSON
   participant React as React tree
 
   User->>Main: Open site
   Main->>I18n: initI18nShell empty bundles
   loop Each shell + section fragment key
-    Main->>API: GET /v1/fragments/en/key and /fr/key
-    API-->>Main: JSON data
+    Main->>Static: GET /v1/fragments/en/key and /fr/key
+    Static-->>Main: JSON data
     Main->>I18n: mergeTranslationFragment
   end
   Main->>Main: void ensureKnowledgeLoaded (not awaited)
   Main->>React: createRoot render when bootstrap resolves
   React-->>User: Sections with copy from i18n cache
-  Note over Main,API: Knowledge GETs may finish after first paint. The chat uses corpora once they arrive.
+  Note over Main,Static: Knowledge GETs may finish after first paint. The chat uses corpora once they arrive.
 ```
 
 | Variable | Required | Description |
 |----------|----------|-------------|
-| `VITE_CONTENT_API_BASE_URL` | Recommended | API base: **origin**, or **origin + path prefix** before `/v1` (e.g. `https://api.example.com` or `https://www.example.com/api` when nginx proxies `/api` to the API). **Not** the bare portfolio static origin unless `/v1` is proxied there. |
+| `VITE_CONTENT_API_BASE_URL` | Recommended | Content base: **origin**, or **origin + path prefix** before `/v1`. On GitHub Pages this is the SPA origin (`https://www.kaustubhdutta.com`); Vite **`BASE_URL`** is appended when you use Project Pages (`VITE_BASE_PATH`). |
 | `VITE_SITE_CONTENT_URL` | Optional fallback | Any URL on that origin (for example a legacy `…/v1/site-content` URL). If `VITE_CONTENT_API_BASE_URL` is unset, **only the origin** is parsed from this value. |
 
-- **Local dev:** `.env.development` sets `VITE_CONTENT_API_BASE_URL=http://localhost:3001`. Run **my-portfolio-api** on **3001**, then `npm start` here (Vite **4044**). **Shell wins over `.env*`:**
-  if you `export VITE_CONTENT_API_BASE_URL=https://www.kaustubhdutta.com` (or legacy `VITE_SITE_CONTENT_URL` to that site), Vite will bake that in and fragment GETs will 404. Unset those in your terminal, or rely on the dev fallback (bare `www` / apex `kaustubhdutta.com` with no path → **`http://localhost:3001`** + a console warning). Override the fallback with **`VITE_DEV_DEFAULT_CONTENT_API_BASE`**, or set **`VITE_DEV_ALLOW_BARE_PORTFOLIO_ORIGIN_API=true`** to force the static origin in dev.
-- **Production:** Set `VITE_CONTENT_API_BASE_URL` (or legacy `VITE_SITE_CONTENT_URL`) when running `npm run build`. If the API base is bare **`https://www.kaustubhdutta.com`** or **`https://kaustubhdutta.com`** (same host as the SPA, path empty before `/v1`), **`vite build` automatically bakes `VITE_ALLOW_SAME_ORIGIN_CONTENT_API=true`** so the runtime guard does not throw (set **`VITE_ALLOW_SAME_ORIGIN_CONTENT_API=false`** to opt out). You still need **`/v1` actually served** by **my-portfolio-api** (reverse proxy), not static Pages alone.
-
-**Important:** `VITE_CONTENT_API_BASE_URL` must ultimately reach **my-portfolio-api** (`GET /v1/fragments/...`). Plain GitHub Pages on `https://www.kaustubhdutta.com` does **not** serve `/v1`; you need a separate API host **or** a CDN/proxy in front of that domain that routes `/v1/*` to Node.
+- **Local dev:** `.env.development` sets `VITE_CONTENT_API_BASE_URL=http://localhost:4044`. Clone **my-portfolio-api** next to this repo (or set **`CONTENT_DATA_DIR`**), then `npm start` — `prestart` generates `public/v1` and Vite serves it. **Shell wins over `.env*`:** if you `export VITE_CONTENT_API_BASE_URL=https://www.kaustubhdutta.com` (or legacy `VITE_SITE_CONTENT_URL` to that site), the app falls back to **`http://localhost:4044`** with a console warning. Override with **`VITE_DEV_DEFAULT_CONTENT_API_BASE`**, or set **`VITE_DEV_ALLOW_BARE_PORTFOLIO_ORIGIN_API=true`** to hit production `/v1`. To use live Express instead, point the env at `http://localhost:3001` and run the API.
+- **Production:** The Pages workflow generates `/v1` from the API repo’s `data/` and sets `VITE_CONTENT_API_BASE_URL` to **`https://www.kaustubhdutta.com`** with **`VITE_ALLOW_SAME_ORIGIN_CONTENT_API=true`** (set **`VITE_ALLOW_SAME_ORIGIN_CONTENT_API=false`** to opt out). No reverse proxy or AWS host is required.
 
 Copy `.env.example` if you need a template beyond `.env.development`.
 
@@ -313,19 +311,17 @@ Copy `.env.example` if you need a template beyond `.env.development`.
 
 1. **Repository → Settings → Pages → Build and deployment:** set **Source** to **GitHub Actions** (not “Deploy from a branch” unless you only use `npm run deploy` locally).
 2. **Repository → Settings → Secrets and variables → Actions:**  
-   - **`VITE_CONTENT_API_BASE_URL`** (optional) — HTTPS base of **my-portfolio-api** before `/v1` (e.g. `https://your-api.onrender.com`). If you **omit** this secret, the workflow defaults to **`https://www.kaustubhdutta.com`** and bakes **`VITE_ALLOW_SAME_ORIGIN_CONTENT_API=true`** so the SPA can call `/v1` on the same host. That only works if something in front of your domain (not GitHub Pages alone) **reverse-proxies `/v1` and knowledge routes** to **my-portfolio-api**. Otherwise set the secret to your real API URL.
-3. Push to **`main`** (or run workflow **Deploy Pages** manually). Workflow: **`.github/workflows/deploy-pages.yml`** — it runs `npm ci`, configures the Vite env (default API base when the secret is unset), `npm run build`, then publishes **`dist/`** to Pages.
-4. **Optional — Project Pages** (`https://USER.github.io/REPO/`): add a repository **variable** **`VITE_BASE_PATH`** set to your repo path with slashes, e.g. **`/my-portfolio/`**. Custom domain at site root can omit it (defaults to **`/`**).
-
-Ensure **my-portfolio-api** allows your Pages origin in **`SITE_CONTENT_CORS_ORIGINS`** (defaults already include `https://www.kaustubhdutta.com`).
+   - **`VITE_CONTENT_API_BASE_URL`** (optional) — defaults to **`https://www.kaustubhdutta.com`**. Leave unset for same-origin static `/v1`. Only set this if content should load from another origin.
+3. Push to **`master`** (or run workflow **Deploy Pages** manually). Workflow: **`.github/workflows/deploy-pages.yml`** — checks out **my-portfolio-api** into `_content-api`, runs `npm ci`, generates `public/v1`, builds, then publishes **`dist/`** to Pages. If the API repo is **private**, add a PAT with `contents: read` and pass it as `token` on that checkout step.
+4. **Optional — Project Pages** (`https://USER.github.io/REPO/`): add a repository **variable** **`VITE_BASE_PATH`** set to your repo path with slashes, e.g. **`/my-portfolio/`**. `getContentApiBase` appends Vite **`BASE_URL`** so fetches hit `/my-portfolio/v1/...`. Custom domain at site root can omit it (defaults to **`/`**).
 
 ## Getting started
 
 1. **Install:** `npm install`
-2. **Content API:** Clone/run **[my-portfolio-api](https://github.com/kdutta25/my-portfolio-api)** (or your fork) on the origin you configure in `VITE_CONTENT_API_BASE_URL`.
-3. **Develop:** `npm start` — open **http://localhost:4044**
-4. **Edit content:** Change locale JSON and corpora in the API repo under `data/` (see that README); adjust section layout under `src/components/sections/`, `src/components/projects/` (`ProjectCard.tsx`), and `src/components/experience/`.
-5. **Static files:** Add PDFs, thumbnails, and other binaries under **`public/`** in this repo and reference them from API-driven copy or components with paths relative to the site root (see **Project cards** above).
+2. **Content data:** Clone **[my-portfolio-api](https://github.com/kdutta25/my-portfolio-api)** as a sibling of this repo (or set **`CONTENT_DATA_DIR`** to its `data/` folder).
+3. **Develop:** `npm start` — open **http://localhost:4044** (generates `public/v1` when data is present).
+4. **Edit content:** Change locale JSON and corpora in the API repo under `data/` (see that README), then regenerate (`npm run generate:static-content` or restart Vite). Adjust section layout under `src/components/sections/`, `src/components/projects/` (`ProjectCard.tsx`), and `src/components/experience/`.
+5. **Static files:** Add PDFs, thumbnails, and other binaries under **`public/`** in this repo and reference them from content-driven copy or components with paths relative to the site root (see **Project cards** above).
 
 Continuous delivery: **`.github/workflows/release.yml`** (semantic-release) and **`.github/workflows/deploy-pages.yml`** (GitHub Pages).
 

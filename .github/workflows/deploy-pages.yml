@@ -23,6 +23,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Checkout my-portfolio-api data
+        uses: actions/checkout@v4
+        with:
+          repository: kdutta25/my-portfolio-api
+          path: _content-api
+
       - uses: actions/setup-node@v4
         with:
           node-version: "20"
@@ -56,8 +62,7 @@ jobs:
           }
           if (!raw) {
             console.log(
-              "::notice::No VITE_CONTENT_API_BASE_URL secret or variable — defaulting to https://www.kaustubhdutta.com with same-origin API opt-in. " +
-                "You must reverse-proxy GET /v1/* (and knowledge routes) to my-portfolio-api on that host, or set the secret to a dedicated API URL instead.",
+              "::notice::No VITE_CONTENT_API_BASE_URL secret or variable — defaulting to https://www.kaustubhdutta.com with same-origin /v1 (generated static JSON on GitHub Pages).",
             );
           } else if (process.env.SECRET_BASE?.trim()) {
             console.log("::notice::Using VITE_CONTENT_API_BASE_URL from Actions **secrets** for this build.");
@@ -74,9 +79,15 @@ jobs:
           fi
           echo "VITE_CONTENT_API_BASE_URL is set (value hidden)."
 
+      - name: Generate static /v1 content
+        env:
+          CONTENT_DATA_DIR: _content-api/data
+        run: npm run generate:static-content
+
       - name: Build
         env:
           VITE_BASE_PATH: ${{ vars.VITE_BASE_PATH }}
+          CONTENT_DATA_DIR: _content-api/data
         run: npm run build
 
       - uses: actions/configure-pages@v4

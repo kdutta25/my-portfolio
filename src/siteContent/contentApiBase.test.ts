@@ -1,4 +1,25 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { joinContentApiBaseWithViteBase } from "./contentApiBase";
+
+describe("joinContentApiBaseWithViteBase", () => {
+  it("leaves origin-only bases unchanged when Vite base is /", () => {
+    expect(joinContentApiBaseWithViteBase("https://www.kaustubhdutta.com", "/")).toBe(
+      "https://www.kaustubhdutta.com",
+    );
+  });
+
+  it("appends project Pages subpath onto a bare origin", () => {
+    expect(
+      joinContentApiBaseWithViteBase("https://kdutta25.github.io", "/my-portfolio/"),
+    ).toBe("https://kdutta25.github.io/my-portfolio");
+  });
+
+  it("does not append Vite base when the API URL already has a path prefix", () => {
+    expect(
+      joinContentApiBaseWithViteBase("https://www.kaustubhdutta.com/api", "/my-portfolio/"),
+    ).toBe("https://www.kaustubhdutta.com/api");
+  });
+});
 
 describe("getContentApiBase", () => {
   beforeEach(() => {
@@ -11,16 +32,16 @@ describe("getContentApiBase", () => {
     vi.restoreAllMocks();
   });
 
-  it("in dev, replaces bare www static origin with localhost API", async () => {
+  it("in dev, replaces bare www static origin with local Vite origin", async () => {
     vi.stubEnv("VITE_CONTENT_API_BASE_URL", "https://www.kaustubhdutta.com");
     const { getContentApiBase } = await import("./contentApiBase");
-    expect(getContentApiBase()).toBe("http://localhost:3001");
+    expect(getContentApiBase()).toBe("http://localhost:4044");
   });
 
-  it("in dev, replaces bare apex static origin with localhost API", async () => {
+  it("in dev, replaces bare apex static origin with local Vite origin", async () => {
     vi.stubEnv("VITE_CONTENT_API_BASE_URL", "https://kaustubhdutta.com");
     const { getContentApiBase } = await import("./contentApiBase");
-    expect(getContentApiBase()).toBe("http://localhost:3001");
+    expect(getContentApiBase()).toBe("http://localhost:4044");
   });
 
   it("in dev, does not replace same host when a path prefix is present", async () => {
