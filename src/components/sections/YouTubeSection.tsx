@@ -68,9 +68,12 @@ const SubscribeLink = styled.a`
   }
 `;
 
-/** YouTube's desktop and mobile-safe crops of the channel banner. */
-const DESKTOP_CROP = "fcrop64=1,00005a57ffffa5a8-k-c0xffffffff-no-nd-rj";
-const MOBILE_CROP = "fcrop64=1,32b75a57cd48a5a8-k-c0xffffffff-no-nd-rj";
+/**
+ * YouTube's desktop and mobile-safe crops of the channel banner. The comma is percent-encoded
+ * because a literal comma would split the URL into separate `srcset` candidates.
+ */
+const DESKTOP_CROP = "fcrop64=1%2C00005a57ffffa5a8-k-c0xffffffff-no-nd-rj";
+const MOBILE_CROP = "fcrop64=1%2C32b75a57cd48a5a8-k-c0xffffffff-no-nd-rj";
 const MOBILE_QUERY = "(max-width: 767.98px)";
 
 function bannerSources(banner: string | undefined) {
