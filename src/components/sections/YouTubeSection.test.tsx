@@ -85,8 +85,11 @@ describe("YouTubeSection", () => {
 
     await screen.findByText("Subscribers");
     const banner = screen.getByRole("img", { name: "KausDiaries channel banner" });
-    expect(banner.getAttribute("srcset")).toContain(`${base}=w2560-fcrop64=`);
+    const desktopSet = banner.getAttribute("srcset") ?? "";
+    expect(desktopSet).toContain(`${base}=w2560-fcrop64=1%2C00005a57ffffa5a8`);
+    expect(desktopSet.split(", ")).toHaveLength(3);
     const mobile = banner.parentElement?.querySelector("source");
-    expect(mobile?.getAttribute("srcset")).toContain(`${base}=w640-fcrop64=1,32b75a57cd48a5a8`);
+    expect(mobile?.getAttribute("srcset")).toContain(`${base}=w640-fcrop64=1%2C32b75a57cd48a5a8`);
+    expect(desktopSet).not.toMatch(/fcrop64=1,/);
   });
 });
