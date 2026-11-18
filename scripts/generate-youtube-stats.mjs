@@ -95,7 +95,10 @@ async function main() {
     console.warn(`${TAG} YOUTUBE_API_KEY is not set — skipping; the section will show its fallback.`);
     return;
   }
-  const channels = await api("channels", { part: "snippet,statistics,contentDetails", forHandle: HANDLE });
+  const channels = await api("channels", {
+    part: "snippet,statistics,contentDetails,brandingSettings",
+    forHandle: HANDLE,
+  });
   const ch = channels.items?.[0];
   if (!ch) throw new Error(`no channel found for ${HANDLE}`);
 
@@ -110,6 +113,7 @@ async function main() {
       title: ch.snippet.title,
       url: `https://www.youtube.com/${ch.snippet.customUrl || HANDLE}`,
       avatar: (thumbs.high || thumbs.medium || thumbs.default || {}).url || "",
+      banner: (ch.brandingSettings?.image?.bannerExternalUrl || "").split("=")[0],
       subscribers: Number(ch.statistics.subscriberCount || 0),
       views: Number(ch.statistics.viewCount || 0),
       videoCount: Number(ch.statistics.videoCount || 0),

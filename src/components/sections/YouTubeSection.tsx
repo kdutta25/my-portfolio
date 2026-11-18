@@ -6,6 +6,7 @@ import { useContentFragment } from "../../hooks/useContentFragment";
 import { useUiLabels } from "../../i18n/uiLabels";
 import { getContentApiBase } from "../../siteContent/contentApiBase";
 import type { YouTubeChannelStats, YouTubeVideo } from "../../types/content";
+import { resolvePublicAsset } from "../../utils/resolvePublicAsset";
 import { SectionSkeleton } from "../loading/SectionSkeleton";
 import { AnimeReveal } from "../ui/AnimeReveal";
 import { SectionHeading } from "../ui/SectionHeading";
@@ -66,6 +67,88 @@ const SubscribeLink = styled.a`
     outline-offset: 2px;
   }
 `;
+
+/** YouTube's desktop and mobile-safe crops of the channel banner. */
+const DESKTOP_CROP = "fcrop64=1,00005a57ffffa5a8-k-c0xffffffff-no-nd-rj";
+const MOBILE_CROP = "fcrop64=1,32b75a57cd48a5a8-k-c0xffffffff-no-nd-rj";
+const MOBILE_QUERY = "(max-width: 767.98px)";
+
+function bannerSources(banner: string | undefined) {
+  if (banner) {
+    const at = (w: number, crop: string) => `${banner}=w${w}-${crop}`;
+    return {
+      desktop: `${at(1060, DESKTOP_CROP)} 1060w, ${at(2120, DESKTOP_CROP)} 2120w, ${at(2560, DESKTOP_CROP)} 2560w`,
+      mobile: `${at(640, MOBILE_CROP)} 640w, ${at(1280, MOBILE_CROP)} 1280w`,
+      fallback: at(1060, DESKTOP_CROP),
+    };
+  }
+  const local = (file: string) => resolvePublicAsset(`images/youtube/${file}`);
+  return {
+    desktop: `${local("banner-1060.jpg")} 1060w, ${local("banner-2120.jpg")} 2048w`,
+    mobile: `${local("banner-mobile-640.jpg")} 640w, ${local("banner-mobile-1280.jpg")} 1237w`,
+    fallback: local("banner-1060.jpg"),
+  };
+}
+
+const BannerLink = styled.a`
+  display: block;
+  margin: 0 0 clamp(1.25rem, 3vw, 1.75rem);
+  border-radius: ${({ theme }) => theme.radii.lg};
+  overflow: hidden;
+  background: #000;
+  border: 1px solid ${({ theme }) => theme.colors.border};
+  box-shadow: ${({ theme }) => theme.shadows.card};
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+  img {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1060 / 175;
+    object-fit: cover;
+
+    @media ${MOBILE_QUERY} {
+      aspect-ratio: 640 / 175;
+    }
+  }
+
+  &:hover {
+    transform: translateY(-3px);
+    box-shadow: ${({ theme }) => theme.shadows.soft};
+  }
+
+  &:focus-visible {
+    outline: 2px solid ${({ theme }) => theme.colors.focusRing};
+    outline-offset: 3px;
+  }
+`;
+
+function ChannelBanner({ banner, href, title }: { banner?: string; href: string; title: string }) {
+  const src = bannerSources(banner);
+  return (
+    <BannerLink
+      data-component-id="ChannelBanner"
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      data-animate
+    >
+      <picture>
+        <source media={MOBILE_QUERY} srcSet={src.mobile} sizes="100vw" />
+        <img
+          src={src.fallback}
+          srcSet={src.desktop}
+          sizes="(min-width: 1240px) 1200px, 100vw"
+          alt={`${title} channel banner`}
+          width={1060}
+          height={175}
+          loading="lazy"
+          decoding="async"
+        />
+      </picture>
+    </BannerLink>
+  );
+}
 
 const StatsBlock = styled.div`
   animation: ytFadeUp 0.6s ease both;
@@ -296,6 +379,7 @@ function YouTubeSectionBody({ stats }: { stats: YouTubeChannelStats | null }) {
   const compact = new Intl.NumberFormat(locale, { notation: "compact", maximumFractionDigits: 1 });
   const views = (n: number) => `${compact.format(n)} ${label("ytViewsSuffix")}`;
   const channelUrl = stats?.channel.url || t("youtube.channelUrl");
+  const channelTitle = stats?.channel.title || channelUrl.split("@").pop() || "YouTube";
 
   return (
     <>
@@ -318,6 +402,8 @@ function YouTubeSectionBody({ stats }: { stats: YouTubeChannelStats | null }) {
           </SubscribeLink>
         </IntroAside>
       </IntroBlock>
+
+      <ChannelBanner banner={stats?.channel.banner} href={channelUrl} title={channelTitle} />
 
       {stats ? (
         <StatsBlock data-component-id="StatsBlock">

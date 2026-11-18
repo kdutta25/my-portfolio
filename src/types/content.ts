@@ -74,6 +74,8 @@ export interface YouTubeChannelStats {
     title: string;
     url: string;
     avatar: string;
+    /** Base banner URL without size/crop parameters; empty when the channel has no banner. */
+    banner?: string;
     subscribers: number;
     views: number;
     videoCount: number;
