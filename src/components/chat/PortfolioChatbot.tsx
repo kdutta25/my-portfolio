@@ -237,7 +237,7 @@ function botReplyFromText(raw: string, t: TFunction): { text: string; scroll?: s
   const sectionMatchers: { test: RegExp; hash: string; key: string }[] = [
     { test: /\bexperience\b|work\b|job\b|career\b|nokia\b/, hash: "#experience", key: "chatbot.snippetExperience" },
     { test: /\bskill\b|stack\b|tech\b|tool\b/, hash: "#skills", key: "chatbot.snippetSkills" },
-    { test: /\bcomposer\b|claude opus|gpt codex|gpt\s*5|codex\b|ai models\b/, hash: "#skills", key: "chatbot.snippetAiModels" },
+    { test: /\bclaude\b|\bgpt[\s-]*5|\bgemini\b|\bmuse\b|ai models\b/, hash: "#skills", key: "chatbot.snippetAiModels" },
     { test: /\bproject\b/, hash: "#projects", key: "chatbot.snippetProjects" },
     { test: /\beducation\b|degree\b|university\b|school\b|kiit\b|ottawa\b|xavier\b/, hash: "#education", key: "chatbot.snippetEducation" },
     { test: /\bvolunteer\b/, hash: "#volunteering", key: "chatbot.snippetVolunteering" },
