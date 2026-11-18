@@ -3,21 +3,25 @@ import styled from "styled-components";
 
 const Btn = styled.button`
   position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
   cursor: pointer;
   border: none;
-  border-radius: ${({ theme }) => theme.radii.md};
-  padding: 0.75rem 1.35rem;
-  font-weight: 700;
+  border-radius: ${({ theme }) => theme.radii.pill};
+  padding: 0.8rem 1.45rem;
+  font-weight: 600;
   font-family: ${({ theme }) => theme.fonts.sans};
   font-size: 0.9rem;
-  letter-spacing: 0.02em;
-  color: ${({ theme }) => theme.colors.bg};
-  background: ${({ theme }) => theme.colors.text};
-  transition: transform 180ms ease, opacity 180ms ease;
+  letter-spacing: 0.01em;
+  color: ${({ theme }) => theme.colors.onInk};
+  background: ${({ theme }) => theme.colors.ink};
+  box-shadow: ${({ theme }) => theme.shadows.card};
+  transition: transform 180ms ease, box-shadow 180ms ease;
 
   &:hover {
     transform: translateY(-2px);
-    opacity: 0.92;
+    box-shadow: ${({ theme }) => theme.shadows.soft};
   }
 
   &:active {

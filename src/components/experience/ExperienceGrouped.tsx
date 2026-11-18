@@ -1,69 +1,67 @@
 import styled from "styled-components";
 import type { ExperienceCompany } from "../../types/content";
 import { resolvePublicAsset } from "../../utils/resolvePublicAsset";
-
-const Wrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 0;
-`;
+import {
+  TimelineCard,
+  TimelineEntry,
+  YearTimeline,
+  startYear,
+} from "../ui/YearTimeline";
 
 const CompanyBlock = styled.section`
-  padding: 1.5rem 0 2rem;
-  border-bottom: 1px solid ${({ theme }) => theme.colors.border};
-
-  &:first-child {
-    padding-top: 0;
-  }
-
-  &:last-child {
-    border-bottom: none;
-    padding-bottom: 0;
-  }
+  display: grid;
+  gap: 1rem;
+  padding-bottom: 1.25rem;
 `;
 
 const CompanyHeader = styled.div`
+  position: relative;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 1rem 1.25rem;
-  margin-bottom: 1.35rem;
+  gap: 0.75rem 1rem;
+
+  &::before {
+    content: "";
+    position: absolute;
+    left: calc(-1 * clamp(1.5rem, 3vw, 2.25rem) - 8px);
+    top: 50%;
+    width: 15px;
+    height: 15px;
+    translate: 0 -50%;
+    border-radius: 50%;
+    background: ${({ theme }) => theme.colors.ink};
+    box-shadow: 0 0 0 5px ${({ theme }) => theme.colors.bg};
+  }
 `;
 
 const LogoWrap = styled.div`
   flex: 0 0 auto;
   display: flex;
   align-items: center;
-  min-height: 40px;
+  height: 44px;
+  padding: 0.35rem 0.75rem;
+  border-radius: ${({ theme }) => theme.radii.pill};
+  background: #fff;
+  border: 1px solid ${({ theme }) => theme.colors.border};
 
   img {
     display: block;
-    max-height: 40px;
+    max-height: 28px;
     width: auto;
-    max-width: min(200px, 48vw);
+    max-width: min(160px, 40vw);
     object-fit: contain;
-    filter: ${({ theme }) =>
-      theme.mode === "dark" ? "brightness(1.05)" : "none"};
   }
 `;
 
 const CompanyTitle = styled.h3`
   margin: 0;
-  font-family: ${({ theme }) => theme.fonts.display};
-  font-size: 1.15rem;
-  font-weight: 800;
-  letter-spacing: -0.02em;
-`;
-
-const RolesList = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 1.75rem;
-`;
-
-const RoleArticle = styled.article`
-  padding-left: 1rem;
-  border-left: 3px solid ${({ theme }) => theme.colors.accent};
+  font-family: ${({ theme }) => theme.fonts.serif};
+  font-style: italic;
+  font-weight: 400;
+  font-size: clamp(1.5rem, 3vw, 1.9rem);
+  letter-spacing: -0.01em;
+  color: ${({ theme }) => theme.colors.ink};
 `;
 
 const RoleTop = styled.div`
@@ -76,31 +74,39 @@ const RoleTop = styled.div`
 
 const JobTitle = styled.h4`
   margin: 0;
-  font-size: 1.02rem;
-  font-weight: 650;
+  font-size: 1.05rem;
+  font-weight: 700;
   line-height: 1.35;
+  letter-spacing: -0.01em;
   color: ${({ theme }) => theme.colors.text};
 `;
 
 const Period = styled.span`
-  font-size: 0.82rem;
+  padding: 0.2rem 0.65rem;
+  border-radius: ${({ theme }) => theme.radii.pill};
+  background: ${({ theme }) => theme.colors.accentSoft};
+  font-size: 0.74rem;
   font-family: ${({ theme }) => theme.fonts.mono};
-  color: ${({ theme }) => theme.colors.muted};
+  color: ${({ theme }) => theme.colors.text};
   white-space: nowrap;
 `;
 
 const Location = styled.p`
   margin: 0.35rem 0 0;
-  font-size: 0.88rem;
+  font-size: 0.86rem;
   color: ${({ theme }) => theme.colors.muted};
 `;
 
 const BulletList = styled.ul`
-  margin: 0.65rem 0 0;
-  padding-left: 1.15rem;
+  margin: 0.75rem 0 0;
+  padding-left: 1.1rem;
   color: ${({ theme }) => theme.colors.text};
   line-height: 1.65;
   font-size: 0.93rem;
+
+  li::marker {
+    color: ${({ theme }) => theme.colors.accent};
+  }
 `;
 
 const Bullet = styled.li`
@@ -112,11 +118,13 @@ const Bullet = styled.li`
 `;
 
 const Tech = styled.p`
-  margin: 0.65rem 0 0;
-  font-size: 0.8rem;
-  color: ${({ theme }) => theme.colors.accent};
+  margin: 0.85rem 0 0;
+  padding-top: 0.75rem;
+  border-top: 1px dashed ${({ theme }) => theme.colors.border};
+  font-size: 0.76rem;
+  color: ${({ theme }) => theme.colors.muted};
   font-family: ${({ theme }) => theme.fonts.mono};
-  line-height: 1.5;
+  line-height: 1.55;
 `;
 
 export interface ExperienceGroupedProps {
@@ -125,7 +133,7 @@ export interface ExperienceGroupedProps {
 
 export function ExperienceGrouped({ companies }: ExperienceGroupedProps) {
   return (
-    <Wrapper data-component-id="ExperienceGrouped">
+    <YearTimeline>
       {companies.map((co) => {
         const logoSrc = resolvePublicAsset(co.logo);
         return (
@@ -134,43 +142,43 @@ export function ExperienceGrouped({ companies }: ExperienceGroupedProps) {
             data-component-id="CompanyBlock"
             aria-labelledby={`company-${co.id}-title`}
           >
-          <CompanyHeader data-component-id="CompanyHeader">
-            <LogoWrap data-component-id="LogoWrap">
-              <img
-                src={logoSrc}
-                alt={co.name}
-                height={40}
-                loading="lazy"
-                decoding="async"
-              />
-            </LogoWrap>
-            <CompanyTitle data-component-id="CompanyTitle" id={`company-${co.id}-title`}>{co.name}</CompanyTitle>
-          </CompanyHeader>
+            <CompanyHeader data-component-id="CompanyHeader">
+              <LogoWrap data-component-id="LogoWrap">
+                <img src={logoSrc} alt={co.name} height={28} loading="lazy" decoding="async" />
+              </LogoWrap>
+              <CompanyTitle data-component-id="CompanyTitle" id={`company-${co.id}-title`}>
+                {co.name}
+              </CompanyTitle>
+            </CompanyHeader>
 
-          <RolesList data-component-id="RolesList">
             {co.roles.map((role, idx) => (
-              <RoleArticle
-                key={`${co.id}-${role.period}-${idx}`}
-                data-component-id="RoleArticle"
-                aria-labelledby={`role-${co.id}-${idx}`}
-              >
-                <RoleTop data-component-id="RoleTop">
-                  <JobTitle data-component-id="JobTitle" id={`role-${co.id}-${idx}`}>{role.title}</JobTitle>
-                  <Period data-component-id="Period">{role.period}</Period>
-                </RoleTop>
-                <Location data-component-id="Location">{role.location}</Location>
-                <BulletList data-component-id="BulletList">
-                  {role.bullets.map((b, bi) => (
-                    <Bullet data-component-id="Bullet" key={bi}>{b}</Bullet>
-                  ))}
-                </BulletList>
-                <Tech data-component-id="Tech">{role.stack}</Tech>
-              </RoleArticle>
+              <TimelineEntry key={`${co.id}-${role.period}-${idx}`} year={startYear(role.period)}>
+                <TimelineCard
+                  as="article"
+                  data-component-id="RoleArticle"
+                  aria-labelledby={`role-${co.id}-${idx}`}
+                >
+                  <RoleTop data-component-id="RoleTop">
+                    <JobTitle data-component-id="JobTitle" id={`role-${co.id}-${idx}`}>
+                      {role.title}
+                    </JobTitle>
+                    <Period data-component-id="Period">{role.period}</Period>
+                  </RoleTop>
+                  <Location data-component-id="Location">{role.location}</Location>
+                  <BulletList data-component-id="BulletList">
+                    {role.bullets.map((b, bi) => (
+                      <Bullet data-component-id="Bullet" key={bi}>
+                        {b}
+                      </Bullet>
+                    ))}
+                  </BulletList>
+                  <Tech data-component-id="Tech">{role.stack}</Tech>
+                </TimelineCard>
+              </TimelineEntry>
             ))}
-          </RolesList>
           </CompanyBlock>
         );
       })}
-    </Wrapper>
+    </YearTimeline>
   );
 }

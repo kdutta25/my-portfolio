@@ -2,7 +2,6 @@ import styled from "styled-components";
 import { useTranslation } from "react-i18next";
 import { useContentFragment } from "../../hooks/useContentFragment";
 import { SectionSkeleton } from "../loading/SectionSkeleton";
-import { GlowCard } from "../ui/GlowCard";
 import { AnimeReveal } from "../ui/AnimeReveal";
 import { SectionHeading } from "../ui/SectionHeading";
 import { ExperienceGrouped } from "../experience/ExperienceGrouped";
@@ -10,15 +9,15 @@ import type { ExperienceCompany } from "../../types/content";
 
 const Section = styled.section`
   scroll-margin-top: 96px;
-  padding: 3rem 1.25rem 0;
-  max-width: 1120px;
+  padding: clamp(4rem, 9vw, 6.5rem) 1.25rem 0;
+  max-width: 1240px;
   margin: 0 auto;
 `;
 
 const IntroBlock = styled.div``;
 
 const BodyWrap = styled.div`
-  margin-top: 1.25rem;
+  margin-top: 0.5rem;
 `;
 
 function ExperienceSectionBody() {
@@ -54,9 +53,7 @@ export function ExperienceSection() {
       aria-labelledby="experience-heading"
     >
       <AnimeReveal stagger={52}>
-        <GlowCard data-component-id="GlowCard">
-          {ready ? <ExperienceSectionBody /> : <SectionSkeleton />}
-        </GlowCard>
+        {ready ? <ExperienceSectionBody /> : <SectionSkeleton />}
       </AnimeReveal>
     </Section>
   );
