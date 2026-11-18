@@ -7,6 +7,7 @@ export const GlobalStyle = createGlobalStyle`
 
   html {
     scroll-behavior: smooth;
+    scroll-padding-top: 5.5rem;
   }
 
   html[data-bs-theme="dark"],
@@ -27,11 +28,18 @@ export const GlobalStyle = createGlobalStyle`
     min-height: 100vh;
     font-family: ${({ theme }) => theme.fonts.sans};
     background-color: ${({ theme }) => theme.colors.bg};
-    background-image: linear-gradient(
-      180deg,
-      ${({ theme }) => theme.colors.bg} 0%,
-      ${({ theme }) => theme.colors.bgElevated} 100%
-    );
+    background-image:
+      radial-gradient(
+        circle at 85% 0%,
+        ${({ theme }) => theme.colors.accentSoft} 0%,
+        transparent 38%
+      ),
+      linear-gradient(
+        180deg,
+        ${({ theme }) => theme.colors.bg} 0%,
+        ${({ theme }) => theme.colors.bgElevated} 100%
+      );
+    background-attachment: fixed;
     color: ${({ theme }) => theme.colors.text};
     line-height: 1.55;
     -webkit-font-smoothing: antialiased;

@@ -6,163 +6,145 @@ import Col from "react-bootstrap/Col";
 import anime from "animejs";
 import { useTranslation } from "react-i18next";
 import { FaGithub, FaLinkedin } from "react-icons/fa";
-import { HiOutlineMail } from "react-icons/hi";
+import { HiOutlineMail, HiOutlineLocationMarker } from "react-icons/hi";
 import { MdOutlineKeyboardArrowDown } from "react-icons/md";
 import { MOTION } from "../../animations/constants";
 import { usePrefersReducedMotion } from "../../hooks/usePrefersReducedMotion";
 import { useContentFragment } from "../../hooks/useContentFragment";
 import { SectionSkeleton } from "../loading/SectionSkeleton";
 import { UiverseButton } from "../ui/UiverseButton";
+import { AccentTitle } from "../ui/AccentTitle";
+import { RESUME_PDF_URL } from "../../constants/externalLinks";
 
 type HeroStat = { value: string; line1: string; line2: string };
 
 const HeroRoot = styled.section`
   position: relative;
-  min-height: min(88vh, 840px);
-  padding: clamp(3rem, 10vw, 6rem) 0 clamp(3rem, 8vw, 5rem);
+  min-height: min(92vh, 900px);
+  padding: clamp(2.5rem, 8vw, 5rem) 0 clamp(4.5rem, 9vw, 6rem);
   overflow: hidden;
   scroll-margin-top: 72px;
-  border-bottom: 1px solid ${({ theme }) => theme.colors.border};
 `;
 
-const GridBg = styled.div`
+const Watermark = styled.span`
   position: absolute;
-  inset: 0;
+  top: clamp(0.5rem, 4vw, 2.5rem);
+  left: 50%;
+  translate: -50% 0;
+  font-family: ${({ theme }) => theme.fonts.display};
+  font-weight: 800;
+  font-size: clamp(5rem, 21vw, 22rem);
+  line-height: 0.85;
+  letter-spacing: -0.06em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: ${({ theme }) => theme.colors.watermark};
   pointer-events: none;
-  opacity: 0.35;
-  background-image:
-    linear-gradient(
-      ${({ theme }) => theme.colors.border} 1px,
-      transparent 1px
-    ),
-    linear-gradient(
-      90deg,
-      ${({ theme }) => theme.colors.border} 1px,
-      transparent 1px
-    );
-  background-size: 64px 64px;
-  mask-image: radial-gradient(
-    ellipse 70% 60% at 50% 30%,
-    black 20%,
-    transparent 75%
-  );
+  user-select: none;
+`;
+
+const Inner = styled(Container)`
+  position: relative;
+  z-index: 1;
+  max-width: 1240px;
 `;
 
 const IntroEyebrow = styled.p`
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
   margin: 0;
-  font-size: 0.78rem;
-  letter-spacing: 0.22em;
+  font-family: ${({ theme }) => theme.fonts.mono};
+  font-size: 0.74rem;
+  letter-spacing: 0.24em;
   text-transform: uppercase;
   font-weight: 600;
   color: ${({ theme }) => theme.colors.muted};
-`;
 
-const DisplayHeadline = styled.h1`
-  margin: 1rem 0 0;
-  font-family: ${({ theme }) => theme.fonts.display};
-  font-size: clamp(2.75rem, 10vw, 5.75rem);
-  font-weight: 800;
-  line-height: 0.92;
-  letter-spacing: -0.045em;
-  text-transform: uppercase;
-  white-space: pre-line;
-`;
-
-const Tagline = styled.p`
-  margin: 1.5rem 0 0;
-  max-width: min(42rem, 100%);
-  font-size: clamp(1rem, 2.2vw, 1.15rem);
-  color: ${({ theme }) => theme.colors.muted};
-  line-height: 1.65;
-`;
-
-const RoleLine = styled.p`
-  margin: 1rem 0 0;
-  font-size: 0.88rem;
-  font-family: ${({ theme }) => theme.fonts.mono};
-  color: ${({ theme }) => theme.colors.text};
-  opacity: 0.85;
-`;
-
-const Meta = styled.p`
-  margin: 0.5rem 0 0;
-  font-size: 0.88rem;
-  color: ${({ theme }) => theme.colors.muted};
-`;
-
-const StatsRow = styled.div`
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 1rem;
-  margin-top: clamp(2rem, 5vw, 3rem);
-  padding-top: clamp(1.5rem, 4vw, 2rem);
-  border-top: 1px solid ${({ theme }) => theme.colors.border};
-
-  @media (max-width: 640px) {
-    grid-template-columns: 1fr;
-    text-align: center;
+  &::before {
+    content: "";
+    width: 2rem;
+    height: 1px;
+    background: currentColor;
   }
 `;
 
-const Stat = styled.div`
-  padding: 0.5rem 0;
-`;
-
-const StatValue = styled.span`
-  display: block;
+const DisplayHeadline = styled.h1`
+  margin: 1.1rem 0 0;
   font-family: ${({ theme }) => theme.fonts.display};
-  font-size: clamp(2rem, 5vw, 3rem);
+  font-size: clamp(3rem, 9.5vw, 6.5rem);
   font-weight: 800;
-  letter-spacing: -0.03em;
-  line-height: 1;
-`;
-
-const StatLabel = styled.span`
-  display: block;
-  margin-top: 0.45rem;
-  font-size: 0.68rem;
-  letter-spacing: 0.18em;
-  font-weight: 600;
-  color: ${({ theme }) => theme.colors.muted};
-  line-height: 1.35;
+  line-height: 0.92;
+  letter-spacing: -0.05em;
   white-space: pre-line;
+  color: ${({ theme }) => theme.colors.ink};
 `;
 
-const TechStrip = styled.p`
-  margin: clamp(1.75rem, 4vw, 2.5rem) 0 0;
-  padding: 0.85rem 0;
-  border-top: 1px solid ${({ theme }) => theme.colors.border};
-  border-bottom: 1px solid ${({ theme }) => theme.colors.border};
-  font-size: 0.72rem;
-  letter-spacing: 0.2em;
-  font-weight: 600;
-  text-transform: uppercase;
+const RoleLine = styled.p`
+  margin: 1.4rem 0 0;
+  font-family: ${({ theme }) => theme.fonts.serif};
+  font-style: italic;
+  font-size: clamp(1.2rem, 2.6vw, 1.55rem);
+  line-height: 1.3;
+  color: ${({ theme }) => theme.colors.text};
+`;
+
+const Tagline = styled.p`
+  margin: 1rem 0 0;
+  max-width: min(40rem, 100%);
+  font-size: clamp(0.98rem, 2vw, 1.08rem);
   color: ${({ theme }) => theme.colors.muted};
+  line-height: 1.7;
 `;
 
 const Actions = styled.div`
-  margin-top: 1.75rem;
+  margin-top: 2rem;
   display: flex;
   flex-wrap: wrap;
   gap: 0.75rem;
   align-items: center;
 `;
 
-const GhostButton = styled.button`
+const pill = `
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
   cursor: pointer;
-  border-radius: ${({ theme }) => theme.radii.md};
   padding: 0.75rem 1.35rem;
-  font-weight: 700;
+  font-weight: 600;
   font-family: inherit;
   font-size: 0.9rem;
-  border: 2px solid ${({ theme }) => theme.colors.text};
-  background: transparent;
+  text-decoration: none;
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+`;
+
+const GhostButton = styled.button`
+  ${pill};
+  border-radius: ${({ theme }) => theme.radii.pill};
+  border: 1px solid ${({ theme }) => theme.colors.border};
+  background: ${({ theme }) => theme.colors.surface};
   color: ${({ theme }) => theme.colors.text};
-  transition: background 0.2s ease, color 0.2s ease;
 
   &:hover {
-    background: ${({ theme }) => theme.colors.text};
-    color: ${({ theme }) => theme.colors.bg};
+    border-color: ${({ theme }) => theme.colors.ink};
+  }
+
+  &:focus-visible {
+    outline: 3px solid ${({ theme }) => theme.colors.focusRing};
+    outline-offset: 3px;
+  }
+`;
+
+const GhostLink = styled.a`
+  ${pill};
+  border-radius: ${({ theme }) => theme.radii.pill};
+  border: 1px solid ${({ theme }) => theme.colors.border};
+  background: transparent;
+  color: ${({ theme }) => theme.colors.text};
+
+  &:hover {
+    color: ${({ theme }) => theme.colors.text};
+    border-color: ${({ theme }) => theme.colors.ink};
   }
 
   &:focus-visible {
@@ -180,17 +162,18 @@ const SocialRow = styled.div`
 const SocialLink = styled.a`
   display: grid;
   place-items: center;
-  width: 46px;
-  height: 46px;
-  border-radius: ${({ theme }) => theme.radii.md};
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
   border: 1px solid ${({ theme }) => theme.colors.border};
   color: ${({ theme }) => theme.colors.text};
-  background: ${({ theme }) => theme.colors.bgElevated};
-  transition: border-color 0.2s ease, color 0.2s ease;
+  background: ${({ theme }) => theme.colors.surface};
+  transition: border-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
 
   &:hover {
-    border-color: ${({ theme }) => theme.colors.text};
+    border-color: ${({ theme }) => theme.colors.ink};
     color: ${({ theme }) => theme.colors.accent};
+    transform: translateY(-2px);
   }
 
   &:focus-visible {
@@ -199,16 +182,32 @@ const SocialLink = styled.a`
   }
 `;
 
+const PhotoStage = styled.div`
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: min(380px, 80vw);
+  aspect-ratio: 1;
+  margin-inline: auto;
+`;
+
+const Ring = styled.span`
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 1px dashed ${({ theme }) => theme.colors.muted};
+  opacity: 0.45;
+`;
+
 const PhotoFrame = styled.figure`
   margin: 0;
-  width: min(280px, 78vw);
-  height: min(280px, 78vw);
-  max-width: 100%;
+  width: 84%;
+  aspect-ratio: 1;
   border-radius: 50%;
   overflow: hidden;
-  border: 2px solid ${({ theme }) => theme.colors.text};
+  border: 6px solid ${({ theme }) => theme.colors.surface};
+  outline: 1px solid ${({ theme }) => theme.colors.border};
   box-shadow: ${({ theme }) => theme.shadows.soft};
-  flex-shrink: 0;
 `;
 
 const Photo = styled.img`
@@ -218,26 +217,97 @@ const Photo = styled.img`
   object-fit: cover;
 `;
 
+const FloatChip = styled.span`
+  position: absolute;
+  bottom: 9%;
+  left: -2%;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.5rem 0.9rem;
+  border-radius: ${({ theme }) => theme.radii.pill};
+  background: ${({ theme }) => theme.colors.ink};
+  color: ${({ theme }) => theme.colors.onInk};
+  font-size: 0.78rem;
+  font-weight: 600;
+  box-shadow: ${({ theme }) => theme.shadows.card};
+`;
+
 const Badge = styled.p`
-  margin: 1rem 0 0;
+  margin: 1.25rem 0 0;
+  text-align: center;
+  font-family: ${({ theme }) => theme.fonts.mono};
   font-size: 0.68rem;
   letter-spacing: 0.16em;
   text-transform: uppercase;
   color: ${({ theme }) => theme.colors.muted};
 `;
 
+const StatsRow = styled.div`
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin-top: clamp(2.5rem, 6vw, 4rem);
+
+  @media (max-width: 640px) {
+    grid-template-columns: 1fr;
+  }
+`;
+
+const Stat = styled.div`
+  padding: 1.25rem 1.4rem;
+  border-radius: ${({ theme }) => theme.radii.lg};
+  background: ${({ theme }) => theme.colors.surface};
+  border: 1px solid ${({ theme }) => theme.colors.border};
+  box-shadow: ${({ theme }) => theme.shadows.card};
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+`;
+
+const StatValue = styled.span`
+  font-family: ${({ theme }) => theme.fonts.serif};
+  font-style: italic;
+  font-size: clamp(2.4rem, 5vw, 3.2rem);
+  line-height: 1;
+  color: ${({ theme }) => theme.colors.ink};
+`;
+
+const StatLabel = styled.span`
+  font-size: 0.68rem;
+  letter-spacing: 0.18em;
+  font-weight: 600;
+  color: ${({ theme }) => theme.colors.muted};
+  line-height: 1.45;
+  white-space: pre-line;
+`;
+
+const TechStrip = styled.p`
+  margin: 1.5rem 0 0;
+  padding: 0.85rem 1.25rem;
+  border-radius: ${({ theme }) => theme.radii.pill};
+  border: 1px solid ${({ theme }) => theme.colors.border};
+  font-family: ${({ theme }) => theme.fonts.mono};
+  font-size: 0.7rem;
+  letter-spacing: 0.16em;
+  font-weight: 600;
+  text-transform: uppercase;
+  text-align: center;
+  color: ${({ theme }) => theme.colors.muted};
+`;
+
 const ScrollCue = styled.button`
   position: absolute;
-  bottom: 1.5rem;
+  bottom: 1.25rem;
   left: 50%;
   translate: -50% 0;
   display: grid;
   place-items: center;
-  width: 48px;
-  height: 48px;
-  border-radius: ${({ theme }) => theme.radii.md};
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
   border: 1px solid ${({ theme }) => theme.colors.border};
-  background: ${({ theme }) => theme.colors.bgElevated};
+  background: ${({ theme }) => theme.colors.surface};
   color: ${({ theme }) => theme.colors.muted};
   cursor: pointer;
 
@@ -297,58 +367,24 @@ function HeroSectionBody() {
 
   return (
     <>
-      <Container
-        fluid
-        className="position-relative px-3 px-lg-4"
-        style={{ zIndex: 1 }}
-        ref={containerRef}
-      >
+      <Watermark data-component-id="Watermark" aria-hidden>
+        {brand.split(" ")[0]}
+      </Watermark>
+      <Inner fluid className="px-3 px-lg-4" ref={containerRef}>
         <Row className="align-items-center gy-5">
-          <Col
-            xs={12}
-            lg={5}
-            className="d-flex flex-column align-items-center align-items-lg-start text-center text-lg-start"
-          >
-            <div data-hero-block>
-              <PhotoFrame data-component-id="PhotoFrame">
-                <Photo
-                  data-component-id="Photo"
-                  src={`${import.meta.env.BASE_URL}images/kaustubh-dutta.png`}
-                  alt={t("hero.photoAlt")}
-                  width={560}
-                  height={560}
-                  loading="eager"
-                  decoding="async"
-                />
-              </PhotoFrame>
-              <Badge data-component-id="Badge">{t("hero.badge")}</Badge>
-            </div>
-          </Col>
-          <Col xs={12} lg={7}>
+          <Col xs={12} lg={7} className="order-2 order-lg-1">
             <div data-hero-block>
               <IntroEyebrow data-component-id="IntroEyebrow">{t("hero.introEyebrow")}</IntroEyebrow>
-              <DisplayHeadline data-component-id="DisplayHeadline" id="hero-title" aria-label={`${brand} — ${oneLineHeadline}`}>
-                {headline}
+              <DisplayHeadline
+                data-component-id="DisplayHeadline"
+                id="hero-title"
+                aria-label={`${brand} — ${oneLineHeadline}`}
+              >
+                <AccentTitle text={headline} />
               </DisplayHeadline>
             </div>
-            <Tagline data-component-id="Tagline" data-hero-block>{t("hero.tagline")}</Tagline>
             <RoleLine data-component-id="RoleLine" data-hero-block>{t("hero.roleLine")}</RoleLine>
-            <Meta data-component-id="Meta" data-hero-block>{t("hero.location")}</Meta>
-
-            <StatsRow data-component-id="StatsRow" data-hero-block>
-              {stats.map((s) => (
-                <Stat data-component-id="Stat" key={`${s.value}-${s.line1}`}>
-                  <StatValue data-component-id="StatValue">{s.value}</StatValue>
-                  <StatLabel data-component-id="StatLabel">
-                    {s.line1}
-                    {"\n"}
-                    {s.line2}
-                  </StatLabel>
-                </Stat>
-              ))}
-            </StatsRow>
-
-            <TechStrip data-component-id="TechStrip" data-hero-block>{t("hero.techStrip")}</TechStrip>
+            <Tagline data-component-id="Tagline" data-hero-block>{t("hero.tagline")}</Tagline>
 
             <Actions data-component-id="Actions" data-hero-block>
               <UiverseButton
@@ -358,7 +394,7 @@ function HeroSectionBody() {
                   })
                 }
               >
-                {t("hero.ctaPrimary")}
+                {t("hero.ctaPrimary")} <span aria-hidden>→</span>
               </UiverseButton>
               <GhostButton
                 data-component-id="GhostButton"
@@ -369,6 +405,14 @@ function HeroSectionBody() {
               >
                 {t("hero.ctaSecondary")}
               </GhostButton>
+              <GhostLink
+                data-component-id="ResumeLink"
+                href={RESUME_PDF_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {t("nav.resume")} <span aria-hidden>↓</span>
+              </GhostLink>
             </Actions>
 
             <SocialRow data-component-id="SocialRow" data-hero-block aria-label="Social profiles">
@@ -378,7 +422,7 @@ function HeroSectionBody() {
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                <FaGithub size={20} aria-hidden />
+                <FaGithub size={19} aria-hidden />
               </SocialLink>
               <SocialLink
                 data-component-id="SocialLink"
@@ -386,15 +430,53 @@ function HeroSectionBody() {
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                <FaLinkedin size={20} aria-hidden />
+                <FaLinkedin size={19} aria-hidden />
               </SocialLink>
               <SocialLink data-component-id="SocialLink" href={`mailto:${t("footer.email")}`}>
-                <HiOutlineMail size={22} aria-hidden />
+                <HiOutlineMail size={20} aria-hidden />
               </SocialLink>
             </SocialRow>
           </Col>
+          <Col xs={12} lg={5} className="order-1 order-lg-2">
+            <div data-hero-block>
+              <PhotoStage data-component-id="PhotoStage">
+                <Ring aria-hidden />
+                <PhotoFrame data-component-id="PhotoFrame">
+                  <Photo
+                    data-component-id="Photo"
+                    src={`${import.meta.env.BASE_URL}images/kaustubh-dutta.png`}
+                    alt={t("hero.photoAlt")}
+                    width={560}
+                    height={560}
+                    loading="eager"
+                    decoding="async"
+                  />
+                </PhotoFrame>
+                <FloatChip data-component-id="Meta">
+                  <HiOutlineLocationMarker aria-hidden />
+                  {t("hero.location")}
+                </FloatChip>
+              </PhotoStage>
+              <Badge data-component-id="Badge">{t("hero.badge")}</Badge>
+            </div>
+          </Col>
         </Row>
-      </Container>
+
+        <StatsRow data-component-id="StatsRow" data-hero-block>
+          {stats.map((s) => (
+            <Stat data-component-id="Stat" key={`${s.value}-${s.line1}`}>
+              <StatValue data-component-id="StatValue">{s.value}</StatValue>
+              <StatLabel data-component-id="StatLabel">
+                {s.line1}
+                {"\n"}
+                {s.line2}
+              </StatLabel>
+            </Stat>
+          ))}
+        </StatsRow>
+
+        <TechStrip data-component-id="TechStrip" data-hero-block>{t("hero.techStrip")}</TechStrip>
+      </Inner>
 
       <ScrollCue
         ref={scrollCueRef}
@@ -407,7 +489,7 @@ function HeroSectionBody() {
           })
         }
       >
-        <MdOutlineKeyboardArrowDown size={26} aria-hidden />
+        <MdOutlineKeyboardArrowDown size={24} aria-hidden />
       </ScrollCue>
     </>
   );
@@ -424,17 +506,16 @@ export function HeroSection() {
 
   return (
     <HeroRoot data-component-id="HeroSection" ref={setHeroRootRef} id="top" aria-labelledby="hero-title">
-      <GridBg data-component-id="GridBg" aria-hidden />
       {ready ? (
         <HeroSectionBody />
       ) : (
-        <Container fluid className="position-relative px-3 px-lg-4" style={{ zIndex: 1 }}>
+        <Inner fluid className="px-3 px-lg-4">
           <Row className="justify-content-center py-5">
             <Col xs={12} md={8}>
               <SectionSkeleton />
             </Col>
           </Row>
-        </Container>
+        </Inner>
       )}
     </HeroRoot>
   );
