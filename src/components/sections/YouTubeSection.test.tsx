@@ -65,4 +65,28 @@ describe("YouTubeSection", () => {
     await Promise.resolve();
     expect(screen.queryByText("Subscribers")).not.toBeInTheDocument();
   });
+
+  it("shows the saved banner when stats are unavailable", () => {
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValue({ ok: false, json: async () => ({}) }));
+
+    renderWithProviders(<YouTubeSection />);
+
+    const banner = screen.getByRole("img", { name: "KausDiaries channel banner" });
+    expect(banner.getAttribute("src")).toMatch(/images\/youtube\/banner-1060\.jpg$/);
+    expect(banner.closest("a")).toHaveAttribute("href", "https://www.youtube.com/@KausDiaries");
+  });
+
+  it("builds the banner from the live URL when stats include it", async () => {
+    const base = "https://yt3.googleusercontent.com/abc";
+    const withBanner = { ...stats, channel: { ...stats.channel, banner: base } };
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValue({ ok: true, json: async () => withBanner }));
+
+    renderWithProviders(<YouTubeSection />);
+
+    await screen.findByText("Subscribers");
+    const banner = screen.getByRole("img", { name: "KausDiaries channel banner" });
+    expect(banner.getAttribute("srcset")).toContain(`${base}=w2560-fcrop64=`);
+    const mobile = banner.parentElement?.querySelector("source");
+    expect(mobile?.getAttribute("srcset")).toContain(`${base}=w640-fcrop64=1,32b75a57cd48a5a8`);
+  });
 });
