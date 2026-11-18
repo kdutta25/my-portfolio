@@ -20,6 +20,7 @@ const NAV_LINKS: readonly {
   { key: "education", href: "#education" },
   { key: "volunteering", href: "#volunteering" },
   { key: "publications", href: "#publications" },
+  { key: "youtube", href: "#youtube" },
   { key: "github", href: "#github" },
   { key: "readme", href: README_ON_GITHUB_URL, external: true },
   { key: "support", href: "#support" },
@@ -144,7 +145,7 @@ const Monogram = styled.span`
 `;
 
 const BrandName = styled.span`
-  @media (min-width: 1200px) and (max-width: 1439.98px) {
+  @media (min-width: 1200px) and (max-width: 1599.98px) {
     display: none;
   }
 `;
@@ -187,9 +188,14 @@ const PillLink = styled(Nav.Link)<{ $active: boolean }>`
       color: ${theme.colors.onInk} !important;
     `}
 
-  @media (min-width: 1200px) and (max-width: 1439.98px) {
+  @media (min-width: 1200px) and (max-width: 1599.98px) {
     padding: 0.45rem 0.6rem !important;
     font-size: 0.78rem;
+  }
+
+  @media (min-width: 1200px) and (max-width: 1319.98px) {
+    padding: 0.45rem 0.42rem !important;
+    font-size: 0.75rem;
   }
 `;
 

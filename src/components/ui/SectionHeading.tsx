@@ -10,8 +10,9 @@ const SECTION_NUMBERS: Record<string, number> = {
   "education-heading": 5,
   "volunteering-heading": 6,
   "publications-heading": 7,
-  "github-heading": 8,
-  "support-heading": 9,
+  "youtube-heading": 8,
+  "github-heading": 9,
+  "support-heading": 10,
 };
 
 const HeadingWrap = styled.div`

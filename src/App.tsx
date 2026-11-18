@@ -24,6 +24,7 @@ import { GitHubSection } from "./components/sections/GitHubSection";
 import { BuyMeCoffeeSection } from "./components/sections/BuyMeCoffeeSection";
 import { VolunteeringSection } from "./components/sections/VolunteeringSection";
 import { PublicationsSection } from "./components/sections/PublicationsSection";
+import { YouTubeSection } from "./components/sections/YouTubeSection";
 import { useTranslation } from "react-i18next";
 
 const Shell = styled.div`
@@ -102,6 +103,7 @@ export default function App() {
               <EducationSection />
               <VolunteeringSection />
               <PublicationsSection />
+              <YouTubeSection />
               <GitHubSection />
               <BuyMeCoffeeSection />
             </Main>

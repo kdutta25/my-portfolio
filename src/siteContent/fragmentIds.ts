@@ -18,6 +18,7 @@ export const SECTION_FRAGMENT_IDS = [
   "projects",
   "volunteering",
   "publications",
+  "youtube",
   "githubActivity",
   "support",
 ] as const;

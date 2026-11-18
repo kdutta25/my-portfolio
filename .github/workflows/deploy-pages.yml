@@ -3,6 +3,8 @@ name: Deploy Pages
 on:
   push:
     branches: [master]
+  schedule:
+    - cron: "0 9 * * *"
   workflow_dispatch:
 
 permissions:
@@ -93,6 +95,7 @@ jobs:
         env:
           VITE_BASE_PATH: ${{ vars.VITE_BASE_PATH }}
           CONTENT_DATA_DIR: _content-api/data
+          YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
         run: npm run build
 
       - uses: actions/configure-pages@v4

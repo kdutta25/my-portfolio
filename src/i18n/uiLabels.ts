@@ -20,6 +20,13 @@ const LABELS = {
     familyAi: "AI models",
     tileHint: "Hover or focus a tile to inspect it",
     expandHint: "Hover, focus or tap a card to open it",
+    ytSubscribers: "Subscribers",
+    ytViews: "Total views",
+    ytVideos: "Videos",
+    ytTopVideos: "Most viewed videos",
+    ytTopShorts: "Top Shorts",
+    ytViewsSuffix: "views",
+    ytUpdated: "Updated",
   },
   fr: {
     greeting: "Bonjour, je suis",
@@ -39,6 +46,13 @@ const LABELS = {
     familyAi: "Modèles IA",
     tileHint: "Survolez ou sélectionnez une tuile",
     expandHint: "Survolez, sélectionnez ou touchez une carte pour l’ouvrir",
+    ytSubscribers: "Abonnés",
+    ytViews: "Vues totales",
+    ytVideos: "Vidéos",
+    ytTopVideos: "Vidéos les plus vues",
+    ytTopShorts: "Shorts populaires",
+    ytViewsSuffix: "vues",
+    ytUpdated: "Mis à jour le",
   },
 } as const;
 

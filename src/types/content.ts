@@ -57,3 +57,27 @@ export interface AiModelItem {
   label: string;
   image: string;
 }
+
+export interface YouTubeVideo {
+  id: string;
+  title: string;
+  thumbnail: string;
+  views: number;
+  publishedAt: string;
+  isShort: boolean;
+}
+
+/** Shape of `/v1/youtube/channel.json`, written at build time by `scripts/generate-youtube-stats.mjs`. */
+export interface YouTubeChannelStats {
+  fetchedAt: string;
+  channel: {
+    title: string;
+    url: string;
+    avatar: string;
+    subscribers: number;
+    views: number;
+    videoCount: number;
+  };
+  topVideos: YouTubeVideo[];
+  topShorts: YouTubeVideo[];
+}
