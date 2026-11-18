@@ -31,6 +31,7 @@ const FRAGMENTS = [
   "projects",
   "volunteering",
   "publications",
+  "youtube",
   "chatbot",
   "footer",
 ];

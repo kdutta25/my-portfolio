@@ -223,6 +223,7 @@ Configuration: `vite.config.ts` → `test` block (`include: src/**/*.test.{ts,ts
 |--------|---------|
 | `npm start` / `npm run dev` | Vite dev server (**default port `4044`** — see `vite.config.ts`). `prestart` / `predev` snapshot content into `public/v1` when `../my-portfolio-api/data` exists. |
 | `npm run generate:static-content` | Write fragment + knowledge JSON under `public/v1` from **my-portfolio-api** `data/` (`CONTENT_DATA_DIR`). |
+| `npm run generate:youtube` | Write `public/v1/youtube/channel.json` (channel stats, most-viewed videos and Shorts) from the YouTube Data API. Needs `YOUTUBE_API_KEY`; skips without failing when it is missing. Runs in `prebuild`, and Deploy Pages also runs daily to refresh it. |
 | `npm run build` | `prebuild` generates `/v1`, then Vite production build to `dist/` |
 | `npm run preview` | Preview production build |
 | `npm run typecheck` | `tsc --noEmit` |
