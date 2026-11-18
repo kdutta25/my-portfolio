@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 56" role="img" aria-label="Muse Wonder">
+  <defs>
+    <linearGradient id="musewonderBg" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#0ea5e9"/>
+      <stop offset="100%" stop-color="#14b8a6"/>
+    </linearGradient>
+  </defs>
+  <rect width="240" height="56" rx="10" fill="url(#musewonderBg)"/>
+  <text x="120" y="36" fill="#fff" font-family="system-ui,sans-serif" font-size="17" font-weight="700" text-anchor="middle">Muse Wonder</text>
+</svg>
