@@ -196,11 +196,7 @@ const IdCard = styled.div`
   position: relative;
   width: min(280px, 82%);
   margin: -5.5rem auto 0 -1rem;
-  border-radius: ${({ theme }) => theme.radii.md};
-  background: ${({ theme }) => theme.colors.surface};
-  border: 1px solid ${({ theme }) => theme.colors.border};
-  box-shadow: ${({ theme }) => theme.shadows.soft};
-  overflow: hidden;
+  perspective: 1100px;
   rotate: -3deg;
   z-index: 1;
 
@@ -208,6 +204,63 @@ const IdCard = styled.div`
     margin-left: auto;
     margin-right: auto;
   }
+`;
+
+const Flipper = styled.div`
+  display: grid;
+  transform-style: preserve-3d;
+  will-change: transform;
+`;
+
+const Face = styled.div`
+  grid-area: 1 / 1;
+  border-radius: ${({ theme }) => theme.radii.md};
+  background: ${({ theme }) => theme.colors.surface};
+  border: 1px solid ${({ theme }) => theme.colors.border};
+  box-shadow: ${({ theme }) => theme.shadows.soft};
+  overflow: hidden;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+`;
+
+const FrontFace = styled(Face)`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.9rem;
+  padding: 1.1rem 1.1rem 1.25rem;
+`;
+
+const BackFace = styled(Face)`
+  transform: rotateY(180deg);
+`;
+
+const Slot = styled.span`
+  width: 3rem;
+  height: 0.45rem;
+  border-radius: ${({ theme }) => theme.radii.pill};
+  background: ${({ theme }) => theme.colors.bg};
+  border: 1px solid ${({ theme }) => theme.colors.border};
+`;
+
+const FrontPhoto = styled.img`
+  width: 72%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 4px solid ${({ theme }) => theme.colors.bg};
+  outline: 1px solid ${({ theme }) => theme.colors.border};
+`;
+
+const FrontName = styled.p`
+  margin: 0;
+  font-family: ${({ theme }) => theme.fonts.serif};
+  font-style: italic;
+  font-size: 1.6rem;
+  line-height: 1.1;
+  text-align: center;
+  color: ${({ theme }) => theme.colors.ink};
 `;
 
 const IdHeader = styled.div`
@@ -224,17 +277,9 @@ const IdHeader = styled.div`
   text-transform: uppercase;
 `;
 
-const IdAvatar = styled.img`
-  width: 2rem;
-  height: 2rem;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 2px solid ${({ theme }) => theme.colors.onInk};
-`;
-
 const IdBody = styled.dl`
   margin: 0;
-  padding: 0.5rem 0.95rem 0.6rem;
+  padding: 0.75rem 0.95rem 0.6rem;
   display: grid;
   gap: 0.45rem;
 
@@ -255,15 +300,6 @@ const IdBody = styled.dl`
   }
 `;
 
-const IdName = styled.p`
-  margin: 0;
-  padding: 0.75rem 0.95rem 0;
-  font-family: ${({ theme }) => theme.fonts.serif};
-  font-style: italic;
-  font-size: 1.35rem;
-  color: ${({ theme }) => theme.colors.ink};
-`;
-
 const Barcode = styled.div`
   height: 26px;
   margin: 0.2rem 0.95rem 0.85rem;
@@ -279,29 +315,57 @@ const Barcode = styled.div`
   );
 `;
 
-/** Character rises and fades in as the stage scrolls into view. */
-function useScrollRise(reduced: boolean) {
+const clamp01 = (n: number) => Math.min(1, Math.max(0, n));
+
+/**
+ * Scroll-driven About motion: the character rises into its stage, and the ID
+ * badge turns from its front (photo, name) to its back (credentials) as it
+ * travels up the viewport, turning back when scrolled up again.
+ */
+function useAboutScrollMotion(reduced: boolean) {
   const stageRef = useRef<HTMLDivElement>(null);
   const riseRef = useRef<HTMLDivElement>(null);
+  const cardRef = useRef<HTMLDivElement>(null);
+  const flipRef = useRef<HTMLDivElement>(null);
+  const frontRef = useRef<HTMLDivElement>(null);
+  const backRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const stage = stageRef.current;
     const rise = riseRef.current;
-    if (!stage || !rise) return;
+    const card = cardRef.current;
+    const flip = flipRef.current;
+    if (!stage || !rise || !card || !flip) return;
     if (reduced) {
       rise.style.opacity = "1";
       rise.style.transform = "none";
-      return;
     }
 
     let frame = 0;
+    let showingBack: boolean | null = null;
     const update = () => {
       frame = 0;
-      const rect = stage.getBoundingClientRect();
       const vh = window.innerHeight || 1;
-      const progress = Math.min(1, Math.max(0, (vh - rect.top) / (vh * 0.75)));
-      rise.style.opacity = String(0.15 + progress * 0.85);
-      rise.style.transform = `translateY(${(1 - progress) * 22}%) scale(${0.94 + progress * 0.06})`;
+
+      if (!reduced) {
+        const rect = stage.getBoundingClientRect();
+        const progress = clamp01((vh - rect.top) / (vh * 0.75));
+        rise.style.opacity = String(0.15 + progress * 0.85);
+        rise.style.transform = `translateY(${(1 - progress) * 22}%) scale(${0.94 + progress * 0.06})`;
+      }
+
+      const cardTop = card.getBoundingClientRect().top;
+      const turn = clamp01((vh * 0.55 - cardTop) / (vh * 0.3));
+      const angle = reduced ? (turn >= 0.5 ? 180 : 0) : turn * 180;
+      const lift = reduced ? 1 : 1 + Math.sin(turn * Math.PI) * 0.06;
+      flip.style.transform = `rotateY(${angle}deg) scale(${lift})`;
+
+      const back = angle > 90;
+      if (back !== showingBack) {
+        showingBack = back;
+        frontRef.current?.setAttribute("aria-hidden", String(back));
+        backRef.current?.setAttribute("aria-hidden", String(!back));
+      }
     };
     const onScroll = () => {
       if (!frame) frame = requestAnimationFrame(update);
@@ -316,14 +380,15 @@ function useScrollRise(reduced: boolean) {
     };
   }, [reduced]);
 
-  return { stageRef, riseRef };
+  return { stageRef, riseRef, cardRef, flipRef, frontRef, backRef };
 }
 
 function AboutSectionBody() {
   const { t } = useTranslation();
   const label = useUiLabels();
   const reduced = usePrefersReducedMotion();
-  const { stageRef, riseRef } = useScrollRise(reduced);
+  const { stageRef, riseRef, cardRef, flipRef, frontRef, backRef } =
+    useAboutScrollMotion(reduced);
   const activities = t("about.activities", {
     returnObjects: true,
   }) as string[];
@@ -401,33 +466,43 @@ function AboutSectionBody() {
             </Float>
           </Rise>
         </Stage>
-        <IdCard data-component-id="DeveloperId" aria-label={label("developerId")} role="group">
-          <IdHeader>
-            <IdAvatar
-              src={`${import.meta.env.BASE_URL}images/kaustubh-dutta.png`}
-              alt=""
-              width={64}
-              height={64}
-              loading="lazy"
-            />
-            {label("developerId")}
-          </IdHeader>
-          <IdName>{brand}</IdName>
-          <IdBody>
-            <div>
-              <dt>{label("role")}</dt>
-              <dd>{t("hero.roleLine")}</dd>
-            </div>
-            <div>
-              <dt>{label("based")}</dt>
-              <dd>{t("hero.location")}</dd>
-            </div>
-            <div>
-              <dt>{label("credentials")}</dt>
-              <dd>{t("hero.badge")}</dd>
-            </div>
-          </IdBody>
-          <Barcode aria-hidden />
+        <IdCard
+          ref={cardRef}
+          data-component-id="DeveloperId"
+          aria-label={label("developerId")}
+          role="group"
+        >
+          <Flipper ref={flipRef}>
+            <FrontFace ref={frontRef} data-component-id="DeveloperIdFront">
+              <Slot aria-hidden />
+              <FrontPhoto
+                src={`${import.meta.env.BASE_URL}images/kaustubh-dutta.png`}
+                alt=""
+                width={200}
+                height={200}
+                loading="lazy"
+              />
+              <FrontName>{brand}</FrontName>
+            </FrontFace>
+            <BackFace ref={backRef} data-component-id="DeveloperIdBack">
+              <IdHeader>{label("developerId")}</IdHeader>
+              <IdBody>
+                <div>
+                  <dt>{label("role")}</dt>
+                  <dd>{t("hero.roleLine")}</dd>
+                </div>
+                <div>
+                  <dt>{label("based")}</dt>
+                  <dd>{t("hero.location")}</dd>
+                </div>
+                <div>
+                  <dt>{label("credentials")}</dt>
+                  <dd>{t("hero.badge")}</dd>
+                </div>
+              </IdBody>
+              <Barcode aria-hidden />
+            </BackFace>
+          </Flipper>
         </IdCard>
       </Aside>
     </Layout>
