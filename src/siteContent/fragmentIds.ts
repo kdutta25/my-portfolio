@@ -4,7 +4,6 @@ export const SHELL_FRAGMENT_IDS = [
   "site",
   "nav",
   "footer",
-  "chatbot",
 ] as const;
 
 /** Loaded after the shell so section bodies always have copy (intersect is still used for UX). */

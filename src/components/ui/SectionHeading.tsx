@@ -4,13 +4,13 @@ import { AccentTitle } from "./AccentTitle";
 /** Order of the top-level sections in `App.tsx`; drives the numbered eyebrows. */
 const SECTION_NUMBERS: Record<string, number> = {
   "about-heading": 1,
-  "experience-heading": 2,
-  "skills-heading": 3,
-  "projects-heading": 4,
-  "education-heading": 5,
-  "volunteering-heading": 6,
-  "publications-heading": 7,
-  "youtube-heading": 8,
+  "youtube-heading": 2,
+  "experience-heading": 3,
+  "skills-heading": 4,
+  "projects-heading": 5,
+  "education-heading": 6,
+  "volunteering-heading": 7,
+  "publications-heading": 8,
   "github-heading": 9,
   "support-heading": 10,
 };

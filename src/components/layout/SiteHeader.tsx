@@ -14,13 +14,13 @@ const NAV_LINKS: readonly {
   external?: true;
 }[] = [
   { key: "about", href: "#about" },
+  { key: "youtube", href: "#youtube" },
   { key: "experience", href: "#experience" },
   { key: "skills", href: "#skills" },
   { key: "projects", href: "#projects" },
   { key: "education", href: "#education" },
   { key: "volunteering", href: "#volunteering" },
   { key: "publications", href: "#publications" },
-  { key: "youtube", href: "#youtube" },
   { key: "github", href: "#github" },
   { key: "readme", href: README_ON_GITHUB_URL, external: true },
   { key: "support", href: "#support" },

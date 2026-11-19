@@ -29,18 +29,19 @@ Repository for **Kaustubh Dutta**’s portfolio site: projects, experience, publ
 - **Motion:** anime.js (entrance animation, micro-interactions)
 - **i18n:** i18next + react-i18next — copy is merged at runtime from **`GET /v1/fragments/{lng}/{key}`** (static JSON baked from **my-portfolio-api** `data/` into `public/v1` for GitHub Pages), bootstrapped before the first paint (see **Content API and environment** below). Configure the content origin with **`VITE_CONTENT_API_BASE_URL`** (or legacy **`VITE_SITE_CONTENT_URL`**).
 - **SEO:** react-helmet-async (`SeoHead`)
-- **Extras:** react-icons, react-github-calendar, floating **Portfolio** chat panel with lightweight FAQ matching (`src/chat/matchKnowledge.ts` + résumé / LinkedIn text from the content API)
+- **Extras:** react-icons, react-github-calendar
 
 ---
 
 ## Application views (single-page sections)
 
-The UI is one **long-scroll landing page** (`src/App.tsx`). There is no client-side router; **“views”** are scroll targets (`id` anchors) wired from the sticky header and the chatbot.
+The UI is one **long-scroll landing page** (`src/App.tsx`). There is no client-side router; **“views”** are scroll targets (`id` anchors) wired from the sticky header.
 
 | Anchor | Section component | Role |
 |--------|-------------------|------|
 | `#top` | `HeroSection` | Above-the-fold identity: photo, headline, tagline, primary CTAs (scroll / external links). |
 | `#about` | `AboutSection` | Bio / positioning narrative (`aria-labelledby="about-heading"`). |
+| `#youtube` | `YouTubeSection` | Channel banner, stats, most-viewed videos and Shorts from `/v1/youtube/channel.json`. |
 | `#experience` | `ExperienceSection` | Timeline-style work history (`ExperienceGrouped` + locale-driven copy). |
 | `#skills` | `SkillsSection` | **Professional skillset** grid (languages, frameworks, tools including image-based entries). Nested **Models & assistants** region lists AI tooling cards (Composer, GPT Codex, Claude Opus) with artwork under `public/images/ai-models/`. |
 | `#projects` | `ProjectsSection` | Featured projects as **`ProjectCard`** tiles (see below). |
@@ -56,7 +57,6 @@ The UI is one **long-scroll landing page** (`src/App.tsx`). There is no client-s
 - **`SiteFooter`** — Attribution, copyright, social links, “Built with React, TypeScript and Vite”.
 - **`SkipLink`** — Skip to `#main-content`.
 - **`LoadingScreen`** — Full-screen loader until ready (skipped in test env via `isTestEnv()`).
-- **`PortfolioChatbot`** — Fixed panel: section chips, regex/heuristic replies, optional scroll-to-hash; resume corpus matching for FAQ-style answers.
 
 ### Project cards (`ProjectCard`)
 
@@ -68,7 +68,7 @@ Project copy and metadata come from **`projects.items`** in the English and Fren
 | **Links** | Optional **`linkLabel` / `url`** and **`secondaryLinkLabel` / `secondaryUrl`** (PDF, PPTX, etc.). Hrefs are built with **`resolvePublicAsset`** so deployments respect Vite **`BASE_URL`**. |
 | **Hyperledger** | Literature review PDF (`Kaustubh-Dutta-Literature-Review.pdf`), blockchain presentation PPTX (`Kaustubh-Dutta-Hyperledger-Blockchain-Presentation.pptx`), and the Hyperledger cover SVG — served as static files from **`public/`**. |
 
-Other shared assets include **`public/Kaustubh-Dutta-Resume.pdf`** (header résumé link), skill/company logos, and **`public/images/ai-models/`** artwork for the skills section. Locale JSON and résumé / LinkedIn corpora for the assistant live in **my-portfolio-api** (`data/`), not in this repository.
+Other shared assets include **`public/Kaustubh-Dutta-Resume.pdf`** (header résumé link), skill/company logos, and **`public/images/ai-models/`** artwork for the skills section. Locale JSON lives in **my-portfolio-api** (`data/`), not in this repository.
 
 ---
 
@@ -77,7 +77,7 @@ Other shared assets include **`public/Kaustubh-Dutta-Resume.pdf`** (header résu
 - **Composition root:** `App` wraps **HelmetProvider** → **I18nextProvider** → **AppThemeProvider** → `GlobalStyle` + page shell.
 - **Theme:** `AppThemeProvider` toggles **light/dark** `AppTheme` tokens (`src/theme/theme.ts`) — colors, typography stacks (`DM Sans` / `Instrument Serif` / `JetBrains Mono`), radii, shadows — persisted in `localStorage` and synced to `document.documentElement` / Bootstrap `data-bs-theme`.
 - **Section pattern:** Most sections use a styled `<section>` with `scroll-margin-top` for sticky header offset, **`SectionHeading`** (eyebrow + title + bar), optional **`GlowCard`** wrapper, **`AnimeReveal`** for staggered entrance, and **react-bootstrap** `Container` / `Row` / `Col` for responsive grids. **`ProjectsSection`** maps locale **`projects.items`** to **`ProjectCard`** (cover image or gradient, tags, external asset links).
-- **Content:** `main.tsx` awaits shell and section **fragment** loads from **`/v1`** (see **Content API and environment**); résumé / LinkedIn knowledge for the chatbot is fetched in parallel and does not block the page. Static assets stay under `public/` (images, PDF). The production site does **not** run Express.
+- **Content:** `main.tsx` awaits shell and section **fragment** loads from **`/v1`** (see **Content API and environment**). Static assets stay under `public/` (images, PDF). The production site does **not** run Express.
 - **Accessibility:** Landmark regions, labelled headings, skip link, reduced-motion respected where wired (e.g. hero / nav animations).
 
 ```mermaid
@@ -97,7 +97,6 @@ flowchart TB
     HDR[SiteHeader]
     MN[Main id=main-content]
     FTR[SiteFooter]
-    CHAT[PortfolioChatbot]
   end
 
   providers --> shell
@@ -105,6 +104,7 @@ flowchart TB
   subgraph sections["Main sections order"]
     H[HeroSection]
     A[AboutSection]
+    Y[YouTubeSection]
     E[ExperienceSection]
     S[SkillsSection]
     P[ProjectsSection]
@@ -115,13 +115,14 @@ flowchart TB
     B[BuyMeCoffeeSection]
   end
 
-  MN --> H --> A --> E --> S --> P --> ED --> V --> PU --> G --> B
+  MN --> H --> A --> Y --> E --> S --> P --> ED --> V --> PU --> G --> B
 ```
 
 ```mermaid
 flowchart LR
   subgraph nav["SiteHeader nav hashes"]
     N1["#about"]
+    NY["#youtube"]
     N2["#experience"]
     N3["#skills"]
     N4["#projects"]
@@ -134,6 +135,7 @@ flowchart LR
 
   subgraph page["Scroll targets"]
     S1[AboutSection]
+    SY[YouTubeSection]
     S2[ExperienceSection]
     S3[SkillsSection]
     S4[ProjectsSection]
@@ -145,6 +147,7 @@ flowchart LR
   end
 
   N1 --> S1
+  NY --> SY
   N2 --> S2
   N3 --> S3
   N4 --> S4
@@ -171,14 +174,12 @@ flowchart TB
 
   subgraph content["Content & behavior"]
     L10n[i18n en / fr merged from fragments]
-    CHAT[PortfolioChatbot + matchKnowledge]
     API[static /v1 JSON on GitHub Pages]
     MOTION[anime.js + MOTION constants]
   end
 
   presentation --> styling
   presentation --> content
-  CHAT --> API
   SEC --> L10n
   PC --> L10n
   L10n --> API
@@ -197,7 +198,7 @@ flowchart TB
 | Area | File | What it covers |
 |------|------|----------------|
 | App shell | `App.test.tsx` | Banner, main, contentinfo landmarks |
-| Site content bootstrap | `src/setupTests.ts`, `src/test/fixtures/site-content.json` | Applies `applySiteContent` so i18n and chat corpus match the bundled fixture before component tests |
+| Site content bootstrap | `src/setupTests.ts`, `src/test/fixtures/site-content.json` | Applies `applySiteContent` so i18n matches the bundled fixture before component tests |
 | SEO | `SeoHead.test.tsx` | Document title from i18n |
 | Layout | `SiteHeader.test.tsx`, `SiteFooter.test.tsx`, `SkipLink.test.tsx` | Nav landmark, footer “built with” line, skip control |
 | Theme / i18n | `ThemeToggle.test.tsx`, `LanguageToggle.test.tsx` | Mode toggle, language switch label |
@@ -210,7 +211,7 @@ Configuration: `vite.config.ts` → `test` block (`include: src/**/*.test.{ts,ts
 
 | Suite | Location | Scope |
 |-------|----------|--------|
-| E2E | `cypress/e2e/portfolio.cy.ts` | Stubs `GET …/v1/fragments/*/*` (and knowledge URLs), loads home, checks header/main/footer, headings, `#publications`, language toggle → French nav label |
+| E2E | `cypress/e2e/portfolio.cy.ts` | Stubs `GET …/v1/fragments/*/*`, loads home, checks header/main/footer, headings, `#publications`, language toggle → French nav label |
 | Component | `cypress/component/all.cy.tsx` | Mounts App and individual sections/components with shared provider helper (`support/mountUi.tsx`) |
 
 **Commands:** `npm run cypress:open`, `npm run cypress:run`, `npm run cypress:component`
@@ -222,7 +223,7 @@ Configuration: `vite.config.ts` → `test` block (`include: src/**/*.test.{ts,ts
 | Script | Purpose |
 |--------|---------|
 | `npm start` / `npm run dev` | Vite dev server (**default port `4044`** — see `vite.config.ts`). `prestart` / `predev` snapshot content into `public/v1` when `../my-portfolio-api/data` exists. |
-| `npm run generate:static-content` | Write fragment + knowledge JSON under `public/v1` from **my-portfolio-api** `data/` (`CONTENT_DATA_DIR`). |
+| `npm run generate:static-content` | Write fragment JSON under `public/v1` from **my-portfolio-api** `data/` (`CONTENT_DATA_DIR`). |
 | `npm run generate:youtube` | Write `public/v1/youtube/channel.json` (channel stats, most-viewed videos and Shorts) from the YouTube Data API. Needs `YOUTUBE_API_KEY`; skips without failing when it is missing. Runs in `prebuild`, and Deploy Pages also runs daily to refresh it. |
 | `npm run build` | `prebuild` generates `/v1`, then Vite production build to `dist/` |
 | `npm run preview` | Preview production build |
@@ -235,39 +236,33 @@ Configuration: `vite.config.ts` → `test` block (`include: src/**/*.test.{ts,ts
 
 ## Content API and environment
 
-This app **does not ship** `src/locales/*.json`, résumé text, or LinkedIn snapshot JSON as source files. Those live in **[my-portfolio-api](https://github.com/kdutta25/my-portfolio-api)** under `data/`. For **GitHub Pages**, `scripts/generate-static-content.mjs` snapshots that data into **`public/v1/`** (gitignored) so the SPA can `fetch` the same `/v1/fragments/...` and `/v1/knowledge/...` URLs **without a live Express process**. Local Express (`npm start` in the API repo) is optional for editing/previewing JSON over HTTP.
+This app **does not ship** `src/locales/*.json` as source files. Those live in **[my-portfolio-api](https://github.com/kdutta25/my-portfolio-api)** under `data/`. For **GitHub Pages**, `scripts/generate-static-content.mjs` snapshots that data into **`public/v1/`** (gitignored) so the SPA can `fetch` the same `/v1/fragments/...` URLs **without a live Express process**. Local Express (`npm start` in the API repo) is optional for editing/previewing JSON over HTTP.
 
 ### What changed (REST-first loading)
 
 | Area | Behavior |
 |------|----------|
 | **Bootstrap** | `src/main.tsx` initializes an empty i18n shell (`initI18nShell`), then **awaits** two batches of `GET /v1/fragments/{lng}/{key}` (English and French in parallel per key) before `createRoot().render()`. If any required request fails, the user sees an inline error instead of a broken layout. |
-| **Shell fragments** | `SHELL_FRAGMENT_IDS` in `src/siteContent/fragmentIds.ts`: `site`, `nav`, `footer`, `chatbot` — enough for SEO, skip link, header/footer, and chat chrome. |
-| **Section fragments** | `SECTION_FRAGMENT_IDS`: `hero`, `about`, `experience`, `skills`, `aiModels`, `education`, `projects`, `volunteering`, `publications`, `githubActivity`, `support`. These keys must match top-level objects in the API’s `data/locales/en.json` and `fr.json`. |
+| **Shell fragments** | `SHELL_FRAGMENT_IDS` in `src/siteContent/fragmentIds.ts`: `site`, `nav`, `footer` — enough for SEO, skip link, and header/footer. |
+| **Section fragments** | `SECTION_FRAGMENT_IDS`: `hero`, `about`, `experience`, `skills`, `aiModels`, `education`, `projects`, `volunteering`, `publications`, `youtube`, `githubActivity`, `support`. These keys must match top-level objects in the API’s `data/locales/en.json` and `fr.json`. |
 | **Merging** | `src/siteContent/ensureFragments.ts` fetches each key for `en` and `fr`, then `mergeTranslationFragment` in `src/i18n/index.ts` deep-merges `{ [key]: data }` into the `translation` namespace. A small in-memory cache avoids duplicate network work. |
 | **Sections** | Each section uses `src/hooks/useContentFragment.ts` with `loadOn: "intersect"` (or `"mount"` for the hero). After bootstrap, copy is usually **already cached**, so `areAllFragmentsLoaded` sets `ready` immediately; otherwise the hook still loads on intersection / geometry as a fallback. Until `ready`, sections show `src/components/loading/SectionSkeleton.tsx` inside `GlowCard`. |
-| **Chat knowledge** | **`GET /v1/knowledge/resume`** and **`GET /v1/knowledge/linkedin`** run from bootstrap via **`void ensureKnowledgeLoaded()`** — **not** awaited with the experience section — so a knowledge outage does not blank **Experience**. Failures are logged; the assistant may answer with reduced context until a reload. |
-| **Tests / CI** | Vitest uses `applySiteContent` + `src/test/fixtures/site-content.json` in `src/setupTests.ts`. Cypress stubs `**/v1/fragments/*/*` and knowledge routes using `cypress/fixtures/site-content.json`. |
+| **Tests / CI** | Vitest uses `applySiteContent` + `src/test/fixtures/site-content.json` in `src/setupTests.ts`. Cypress stubs `**/v1/fragments/*/*` using `cypress/fixtures/site-content.json`. |
 | **Legacy bundle** | The API still exposes `GET /v1/site-content` (full payload). This repo no longer depends on it at runtime; fragments are the source of truth for the SPA. |
 
 ```mermaid
 flowchart TB
   subgraph pages["GitHub Pages dist"]
     FG["GET /v1/fragments/{lng}/{key}"]
-    KR["GET /v1/knowledge/resume"]
-    KL["GET /v1/knowledge/linkedin"]
   end
 
   INIT["initI18nShell"] --> SH["ensureFragmentsLoaded SHELL_FRAGMENT_IDS"]
   SH --> SEC["ensureFragmentsLoaded SECTION_FRAGMENT_IDS"]
   SEC --> RND["createRoot render App"]
-  SEC -.->|void| KNOW["ensureKnowledgeLoaded"]
 
   EF["ensureFragments.ts"] --> CB["getContentApiBase"]
   EF --> FG
   EF --> MF["mergeTranslationFragment"]
-  KNOW --> KR
-  KNOW --> KL
 
   SH --> EF
   SEC --> EF
@@ -292,10 +287,8 @@ sequenceDiagram
     Static-->>Main: JSON data
     Main->>I18n: mergeTranslationFragment
   end
-  Main->>Main: void ensureKnowledgeLoaded (not awaited)
   Main->>React: createRoot render when bootstrap resolves
   React-->>User: Sections with copy from i18n cache
-  Note over Main,Static: Knowledge GETs may finish after first paint. The chat uses corpora once they arrive.
 ```
 
 | Variable | Required | Description |

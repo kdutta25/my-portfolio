@@ -1,6 +1,6 @@
 /**
  * Snapshot my-portfolio-api `data/` into `public/v1/` so GitHub Pages can serve
- * the same URLs the SPA fetches (`/v1/fragments/:lng/:key`, `/v1/knowledge/*`).
+ * the same URLs the SPA fetches (`/v1/fragments/:lng/:key`).
  *
  * Env:
  *   CONTENT_DATA_DIR — API data directory (default: ../my-portfolio-api/data)
@@ -32,7 +32,6 @@ const FRAGMENTS = [
   "volunteering",
   "publications",
   "youtube",
-  "chatbot",
   "footer",
 ];
 
@@ -89,7 +88,4 @@ for (const lng of ["en", "fr"]) {
   }
 }
 
-writeJson(join(outDir, "knowledge", "resume"), readJson(join(dataDir, "resume-corpus.json")));
-writeJson(join(outDir, "knowledge", "linkedin"), readJson(join(dataDir, "linkedin-snapshot.json")));
-
-console.log(`[generate-static-content] Wrote ${FRAGMENTS.length * 2} fragments + knowledge → ${outDir}`);
+console.log(`[generate-static-content] Wrote ${FRAGMENTS.length * 2} fragments → ${outDir}`);
