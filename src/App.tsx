@@ -19,7 +19,6 @@ import { ExperienceSection } from "./components/sections/ExperienceSection";
 import { SkillsSection } from "./components/sections/SkillsSection";
 import { EducationSection } from "./components/sections/EducationSection";
 import { ProjectsSection } from "./components/sections/ProjectsSection";
-import { PortfolioChatbot } from "./components/chat/PortfolioChatbot";
 import { GitHubSection } from "./components/sections/GitHubSection";
 import { BuyMeCoffeeSection } from "./components/sections/BuyMeCoffeeSection";
 import { VolunteeringSection } from "./components/sections/VolunteeringSection";
@@ -97,19 +96,18 @@ export default function App() {
             <Main data-component-id="Main" id="main-content" tabIndex={-1}>
               <HeroSection />
               <AboutSection />
+              <YouTubeSection />
               <ExperienceSection />
               <SkillsSection />
               <ProjectsSection />
               <EducationSection />
               <VolunteeringSection />
               <PublicationsSection />
-              <YouTubeSection />
               <GitHubSection />
               <BuyMeCoffeeSection />
             </Main>
             <SiteFooter />
           </Shell>
-          <PortfolioChatbot />
         </AppThemeProvider>
       </I18nextProvider>
     </HelmetProvider>

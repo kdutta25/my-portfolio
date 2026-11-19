@@ -1,6 +1,4 @@
-import { setKnowledgeFromSiteContent } from "../chat/matchKnowledge";
 import { mergeTranslationFragment } from "../i18n";
-import type { LinkedinSnapshot, ResumeCorpus } from "../types/siteContent";
 import { getContentApiBase } from "./contentApiBase";
 
 type FragmentResponse = { fragment: string; data: unknown };
@@ -67,45 +65,7 @@ export function areAllFragmentsLoaded(keys: readonly string[]): boolean {
   return keys.every((k) => loaded.has(k));
 }
 
-let knowledgeInflight: Promise<void> | null = null;
-let knowledgeReady = false;
-
-export async function ensureKnowledgeLoaded(): Promise<void> {
-  if (knowledgeReady) return;
-  if (knowledgeInflight) {
-    await knowledgeInflight;
-    return;
-  }
-
-  knowledgeInflight = (async () => {
-    const base = getContentApiBase();
-    const [resumeRes, linkedinRes] = await Promise.all([
-      fetch(`${base}/v1/knowledge/resume`),
-      fetch(`${base}/v1/knowledge/linkedin`),
-    ]);
-    if (!resumeRes.ok || !linkedinRes.ok) {
-      throw new Error(
-        `Knowledge fetch failed: ${resumeRes.status} / ${linkedinRes.status}`,
-      );
-    }
-    const resume = (await resumeRes.json()) as ResumeCorpus;
-    const linkedin = (await linkedinRes.json()) as LinkedinSnapshot;
-    setKnowledgeFromSiteContent(resume, linkedin);
-    knowledgeReady = true;
-  })();
-
-  try {
-    await knowledgeInflight;
-  } finally {
-    knowledgeInflight = null;
-  }
-}
-
 /** After bulk-loading locales (tests / Cypress), skip redundant fragment GETs. */
 export function markFragmentsLoaded(keys: Iterable<string>): void {
   for (const k of keys) loaded.add(k);
-}
-
-export function markKnowledgeLoaded(): void {
-  knowledgeReady = true;
 }

@@ -17,12 +17,6 @@ describe("portfolio site", () => {
         }
         req.reply({ body: { fragment: key, data } });
       });
-      cy.intercept("GET", "**/v1/knowledge/resume", {
-        body: sc.resumeCorpus,
-      });
-      cy.intercept("GET", "**/v1/knowledge/linkedin", {
-        body: sc.linkedinSnapshot,
-      });
     });
   });
 
