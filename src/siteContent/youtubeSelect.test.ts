@@ -1,5 +1,30 @@
 import { describe, expect, it } from "vitest";
-import { parseIsoDuration, selectTop } from "../../scripts/youtube-select.mjs";
+import { parseIsoDuration, parseWatchMinutes, selectTop } from "../../scripts/youtube-select.mjs";
+
+describe("parseWatchMinutes", () => {
+  it("reads estimatedMinutesWatched from an Analytics report", () => {
+    const report = {
+      kind: "youtubeAnalytics#resultTable",
+      columnHeaders: [{ name: "estimatedMinutesWatched", columnType: "METRIC", dataType: "INTEGER" }],
+      rows: [[74412]],
+    };
+    expect(parseWatchMinutes(report)).toBe(74412);
+  });
+
+  it("finds the column when other metrics come first", () => {
+    const report = {
+      columnHeaders: [{ name: "views" }, { name: "estimatedMinutesWatched" }],
+      rows: [[36600, 1234.6]],
+    };
+    expect(parseWatchMinutes(report)).toBe(1235);
+  });
+
+  it("returns null when the column or value is missing", () => {
+    expect(parseWatchMinutes(undefined)).toBeNull();
+    expect(parseWatchMinutes({ columnHeaders: [{ name: "views" }], rows: [[1]] })).toBeNull();
+    expect(parseWatchMinutes({ columnHeaders: [{ name: "estimatedMinutesWatched" }], rows: [] })).toBeNull();
+  });
+});
 
 describe("parseIsoDuration", () => {
   it("parses hours, minutes and seconds", () => {

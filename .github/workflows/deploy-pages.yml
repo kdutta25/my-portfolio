@@ -4,7 +4,7 @@ on:
   push:
     branches: [master]
   schedule:
-    - cron: "0 9 * * *"
+    - cron: "0 */6 * * *"
   workflow_dispatch:
 
 permissions:
@@ -96,6 +96,9 @@ jobs:
           VITE_BASE_PATH: ${{ vars.VITE_BASE_PATH }}
           CONTENT_DATA_DIR: _content-api/data
           YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
+          YT_OAUTH_CLIENT_ID: ${{ secrets.YT_OAUTH_CLIENT_ID }}
+          YT_OAUTH_CLIENT_SECRET: ${{ secrets.YT_OAUTH_CLIENT_SECRET }}
+          YT_OAUTH_REFRESH_TOKEN: ${{ secrets.YT_OAUTH_REFRESH_TOKEN }}
         run: npm run build
 
       - uses: actions/configure-pages@v4

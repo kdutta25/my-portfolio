@@ -79,6 +79,8 @@ export interface YouTubeChannelStats {
     subscribers: number;
     views: number;
     videoCount: number;
+    /** Lifetime watch time from the YouTube Analytics API; absent when the OAuth secrets are not set. */
+    watchMinutes?: number;
   };
   topVideos: YouTubeVideo[];
   topShorts: YouTubeVideo[];

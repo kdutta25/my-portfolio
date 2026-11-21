@@ -52,6 +52,29 @@ describe("YouTubeSection", () => {
     expect(screen.getByText("12K views")).toBeInTheDocument();
   });
 
+  it("shows a watch time tile in hours when stats include watch minutes", async () => {
+    const withWatch = { ...stats, channel: { ...stats.channel, watchMinutes: 74_400 } };
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValue({ ok: true, json: async () => withWatch }));
+
+    renderWithProviders(<YouTubeSection />);
+
+    await screen.findByText("Subscribers");
+    const tile = screen.getByText("Watch time").closest("div")!;
+    expect(within(tile).getByRole("definition")).toHaveTextContent("1.2K hrs");
+    expect(within(tile).getByText("hrs")).toBeInTheDocument();
+    expect(tile.closest("dl")!.children).toHaveLength(4);
+  });
+
+  it("leaves out the watch time tile when stats have no watch minutes", async () => {
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValue({ ok: true, json: async () => stats }));
+
+    renderWithProviders(<YouTubeSection />);
+
+    const subscribers = await screen.findByText("Subscribers");
+    expect(screen.queryByText("Watch time")).not.toBeInTheDocument();
+    expect(subscribers.closest("dl")!.children).toHaveLength(3);
+  });
+
   it("keeps the heading and subscribe link when stats are unavailable", async () => {
     vi.stubGlobal("fetch", vi.fn().mockResolvedValue({ ok: false, json: async () => ({}) }));
 
