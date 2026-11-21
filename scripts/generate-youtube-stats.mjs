@@ -6,13 +6,16 @@
  *   YOUTUBE_API_KEY — Data API v3 key (when missing, nothing is written and the section shows its fallback)
  *   YOUTUBE_HANDLE  — channel handle (default: @KausDiaries)
  *   CONTENT_OUT_DIR — output root (default: public/v1)
+ *   YT_OAUTH_CLIENT_ID, YT_OAUTH_CLIENT_SECRET, YT_OAUTH_REFRESH_TOKEN — channel-owner OAuth
+ *     credentials for the YouTube Analytics API (see scripts/youtube-oauth-setup.mjs). When any is
+ *     missing or the call fails, `channel.watchMinutes` is left out and the watch time tile hides.
  *
  * Never fails the build: any error is logged and the script exits 0.
  */
 import { mkdirSync, writeFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
-import { SHORT_MAX_SECONDS, parseIsoDuration, selectTop } from "./youtube-select.mjs";
+import { SHORT_MAX_SECONDS, parseIsoDuration, parseWatchMinutes, selectTop } from "./youtube-select.mjs";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, "..");
@@ -29,6 +32,48 @@ async function api(path, params) {
   // The URL carries the key, so errors report only the endpoint and status.
   if (!res.ok) throw new Error(`${path} responded ${res.status}`);
   return res.json();
+}
+
+const OAUTH = {
+  clientId: (process.env.YT_OAUTH_CLIENT_ID || "").trim(),
+  clientSecret: (process.env.YT_OAUTH_CLIENT_SECRET || "").trim(),
+  refreshToken: (process.env.YT_OAUTH_REFRESH_TOKEN || "").trim(),
+};
+
+/** Lifetime watch time in minutes from the YouTube Analytics API, or `null` when unavailable. */
+async function fetchWatchMinutes(channelPublishedAt) {
+  if (!OAUTH.clientId || !OAUTH.clientSecret || !OAUTH.refreshToken) {
+    console.warn(`${TAG} YT_OAUTH_* secrets are not all set — skipping watch time.`);
+    return null;
+  }
+  try {
+    const tokenRes = await fetch("https://oauth2.googleapis.com/token", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: new URLSearchParams({
+        client_id: OAUTH.clientId,
+        client_secret: OAUTH.clientSecret,
+        refresh_token: OAUTH.refreshToken,
+        grant_type: "refresh_token",
+      }),
+    });
+    if (!tokenRes.ok) throw new Error(`oauth token responded ${tokenRes.status}`);
+    const { access_token: accessToken } = await tokenRes.json();
+
+    const url = new URL("https://youtubeanalytics.googleapis.com/v2/reports");
+    url.searchParams.set("ids", "channel==MINE");
+    url.searchParams.set("metrics", "estimatedMinutesWatched");
+    url.searchParams.set("startDate", (channelPublishedAt || "2005-04-23").slice(0, 10));
+    url.searchParams.set("endDate", new Date().toISOString().slice(0, 10));
+    const reportRes = await fetch(url, { headers: { Authorization: `Bearer ${accessToken}` } });
+    if (!reportRes.ok) throw new Error(`analytics reports responded ${reportRes.status}`);
+    const minutes = parseWatchMinutes(await reportRes.json());
+    if (minutes == null) throw new Error("analytics report had no estimatedMinutesWatched");
+    return minutes;
+  } catch (err) {
+    console.warn(`${TAG} watch time: ${err.message} — skipping watch time.`);
+    return null;
+  }
 }
 
 /** `true` / `false` from youtube.com/shorts (200 vs redirect), `null` when the check is inconclusive. */
@@ -106,6 +151,7 @@ async function main() {
   const videos = await classifyShorts(await loadVideos(ids));
   const { topVideos, topShorts } = selectTop(videos, { videos: 3, shorts: 4 });
   const thumbs = ch.snippet.thumbnails || {};
+  const watchMinutes = await fetchWatchMinutes(ch.snippet.publishedAt);
 
   const payload = {
     fetchedAt: new Date().toISOString(),
@@ -117,6 +163,7 @@ async function main() {
       subscribers: Number(ch.statistics.subscriberCount || 0),
       views: Number(ch.statistics.viewCount || 0),
       videoCount: Number(ch.statistics.videoCount || 0),
+      ...(watchMinutes == null ? {} : { watchMinutes }),
     },
     topVideos,
     topShorts,

@@ -10,6 +10,16 @@ export function parseIsoDuration(iso) {
 }
 
 /**
+ * Read lifetime `estimatedMinutesWatched` from a YouTube Analytics v2 report with no dimensions.
+ * Returns `null` when the report has no such column or no usable value.
+ */
+export function parseWatchMinutes(report) {
+  const col = (report?.columnHeaders || []).findIndex((h) => h?.name === "estimatedMinutesWatched");
+  const value = col >= 0 ? Number(report?.rows?.[0]?.[col]) : NaN;
+  return Number.isFinite(value) && value >= 0 ? Math.round(value) : null;
+}
+
+/**
  * Split uploads into regular videos and Shorts, each sorted by views (descending) and trimmed.
  * Items need `{ id, views, isShort }`; everything else passes through untouched.
  */

@@ -173,11 +173,15 @@ const StatsBlock = styled.div`
   }
 `;
 
-const Stats = styled.dl`
+const Stats = styled.dl<{ $count: number }>`
   margin: 0 0 clamp(2rem, 5vw, 3rem);
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(${({ $count }) => $count}, minmax(0, 1fr));
   gap: clamp(0.5rem, 2vw, 1rem);
+
+  @media (max-width: 767.98px) {
+    grid-template-columns: repeat(${({ $count }) => ($count === 4 ? 2 : $count)}, minmax(0, 1fr));
+  }
 `;
 
 const Stat = styled.div`
@@ -204,6 +208,11 @@ const Stat = styled.div`
     line-height: 1.1;
     color: ${({ theme }) => theme.colors.ink};
   }
+`;
+
+const StatUnit = styled.span`
+  font-size: 0.5em;
+  color: ${({ theme }) => theme.colors.muted};
 `;
 
 const GroupTitle = styled.h3`
@@ -381,6 +390,8 @@ function YouTubeSectionBody({ stats }: { stats: YouTubeChannelStats | null }) {
   const label = useUiLabels();
   const { locale } = getLanguage(resolveLanguage(i18n.resolvedLanguage ?? i18n.language));
   const compact = new Intl.NumberFormat(locale, { notation: "compact", maximumFractionDigits: 1 });
+  const watchMinutes = stats?.channel.watchMinutes;
+  const watchHours = typeof watchMinutes === "number" ? Math.round(watchMinutes / 60) : null;
   const views = (n: number) => `${compact.format(n)} ${label("ytViewsSuffix")}`;
   const channelUrl = stats?.channel.url || t("youtube.channelUrl");
   const channelTitle = stats?.channel.title || channelUrl.split("@").pop() || "YouTube";
@@ -411,7 +422,7 @@ function YouTubeSectionBody({ stats }: { stats: YouTubeChannelStats | null }) {
 
       {stats ? (
         <StatsBlock data-component-id="StatsBlock">
-          <Stats data-component-id="ChannelStats">
+          <Stats data-component-id="ChannelStats" $count={watchHours == null ? 3 : 4}>
             <Stat>
               <dt>{label("ytSubscribers")}</dt>
               <dd>{compact.format(stats.channel.subscribers)}</dd>
@@ -424,6 +435,15 @@ function YouTubeSectionBody({ stats }: { stats: YouTubeChannelStats | null }) {
               <dt>{label("ytVideos")}</dt>
               <dd>{compact.format(stats.channel.videoCount)}</dd>
             </Stat>
+            {watchHours == null ? null : (
+              <Stat data-component-id="WatchTimeStat">
+                <dt>{label("ytWatchTime")}</dt>
+                <dd>
+                  {compact.format(watchHours)}{" "}
+                  <StatUnit>{label("ytHours")}</StatUnit>
+                </dd>
+              </Stat>
+            )}
           </Stats>
 
           {stats.topVideos.length > 0 ? (

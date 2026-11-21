@@ -224,13 +224,33 @@ Configuration: `vite.config.ts` → `test` block (`include: src/**/*.test.{ts,ts
 |--------|---------|
 | `npm start` / `npm run dev` | Vite dev server (**default port `4044`** — see `vite.config.ts`). `prestart` / `predev` snapshot content into `public/v1` when `../my-portfolio-api/data` exists. |
 | `npm run generate:static-content` | Write fragment JSON under `public/v1` from **my-portfolio-api** `data/` (`CONTENT_DATA_DIR`). |
-| `npm run generate:youtube` | Write `public/v1/youtube/channel.json` (channel stats, most-viewed videos and Shorts) from the YouTube Data API. Needs `YOUTUBE_API_KEY`; skips without failing when it is missing. Runs in `prebuild`, and Deploy Pages also runs daily to refresh it. |
+| `npm run generate:youtube` | Write `public/v1/youtube/channel.json` (channel stats, most-viewed videos and Shorts) from the YouTube Data API. Needs `YOUTUBE_API_KEY`; skips without failing when it is missing. With the `YT_OAUTH_*` secrets it also adds lifetime watch time from the YouTube Analytics API (see [YouTube watch time](#youtube-watch-time)). Runs in `prebuild`, and Deploy Pages also runs every 6 hours to refresh it. |
+| `node scripts/youtube-oauth-setup.mjs` | One-time local sign-in as the channel owner; prints the refresh token for `YT_OAUTH_REFRESH_TOKEN`. |
 | `npm run build` | `prebuild` generates `/v1`, then Vite production build to `dist/` |
 | `npm run preview` | Preview production build |
 | `npm run typecheck` | `tsc --noEmit` |
 | `npm test` | Vitest watch |
 | `npm run test:run` | Vitest single run (CI-friendly) |
 | `npm run deploy` | `gh-pages` deploy from `dist/` (after `predeploy` build) |
+
+### YouTube watch time
+
+The fourth YouTube tile shows lifetime watch time in hours (`estimatedMinutesWatched`). The Data API key cannot read it; it comes from the YouTube Analytics API with the channel owner's OAuth refresh token, and lags YouTube Studio by about 2 to 3 days. Without the secrets below, or when the call fails, the tile is hidden and the build still succeeds.
+
+| Repo secret | Value |
+|-------------|-------|
+| `YT_OAUTH_CLIENT_ID` | OAuth client ID (client type **Desktop app**) |
+| `YT_OAUTH_CLIENT_SECRET` | That client's secret |
+| `YT_OAUTH_REFRESH_TOKEN` | Printed by `scripts/youtube-oauth-setup.mjs` |
+
+One-time setup:
+
+1. In the Google Cloud project that owns `YOUTUBE_API_KEY`, enable the **YouTube Analytics API**.
+2. Create an OAuth client of type **Desktop app**. Set the OAuth consent screen's publishing status to **In production**; in Testing, refresh tokens expire after 7 days.
+3. Run `YT_OAUTH_CLIENT_ID=... YT_OAUTH_CLIENT_SECRET=... node scripts/youtube-oauth-setup.mjs` and sign in as the channel owner.
+4. Store the three values with `gh secret set <NAME> -R kdutta25/my-portfolio` (paste the value at the prompt). Never commit them.
+
+Deploy Pages rebuilds every 6 hours (`0 */6 * * *`), which refreshes all YouTube stats.
 
 ---
 
