@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Privacy policy | Kaustubh Dutta</title>
+    <meta name="description" content="Privacy policy for kaustubhdutta.com and its YouTube channel statistics." />
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <style>
+      :root { color-scheme: light dark; }
+      body {
+        margin: 0;
+        font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+        line-height: 1.6;
+        background: light-dark(#f8f4ec, #15161c);
+        color: light-dark(#2b2b2b, #e8e4dc);
+      }
+      main { max-width: 42rem; margin: 0 auto; padding: 3rem 1.25rem 4rem; }
+      h1 { font-size: 2rem; margin: 0 0 0.25rem; color: light-dark(#1f2a44, #f2ede4); }
+      h2 { font-size: 1.15rem; margin: 2rem 0 0.5rem; color: light-dark(#1f2a44, #f2ede4); }
+      a { color: light-dark(#b4492a, #f0955f); }
+      .updated { color: light-dark(#6b6457, #a39d92); margin: 0 0 2rem; }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Privacy policy</h1>
+      <p class="updated">Last updated: November 21, 2026</p>
+
+      <p>
+        This policy covers <a href="https://kaustubhdutta.com/">kaustubhdutta.com</a>, the personal portfolio of
+        Kaustubh Dutta, and the "Portfolio watch time" Google OAuth app that supplies the site's YouTube statistics.
+      </p>
+
+      <h2>Visitors to this site</h2>
+      <p>
+        The site does not use cookies, analytics or advertising trackers, and it does not ask you for personal
+        information. It saves your theme (light or dark) and language choice in your browser's local storage so they
+        persist between visits; that data never leaves your device.
+      </p>
+      <p>
+        Fonts are loaded from Google Fonts, and YouTube thumbnails and channel images are loaded from YouTube's image
+        servers. Those services receive your IP address and browser details as part of the request, under
+        <a href="https://policies.google.com/privacy">Google's privacy policy</a>.
+      </p>
+
+      <h2>The "Portfolio watch time" app</h2>
+      <p>
+        The site shows public statistics for the KausDiaries YouTube channel. To show the channel's total watch time,
+        a build script signs in as the channel owner with read-only access to YouTube Analytics
+        (<code>https://www.googleapis.com/auth/yt-analytics.readonly</code>).
+      </p>
+      <ul>
+        <li>It reads one figure: the channel's lifetime estimated minutes watched.</li>
+        <li>It accesses only the site owner's own channel. It is not offered to, and does not access, any other user's account.</li>
+        <li>The figure is published on this site as a rounded number of hours. No other analytics data is stored or shared.</li>
+        <li>The OAuth credentials are stored as encrypted secrets in the site's GitHub repository and are used only by its build.</li>
+      </ul>
+      <p>
+        The app's use of information received from Google APIs adheres to the
+        <a href="https://developers.google.com/terms/api-services-user-data-policy">Google API Services User Data Policy</a>,
+        including the Limited Use requirements. Access can be revoked at any time from
+        <a href="https://myaccount.google.com/permissions">Google Account permissions</a>.
+      </p>
+
+      <h2>Contact</h2>
+      <p>Questions about this policy: <a href="mailto:kdutta2511@gmail.com">kdutta2511@gmail.com</a>.</p>
+
+      <p><a href="/">Back to kaustubhdutta.com</a></p>
+    </main>
+  </body>
+</html>
