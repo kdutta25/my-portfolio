@@ -1,6 +1,6 @@
 # my-portfolio
 
-Repository for **Kaustubh Dutta**’s portfolio site: projects, experience, publications, résumé links, and bilingual (English / French) content.
+Repository for **Kaustubh Dutta**’s portfolio site: projects, experience, publications, résumé links, in English, French, Hindi and Bengali.
 
 <h2 align="center">
   Portfolio Website<br/>
@@ -53,14 +53,14 @@ The UI is one **long-scroll landing page** (`src/App.tsx`). There is no client-s
 
 **Global chrome (not section anchors):**
 
-- **`SiteHeader`** — Sticky nav; in-page hash links + theme / language toggles; **README** opens this repo on GitHub and **résumé** opens the PDF — both in a new tab, like external docs.
+- **`SiteHeader`** — Sticky nav; in-page hash links + theme toggle + **`LanguageMenu`** (English, Français, हिन्दी, বাংলা; accessible listbox, choice saved in `localStorage` as `portfolio-lang`); **README** opens this repo on GitHub and **résumé** opens the PDF — both in a new tab, like external docs.
 - **`SiteFooter`** — Attribution, copyright, social links, “Built with React, TypeScript and Vite”.
 - **`SkipLink`** — Skip to `#main-content`.
 - **`LoadingScreen`** — Full-screen loader until ready (skipped in test env via `isTestEnv()`).
 
 ### Project cards (`ProjectCard`)
 
-Project copy and metadata come from **`projects.items`** in the English and French locale objects served by the content API (`ProjectItem` in `src/types/content.ts`).
+Project copy and metadata come from **`projects.items`** in the locale objects (English, French, Hindi, Bengali) served by the content API (`ProjectItem` in `src/types/content.ts`).
 
 | Feature | Details |
 |---------|---------|
@@ -173,7 +173,7 @@ flowchart TB
   end
 
   subgraph content["Content & behavior"]
-    L10n[i18n en / fr merged from fragments]
+    L10n[i18n en / fr / hi / bn merged from fragments]
     API[static /v1 JSON on GitHub Pages]
     MOTION[anime.js + MOTION constants]
   end
@@ -201,7 +201,7 @@ flowchart TB
 | Site content bootstrap | `src/setupTests.ts`, `src/test/fixtures/site-content.json` | Applies `applySiteContent` so i18n matches the bundled fixture before component tests |
 | SEO | `SeoHead.test.tsx` | Document title from i18n |
 | Layout | `SiteHeader.test.tsx`, `SiteFooter.test.tsx`, `SkipLink.test.tsx` | Nav landmark, footer “built with” line, skip control |
-| Theme / i18n | `ThemeToggle.test.tsx`, `LanguageToggle.test.tsx` | Mode toggle, language switch label |
+| Theme / i18n | `ThemeToggle.test.tsx`, `LanguageMenu.test.tsx` | Mode toggle; language menu lists four languages, switches copy and `<html lang>`, keyboard support |
 | UI primitives | `GlowCard.test.tsx`, `SectionHeading.test.tsx`, `AnimeReveal.test.tsx`, `UiverseButton.test.tsx` | Render / interaction contracts |
 | Sections | `HeroSection`, `AboutSection`, `ExperienceSection`, `SkillsSection`, `ProjectsSection`, `EducationSection`, `VolunteeringSection`, `PublicationsSection`, `GitHubSection` | Key visible copy or regions |
 
@@ -211,7 +211,7 @@ Configuration: `vite.config.ts` → `test` block (`include: src/**/*.test.{ts,ts
 
 | Suite | Location | Scope |
 |-------|----------|--------|
-| E2E | `cypress/e2e/portfolio.cy.ts` | Stubs `GET …/v1/fragments/*/*`, loads home, checks header/main/footer, headings, `#publications`, language toggle → French nav label |
+| E2E | `cypress/e2e/portfolio.cy.ts` | Stubs `GET …/v1/fragments/*/*`, loads home, checks header/main/footer, headings, `#publications`, language menu → French nav label |
 | Component | `cypress/component/all.cy.tsx` | Mounts App and individual sections/components with shared provider helper (`support/mountUi.tsx`) |
 
 **Commands:** `npm run cypress:open`, `npm run cypress:run`, `npm run cypress:component`
@@ -242,10 +242,12 @@ This app **does not ship** `src/locales/*.json` as source files. Those live in *
 
 | Area | Behavior |
 |------|----------|
-| **Bootstrap** | `src/main.tsx` initializes an empty i18n shell (`initI18nShell`), then **awaits** two batches of `GET /v1/fragments/{lng}/{key}` (English and French in parallel per key) before `createRoot().render()`. If any required request fails, the user sees an inline error instead of a broken layout. |
+| **Bootstrap** | `src/main.tsx` initializes an empty i18n shell (`initI18nShell`), then **awaits** two batches of `GET /v1/fragments/{lng}/{key}` (English, which is the fallback, plus the visitor's language) before `createRoot().render()`. If any required request fails, the user sees an inline error instead of a broken layout. |
 | **Shell fragments** | `SHELL_FRAGMENT_IDS` in `src/siteContent/fragmentIds.ts`: `site`, `nav`, `footer` — enough for SEO, skip link, and header/footer. |
-| **Section fragments** | `SECTION_FRAGMENT_IDS`: `hero`, `about`, `experience`, `skills`, `aiModels`, `education`, `projects`, `volunteering`, `publications`, `youtube`, `githubActivity`, `support`. These keys must match top-level objects in the API’s `data/locales/en.json` and `fr.json`. |
-| **Merging** | `src/siteContent/ensureFragments.ts` fetches each key for `en` and `fr`, then `mergeTranslationFragment` in `src/i18n/index.ts` deep-merges `{ [key]: data }` into the `translation` namespace. A small in-memory cache avoids duplicate network work. |
+| **Section fragments** | `SECTION_FRAGMENT_IDS`: `hero`, `about`, `experience`, `skills`, `aiModels`, `education`, `projects`, `volunteering`, `publications`, `youtube`, `githubActivity`, `support`. These keys must match top-level objects in every API locale file (`data/locales/{en,fr,hi,bn}.json`). |
+| **Languages** | `src/i18n/languages.ts` is the single list of codes, menu labels and number/date locales. Adding a language means adding it there, in the API's `LANGUAGES`, in `scripts/generate-static-content.mjs`, and a `data/locales/{code}.json` in the API. |
+| **Merging** | `src/siteContent/ensureFragments.ts` fetches each key for English and the current language, then `mergeTranslationFragment` in `src/i18n/index.ts` deep-merges `{ [key]: data }` into that language's `translation` namespace. `switchLanguage` loads every fragment of the new language before calling `i18n.changeLanguage`, so the page never shows raw keys. A small in-memory cache keyed by language and fragment avoids duplicate network work. |
+| **Fonts** | Hindi and Bengali use Noto Sans / Noto Serif Devanagari and Bengali, appended to the theme font stacks and loaded from their own Google Fonts link (subsets download only when those scripts appear). In Hindi and Bengali every element is set upright with normal letter-spacing: these scripts have no italic faces and tracking splits their conjuncts. |
 | **Sections** | Each section uses `src/hooks/useContentFragment.ts` with `loadOn: "intersect"` (or `"mount"` for the hero). After bootstrap, copy is usually **already cached**, so `areAllFragmentsLoaded` sets `ready` immediately; otherwise the hook still loads on intersection / geometry as a fallback. Until `ready`, sections show `src/components/loading/SectionSkeleton.tsx` inside `GlowCard`. |
 | **Tests / CI** | Vitest uses `applySiteContent` + `src/test/fixtures/site-content.json` in `src/setupTests.ts`. Cypress stubs `**/v1/fragments/*/*` using `cypress/fixtures/site-content.json`. |
 | **Legacy bundle** | The API still exposes `GET /v1/site-content` (full payload). This repo no longer depends on it at runtime; fragments are the source of truth for the SPA. |
@@ -283,7 +285,7 @@ sequenceDiagram
   User->>Main: Open site
   Main->>I18n: initI18nShell empty bundles
   loop Each shell + section fragment key
-    Main->>Static: GET /v1/fragments/en/key and /fr/key
+    Main->>Static: GET /v1/fragments/en/key and /{lng}/key
     Static-->>Main: JSON data
     Main->>I18n: mergeTranslationFragment
   end

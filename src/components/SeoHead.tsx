@@ -1,9 +1,10 @@
 import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
+import { resolveLanguage } from "../i18n/languages";
 
 export function SeoHead() {
   const { t, i18n } = useTranslation();
-  const lang = i18n.language.startsWith("fr") ? "fr" : "en";
+  const lang = resolveLanguage(i18n.resolvedLanguage ?? i18n.language);
   const schema = {
     "@context": "https://schema.org",
     "@type": "Person",

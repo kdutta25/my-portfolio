@@ -10,6 +10,13 @@ export const GlobalStyle = createGlobalStyle`
     scroll-padding-top: 5.5rem;
   }
 
+  /* Devanagari and Bengali have no italic faces, and tracking splits their conjuncts apart. */
+  html:lang(hi) body *,
+  html:lang(bn) body * {
+    font-style: normal !important;
+    letter-spacing: normal !important;
+  }
+
   html[data-bs-theme="dark"],
   html[data-bs-theme="light"] {
     color-scheme: dark light;

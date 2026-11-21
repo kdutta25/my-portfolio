@@ -1,6 +1,12 @@
 import i18n from "i18next";
 import LanguageDetector from "i18next-browser-languagedetector";
 import { initReactI18next } from "react-i18next";
+import {
+  DEFAULT_LANGUAGE,
+  LANGUAGE_CODES,
+  resolveLanguage,
+  type LanguageCode,
+} from "./languages";
 
 const STORAGE_KEY = "portfolio-lang";
 
@@ -9,13 +15,13 @@ const reactOpts = {
   bindI18nStore: "added removed" as const,
 };
 
-export async function initI18n(
-  en: Record<string, unknown>,
-  fr: Record<string, unknown>,
-): Promise<void> {
+export type LocaleBundles = Partial<Record<LanguageCode, Record<string, unknown>>>;
+
+export async function initI18n(bundles: LocaleBundles): Promise<void> {
   if (i18n.isInitialized) {
-    await i18n.addResourceBundle("en", "translation", en, true, true);
-    await i18n.addResourceBundle("fr", "translation", fr, true, true);
+    for (const [lng, data] of Object.entries(bundles)) {
+      if (data) await i18n.addResourceBundle(lng, "translation", data, true, true);
+    }
     return;
   }
 
@@ -23,12 +29,13 @@ export async function initI18n(
     .use(LanguageDetector)
     .use(initReactI18next)
     .init({
-      resources: {
-        en: { translation: en },
-        fr: { translation: fr },
-      },
-      fallbackLng: "en",
-      supportedLngs: ["en", "fr"],
+      resources: Object.fromEntries(
+        Object.entries(bundles).map(([lng, data]) => [lng, { translation: data ?? {} }]),
+      ),
+      fallbackLng: DEFAULT_LANGUAGE,
+      supportedLngs: [...LANGUAGE_CODES],
+      nonExplicitSupportedLngs: true,
+      load: "languageOnly",
       interpolation: { escapeValue: false },
       detection: {
         order: ["localStorage", "navigator"],
@@ -39,30 +46,28 @@ export async function initI18n(
     });
 }
 
-/** Empty translation bundles; merge fragments as the user scrolls. */
+/** Empty translation bundles; fragments are merged in as they load. */
 export async function initI18nShell(): Promise<void> {
-  await initI18n({}, {});
+  await initI18n({});
+}
+
+/** The supported language currently shown, e.g. `hi` for a browser set to `hi-IN`. */
+export function currentLanguage(): LanguageCode {
+  return resolveLanguage(i18n.resolvedLanguage ?? i18n.language);
 }
 
 export async function mergeTranslationFragment(
+  lng: LanguageCode,
   fragmentKey: string,
-  enData: unknown,
-  frData: unknown,
+  data: unknown,
 ): Promise<void> {
   if (!i18n.isInitialized) {
     throw new Error("i18n must be initialized before mergeTranslationFragment");
   }
   await i18n.addResourceBundle(
-    "en",
+    lng,
     "translation",
-    { [fragmentKey]: enData } as Record<string, unknown>,
-    true,
-    true,
-  );
-  await i18n.addResourceBundle(
-    "fr",
-    "translation",
-    { [fragmentKey]: frData } as Record<string, unknown>,
+    { [fragmentKey]: data } as Record<string, unknown>,
     true,
     true,
   );

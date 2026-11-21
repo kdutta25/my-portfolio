@@ -6,7 +6,7 @@ import { SectionHeading } from "../../src/components/ui/SectionHeading";
 import { UiverseButton } from "../../src/components/ui/UiverseButton";
 import { SkipLink } from "../../src/components/layout/SkipLink";
 import { ThemeToggle } from "../../src/components/layout/ThemeToggle";
-import { LanguageToggle } from "../../src/components/layout/LanguageToggle";
+import { LanguageMenu } from "../../src/components/layout/LanguageMenu";
 import { SiteHeader } from "../../src/components/layout/SiteHeader";
 import { SiteFooter } from "../../src/components/layout/SiteFooter";
 import { SeoHead } from "../../src/components/SeoHead";
@@ -51,9 +51,10 @@ describe("components with providers", () => {
     cy.get('button[aria-label="Toggle color theme"]').click();
   });
 
-  it("LanguageToggle", () => {
-    mountUi(<LanguageToggle />);
-    cy.get('button[aria-label="Switch language"]').click();
+  it("LanguageMenu", () => {
+    mountUi(<LanguageMenu />);
+    cy.get('button[aria-haspopup="listbox"]').click();
+    cy.get('[role="listbox"] [role="option"]').should("have.length", 4);
   });
 
   it("SiteHeader", () => {

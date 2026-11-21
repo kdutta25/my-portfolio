@@ -35,6 +35,9 @@ const FRAGMENTS = [
   "footer",
 ];
 
+/** Must stay aligned with my-portfolio-api LANGUAGES and src/i18n/languages.ts */
+const LANGUAGES = ["en", "fr", "hi", "bn"];
+
 const optional = process.argv.includes("--optional");
 const dataDir = resolve(process.env.CONTENT_DATA_DIR || join(ROOT, "../my-portfolio-api/data"));
 const outDir = resolve(process.env.CONTENT_OUT_DIR || join(ROOT, "public/v1"));
@@ -59,13 +62,15 @@ function writeJson(path, value) {
   writeFileSync(path, `${JSON.stringify(value)}\n`);
 }
 
-const locales = {
-  en: readJson(join(dataDir, "locales", "en.json")),
-  fr: readJson(join(dataDir, "locales", "fr.json")),
-};
-
 const issues = [];
-for (const lng of ["en", "fr"]) {
+const locales = {};
+for (const lng of LANGUAGES) {
+  const path = join(dataDir, "locales", `${lng}.json`);
+  if (existsSync(path)) locales[lng] = readJson(path);
+  else issues.push(`${lng}.json: file missing`);
+}
+
+for (const lng of Object.keys(locales)) {
   for (const key of FRAGMENTS) {
     if (!Object.prototype.hasOwnProperty.call(locales[lng], key)) {
       issues.push(`${lng}.json: missing top-level key "${key}"`);
@@ -79,7 +84,7 @@ if (issues.length) {
 
 rmSync(outDir, { recursive: true, force: true });
 
-for (const lng of ["en", "fr"]) {
+for (const lng of LANGUAGES) {
   for (const key of FRAGMENTS) {
     writeJson(join(outDir, "fragments", lng, key), {
       fragment: key,
@@ -88,4 +93,4 @@ for (const lng of ["en", "fr"]) {
   }
 }
 
-console.log(`[generate-static-content] Wrote ${FRAGMENTS.length * 2} fragments → ${outDir}`);
+console.log(`[generate-static-content] Wrote ${FRAGMENTS.length * LANGUAGES.length} fragments → ${outDir}`);
