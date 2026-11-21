@@ -1,4 +1,5 @@
 import { useTranslation } from "react-i18next";
+import { resolveLanguage, type LanguageCode } from "./languages";
 
 /** Short interface labels for the editorial layout. Page content stays in the /v1 fragments. */
 const LABELS = {
@@ -54,12 +55,64 @@ const LABELS = {
     ytViewsSuffix: "vues",
     ytUpdated: "Mis à jour le",
   },
-} as const;
+  hi: {
+    greeting: "नमस्ते, मैं हूँ",
+    developerId: "डेवलपर ID",
+    quickFacts: "संक्षेप में",
+    based: "निवास",
+    role: "भूमिका",
+    credentials: "योग्यता",
+    skillFamilies: "श्रेणी से छाँटें",
+    allFamilies: "सभी",
+    familyLanguages: "भाषाएँ",
+    familyWeb: "वेब",
+    familyData: "डेटा",
+    familyTesting: "टेस्टिंग",
+    familyDevops: "DevOps",
+    familyTools: "टूल्स",
+    familyAi: "AI मॉडल",
+    tileHint: "देखने के लिए किसी टाइल पर होवर या फ़ोकस करें",
+    expandHint: "खोलने के लिए किसी कार्ड पर होवर, फ़ोकस या टैप करें",
+    ytSubscribers: "सब्सक्राइबर",
+    ytViews: "कुल व्यूज़",
+    ytVideos: "वीडियो",
+    ytTopVideos: "सबसे ज़्यादा देखे गए वीडियो",
+    ytTopShorts: "टॉप Shorts",
+    ytViewsSuffix: "व्यूज़",
+    ytUpdated: "अपडेट किया गया",
+  },
+  bn: {
+    greeting: "নমস্কার, আমি",
+    developerId: "ডেভেলপার ID",
+    quickFacts: "সংক্ষেপে",
+    based: "বসবাস",
+    role: "ভূমিকা",
+    credentials: "যোগ্যতা",
+    skillFamilies: "বিভাগ অনুযায়ী বাছুন",
+    allFamilies: "সব",
+    familyLanguages: "ভাষা",
+    familyWeb: "ওয়েব",
+    familyData: "ডেটা",
+    familyTesting: "টেস্টিং",
+    familyDevops: "DevOps",
+    familyTools: "টুলস",
+    familyAi: "AI মডেল",
+    tileHint: "দেখতে কোনো টাইলে হোভার বা ফোকাস করুন",
+    expandHint: "খুলতে কোনো কার্ডে হোভার, ফোকাস বা ট্যাপ করুন",
+    ytSubscribers: "সাবস্ক্রাইবার",
+    ytViews: "মোট ভিউ",
+    ytVideos: "ভিডিও",
+    ytTopVideos: "সবচেয়ে বেশি দেখা ভিডিও",
+    ytTopShorts: "সেরা Shorts",
+    ytViewsSuffix: "ভিউ",
+    ytUpdated: "আপডেট হয়েছে",
+  },
+} satisfies Record<LanguageCode, Record<string, string>>;
 
 export type UiLabelKey = keyof (typeof LABELS)["en"];
 
 export function useUiLabels(): (key: UiLabelKey) => string {
   const { i18n } = useTranslation();
-  const table = i18n.language?.startsWith("fr") ? LABELS.fr : LABELS.en;
+  const table = LABELS[resolveLanguage(i18n.resolvedLanguage ?? i18n.language)];
   return (key) => table[key];
 }

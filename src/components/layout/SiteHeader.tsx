@@ -4,7 +4,7 @@ import Container from "react-bootstrap/Container";
 import Navbar from "react-bootstrap/Navbar";
 import Nav from "react-bootstrap/Nav";
 import { useTranslation } from "react-i18next";
-import { LanguageToggle } from "./LanguageToggle";
+import { LanguageMenu } from "./LanguageMenu";
 import { ThemeToggle } from "./ThemeToggle";
 import { README_ON_GITHUB_URL, RESUME_PDF_URL } from "../../constants/externalLinks";
 
@@ -250,7 +250,7 @@ export function SiteHeader() {
               })}
             </PillNav>
             <NavInner data-component-id="NavInner">
-              <LanguageToggle />
+              <LanguageMenu />
               <ThemeToggle />
             </NavInner>
           </Navbar.Collapse>

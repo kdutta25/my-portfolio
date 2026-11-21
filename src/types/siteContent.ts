@@ -1,3 +1,5 @@
+import { isLanguageCode, type LanguageCode } from "../i18n/languages";
+
 export type ResumeCorpus = {
   resumeText: string;
 };
@@ -12,9 +14,8 @@ export type LinkedinSnapshot = {
 export type SiteContentPayload = {
   resumeCorpus: ResumeCorpus;
   linkedinSnapshot: LinkedinSnapshot;
-  locales: {
+  locales: Partial<Record<LanguageCode, Record<string, unknown>>> & {
     en: Record<string, unknown>;
-    fr: Record<string, unknown>;
   };
 };
 
@@ -37,7 +38,6 @@ export function isSiteContentPayload(x: unknown): x is SiteContentPayload {
   ) {
     return false;
   }
-  if (!isRecord(loc)) return false;
-  if (!isRecord(loc.en) || !isRecord(loc.fr)) return false;
-  return true;
+  if (!isRecord(loc) || !isRecord(loc.en)) return false;
+  return Object.entries(loc).every(([lng, data]) => isLanguageCode(lng) && isRecord(data));
 }

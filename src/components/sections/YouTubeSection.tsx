@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { FaPlay, FaYoutube } from "react-icons/fa";
 import { useTranslation } from "react-i18next";
 import { useContentFragment } from "../../hooks/useContentFragment";
+import { getLanguage, resolveLanguage } from "../../i18n/languages";
 import { useUiLabels } from "../../i18n/uiLabels";
 import { getContentApiBase } from "../../siteContent/contentApiBase";
 import type { YouTubeChannelStats, YouTubeVideo } from "../../types/content";
@@ -199,8 +200,8 @@ const Stat = styled.div`
   dd {
     margin: 0.35rem 0 0;
     font-family: ${({ theme }) => theme.fonts.serif};
-    font-size: clamp(1.6rem, 5vw, 3rem);
-    line-height: 1;
+    font-size: clamp(1.35rem, 5vw, 3rem);
+    line-height: 1.1;
     color: ${({ theme }) => theme.colors.ink};
   }
 `;
@@ -378,7 +379,7 @@ function VideoCard({
 function YouTubeSectionBody({ stats }: { stats: YouTubeChannelStats | null }) {
   const { t, i18n } = useTranslation();
   const label = useUiLabels();
-  const locale = i18n.language?.startsWith("fr") ? "fr-CA" : "en-CA";
+  const { locale } = getLanguage(resolveLanguage(i18n.resolvedLanguage ?? i18n.language));
   const compact = new Intl.NumberFormat(locale, { notation: "compact", maximumFractionDigits: 1 });
   const views = (n: number) => `${compact.format(n)} ${label("ytViewsSuffix")}`;
   const channelUrl = stats?.channel.url || t("youtube.channelUrl");

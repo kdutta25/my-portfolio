@@ -40,11 +40,15 @@ export interface AppTheme {
   };
 }
 
+/** Noto fallbacks render Hindi and Bengali; Latin text still resolves to the first family. */
+const INDIC_SANS = '"Noto Sans Devanagari", "Noto Sans Bengali"';
+const INDIC_SERIF = '"Noto Serif Devanagari", "Noto Serif Bengali"';
+
 const fonts: AppTheme["fonts"] = {
-  sans: '"DM Sans", "Inter", system-ui, sans-serif',
-  display: '"DM Sans", "Inter", system-ui, sans-serif',
-  serif: '"Instrument Serif", "Cormorant Garamond", Georgia, serif',
-  mono: '"JetBrains Mono", ui-monospace, monospace',
+  sans: `"DM Sans", ${INDIC_SANS}, "Inter", system-ui, sans-serif`,
+  display: `"DM Sans", ${INDIC_SANS}, "Inter", system-ui, sans-serif`,
+  serif: `"Instrument Serif", ${INDIC_SERIF}, "Cormorant Garamond", Georgia, serif`,
+  mono: `"JetBrains Mono", ${INDIC_SANS}, ui-monospace, monospace`,
 };
 
 const radii: AppTheme["radii"] = {

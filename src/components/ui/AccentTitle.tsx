@@ -12,6 +12,12 @@ const Accent = styled.em`
   text-transform: lowercase;
   font-size: 1.12em;
   color: ${({ theme }) => theme.colors.text};
+
+  /* Noto Serif already runs larger than Instrument Serif. */
+  &:lang(hi),
+  &:lang(bn) {
+    font-size: 1em;
+  }
 `;
 
 const Dot = styled.span`

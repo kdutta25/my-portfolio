@@ -876,6 +876,60 @@
         "youtube": "https://www.youtube.com/@KausDiaries",
         "youtubeAria": "Chaîne YouTube — KausDiaries"
       }
+    },
+    "hi": {
+      "site": {
+        "title": "Kaus Dutta",
+        "description": "ओटावा, कनाडा में Nokia में फुल स्टैक AI एप्लिकेशन डेवलपर और डिज़ाइन लीड। University of Ottawa से डेटा साइंस में मास्टर्स।",
+        "keywords": "Kaustubh Dutta, कौस्तुभ दत्ता, फुल स्टैक डेवलपर, React, TypeScript, Nokia, Ottawa, डेटा साइंस"
+      },
+      "nav": {
+        "skip": "मुख्य सामग्री पर जाएँ",
+        "about": "मेरे बारे में",
+        "experience": "अनुभव",
+        "education": "शिक्षा",
+        "projects": "प्रोजेक्ट्स",
+        "skills": "कौशल",
+        "github": "GitHub",
+        "readme": "README",
+        "volunteering": "स्वयंसेवा",
+        "publications": "प्रकाशन",
+        "youtube": "YouTube",
+        "support": "सहयोग",
+        "resume": "रिज़्यूमे",
+        "toggleTheme": "रंग थीम बदलें",
+        "toggleLanguage": "भाषा बदलें",
+        "lightMode": "लाइट",
+        "darkMode": "डार्क",
+        "brand": "Kaustubh Dutta"
+      }
+    },
+    "bn": {
+      "site": {
+        "title": "Kaus Dutta",
+        "description": "কানাডার অটোয়ায় Nokia-তে ফুল স্ট্যাক AI অ্যাপ্লিকেশন ডেভেলপার ও ডিজাইন লিড। University of Ottawa থেকে ডেটা সায়েন্সে মাস্টার্স।",
+        "keywords": "Kaustubh Dutta, কৌস্তুভ দত্ত, ফুল স্ট্যাক ডেভেলপার, React, TypeScript, Nokia, Ottawa, ডেটা সায়েন্স"
+      },
+      "nav": {
+        "skip": "মূল বিষয়বস্তুতে যান",
+        "about": "আমার সম্পর্কে",
+        "experience": "অভিজ্ঞতা",
+        "education": "শিক্ষা",
+        "projects": "প্রজেক্ট",
+        "skills": "দক্ষতা",
+        "github": "GitHub",
+        "readme": "README",
+        "volunteering": "স্বেচ্ছাসেবা",
+        "publications": "প্রকাশনা",
+        "youtube": "YouTube",
+        "support": "সহায়তা",
+        "resume": "রেজিউমে",
+        "toggleTheme": "রঙের থিম বদলান",
+        "toggleLanguage": "ভাষা বদলান",
+        "lightMode": "লাইট",
+        "darkMode": "ডার্ক",
+        "brand": "Kaustubh Dutta"
+      }
     }
   }
 }
